@@ -1,4 +1,7 @@
-﻿namespace ProjectPlanner
+﻿using Microsoft.EntityFrameworkCore;
+using ProjectPlanner.Data;
+using ProjectPlanner.Model;
+namespace ProjectPlanner
 {
     public partial class MainPage : ContentPage
     {
@@ -6,7 +9,10 @@
 
         public MainPage()
         {
+            ProjectContext _context = new ProjectContext();
+            DbSet<Project> _dbSet = _context.Set<Project>();
             InitializeComponent();
+            _dbSet.ToList();
         }
 
         private void OnCounterClicked(object? sender, EventArgs e)
