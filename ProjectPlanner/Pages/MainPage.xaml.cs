@@ -13,6 +13,14 @@ namespace ProjectPlanner
             DbSet<Project> _dbSet = _context.Set<Project>();
             InitializeComponent();
             _dbSet.ToList();
+
+            """
+            var project = new Project(tutaj parametry konstruktora);
+            _dbSet.Add(project);
+            _context.SaveChanges();
+
+            _dbSet.Remove(entity);
+            """
         }
 
         private void OnCounterClicked(object? sender, EventArgs e)
