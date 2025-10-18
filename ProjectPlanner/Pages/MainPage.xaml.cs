@@ -14,8 +14,8 @@ namespace ProjectPlanner
             _unitOfWork = unitOfWork;
             //not needed anymore
             /*ProjectContext _context = new ProjectContext();
-            DbSet<Project> _dbSet = _context.Set<Project>();
-            InitializeComponent();*/
+            DbSet<Project> _dbSet = _context.Set<Project>();*/
+            InitializeComponent();
             _unitOfWork.Project.GetAll();
 
             """
