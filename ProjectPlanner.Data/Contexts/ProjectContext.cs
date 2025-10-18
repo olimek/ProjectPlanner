@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectPlanner.Model;
 
-namespace ProjectPlanner.Data
+namespace ProjectPlanner.Data.Contexts
 {
     public class ProjectContext : DbContext
     {

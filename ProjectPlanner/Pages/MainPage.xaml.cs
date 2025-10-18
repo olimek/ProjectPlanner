@@ -1,18 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjectPlanner.Data;
+using ProjectPlanner.Data.Contexts;
+using ProjectPlanner.Data.UnitOfWork;
 using ProjectPlanner.Model;
 namespace ProjectPlanner
 {
     public partial class MainPage : ContentPage
     {
+        private readonly IUnitOfWork _unitOfWork;
         int count = 0;
 
-        public MainPage()
+        public MainPage(IUnitOfWork unitOfWork)
         {
-            ProjectContext _context = new ProjectContext();
+            _unitOfWork = unitOfWork;
+            //not needed anymore
+            /*ProjectContext _context = new ProjectContext();
             DbSet<Project> _dbSet = _context.Set<Project>();
-            InitializeComponent();
-            _dbSet.ToList();
+            InitializeComponent();*/
+            _unitOfWork.Project.GetAll();
 
             """
             var project = new Project(tutaj parametry konstruktora);
