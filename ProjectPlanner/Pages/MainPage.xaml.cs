@@ -20,7 +20,7 @@ namespace ProjectPlanner
         private void OnCounterClicked(object? sender, EventArgs e)
         {
             count++;
-
+            _unitOfWork.Project.Add(new Project { Name = $"{count} " });
             if (count == 1)
                 CounterBtn.Text = $"Clicked {count} time";
             else
