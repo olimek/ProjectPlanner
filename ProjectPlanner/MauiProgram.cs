@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using ProjectPlanner.Database;
+using ProjectPlanner.Data.Contexts;
+using ProjectPlanner.Data.UnitOfWork;
 
 namespace ProjectPlanner
 {
@@ -15,16 +16,12 @@ namespace ProjectPlanner
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
-            string dbPath = Path.Combine(FileSystem.AppDataDirectory, "projectsplanner.db3");
-
-            builder.Services.AddSingleton(sp =>
-                DatabaseService.CreateAsync(dbPath).Result
-            );
 
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
-
+            builder.Services.AddDbContext<ProjectContext>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             return builder.Build();
         }
     }
