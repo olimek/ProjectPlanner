@@ -1,23 +1,33 @@
-﻿namespace ProjectPlanner
+﻿using Microsoft.EntityFrameworkCore;
+using ProjectPlanner.Data.Contexts;
+using ProjectPlanner.Data.UnitOfWork;
+using ProjectPlanner.Model;
+
+namespace ProjectPlanner
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
+        private readonly IUnitOfWork _unitOfWork;
+        private int count = 0;
 
-        public MainPage()
+        public MainPage(IUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             InitializeComponent();
+            _unitOfWork.Project.GetAll();
         }
 
         private void OnCounterClicked(object? sender, EventArgs e)
         {
             count++;
-
+            //_unitOfWork.Project.Add(new Project { Name = $"{count} " });
+            _unitOfWork.Project.RemoveAll();
+            _unitOfWork.Save();
             if (count == 1)
                 CounterBtn.Text = $"Clicked {count} time";
             else
                 CounterBtn.Text = $"Clicked {count} times";
-
+            var test = _unitOfWork.Project.GetAll();
             SemanticScreenReader.Announce(CounterBtn.Text);
         }
     }
