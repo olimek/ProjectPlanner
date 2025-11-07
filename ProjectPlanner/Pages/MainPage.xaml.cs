@@ -20,12 +20,14 @@ namespace ProjectPlanner
         private void OnCounterClicked(object? sender, EventArgs e)
         {
             count++;
-            _unitOfWork.Project.Add(new Project { Name = $"{count} " });
+            //_unitOfWork.Project.Add(new Project { Name = $"{count} " });
+            _unitOfWork.Project.RemoveAll();
+            _unitOfWork.Save();
             if (count == 1)
                 CounterBtn.Text = $"Clicked {count} time";
             else
                 CounterBtn.Text = $"Clicked {count} times";
-
+            var test = _unitOfWork.Project.GetAll();
             SemanticScreenReader.Announce(CounterBtn.Text);
         }
     }
