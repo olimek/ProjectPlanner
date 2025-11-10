@@ -2,6 +2,7 @@
 using ProjectPlanner.Data.Contexts;
 using ProjectPlanner.Data.UnitOfWork;
 using ProjectPlanner.Model;
+using ProjectPlanner.ViewModels;
 
 namespace ProjectPlanner
 {
@@ -14,7 +15,7 @@ namespace ProjectPlanner
         {
             _unitOfWork = unitOfWork;
             InitializeComponent();
-            _unitOfWork.Project.GetAll();
+            BindingContext = new MainPageViewModel(unitOfWork);
         }
 
         //private void OnCounterClicked(object? sender, EventArgs e)
