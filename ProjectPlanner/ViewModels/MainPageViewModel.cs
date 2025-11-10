@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using ProjectPlanner.Model;
 using ProjectPlanner.Data.UnitOfWork;
+using ProjectPlanner.Model;
 
 namespace ProjectPlanner.ViewModels
 {
@@ -15,12 +15,8 @@ namespace ProjectPlanner.ViewModels
         public MainPageViewModel(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-
-            // Wczytanie projektów z bazy
             var projects = _unitOfWork.Project.GetAll();
             Projects = new ObservableCollection<Project>(projects);
-
-            // Komenda "Dodaj projekt"
             AddProjectCommand = new Command(OnAddProject);
         }
 
