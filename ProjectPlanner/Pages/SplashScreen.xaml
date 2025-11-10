@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ProjectPlanner.Pages.SplashScreen"
-             Title="SplashScreen"
-             NavigationPage.HasNavigationBar="False"
-             Shell.NavBarIsVisible="False">
+<ContentPage
+    x:Class="ProjectPlanner.Pages.SplashScreen"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="SplashScreen"
+    NavigationPage.HasNavigationBar="False"
+    Shell.NavBarIsVisible="False">
     <AbsoluteLayout>
-        <!-- Obraz pełnoekranowy -->
-        <Image Source="dotnet_bot.png"
-               Aspect="AspectFill"
-               AbsoluteLayout.LayoutBounds="0,0,1,1"
-               AbsoluteLayout.LayoutFlags="All" />
+        <!--  Obraz pełnoekranowy  -->
+        <Image
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            Aspect="AspectFill"
+            Source="splash.png" />
     </AbsoluteLayout>
 </ContentPage>

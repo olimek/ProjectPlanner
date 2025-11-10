@@ -28,7 +28,7 @@ public partial class SplashScreen : ContentPage
                 );
         }
 #endif
-        await Task.Delay(500);
+        await Task.Delay(2000);
         Application.Current.MainPage = new AppShell();
     }
 
