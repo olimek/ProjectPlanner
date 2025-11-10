@@ -11,5 +11,6 @@ namespace ProjectPlanner.Data.Repository.IRepository
         void Remove(T entity);
         void RemoveList(IEnumerable<T> entity);
         void RemoveAll();
+        int CountAll();
     }
 }
