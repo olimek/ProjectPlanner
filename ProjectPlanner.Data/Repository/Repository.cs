@@ -38,7 +38,10 @@ namespace ProjectPlanner.Data.Repository
         {
             dbSet.Remove(entity);
         }
-
+        public virtual int CountAll()
+        {
+            return dbSet.Count();
+        }
         public virtual void RemoveAll()
         {
             var entities = GetAll();

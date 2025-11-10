@@ -1,36 +1,120 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ProjectPlanner.MainPage">
+<ContentPage
+    x:Class="ProjectPlanner.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#121212">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-            <Image
-                Source="dotnet_bot.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                SemanticProperties.Description="dot net bot in a hovercraft number nine" />
+    <ContentPage.Resources>
+        <!--  Kolory  -->
+        <Color x:Key="AccentColor">#89CFF0</Color>
+        <Color x:Key="CardColor">#1E1E1E</Color>
+        <Color x:Key="TextPrimary">#FFFFFF</Color>
+        <Color x:Key="TextSecondary">#A0A0A0</Color>
 
-            <Label
-                Text="Hello, World!"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
+        <!--  Styl przycisku  -->
+        <Style TargetType="Button">
+            <Setter Property="BackgroundColor" Value="{StaticResource AccentColor}" />
+            <Setter Property="TextColor" Value="Black" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="HeightRequest" Value="50" />
+        </Style>
 
-            <Label
-                Text="Welcome to &#10;.NET Multi-platform App UI"
-                Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
+        <!--  Styl karty projektu  -->
+        <Style x:Key="ProjectCard" TargetType="Frame">
+            <Setter Property="BackgroundColor" Value="{StaticResource CardColor}" />
+            <Setter Property="CornerRadius" Value="16" />
+            <Setter Property="HasShadow" Value="True" />
+            <Setter Property="Padding" Value="15" />
+            <Setter Property="Margin" Value="5,8" />
+        </Style>
+    </ContentPage.Resources>
 
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me" 
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Fill" />
-        </VerticalStackLayout>
-    </ScrollView>
+    <Grid Padding="20" RowDefinitions="Auto, *">
 
+        <!--  Nagłówek  -->
+        <Label
+            Margin="0,10,0,20"
+            FontAttributes="Bold"
+            FontSize="28"
+            HorizontalOptions="Start"
+            Text="📁 Twoje Projekty"
+            TextColor="{StaticResource TextPrimary}"
+            VerticalOptions="Start" />
+
+        <!--  Główna sekcja  -->
+        <CollectionView
+            x:Name="ProjectsList"
+            Grid.Row="1"
+            ItemsSource="{Binding Projects}"
+            SelectionMode="None">
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                    <Image
+                        HeightRequest="150"
+                        Opacity="0.6"
+                        Source="empty_state.png" />
+                    <Label
+                        Margin="0,10,0,5"
+                        FontSize="18"
+                        HorizontalOptions="Center"
+                        Text="Brak projektów"
+                        TextColor="{StaticResource TextSecondary}" />
+                    <Button
+                        Command="{Binding AddProjectCommand}"
+                        Text="➕ Dodaj projekt"
+                        WidthRequest="200" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Style="{StaticResource ProjectCard}">
+                        <VerticalStackLayout>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="20"
+                                Text="{Binding Name}"
+                                TextColor="{StaticResource TextPrimary}" />
+                            <Label
+                                FontSize="14"
+                                Text="{Binding Description}"
+                                TextColor="{StaticResource TextSecondary}" />
+                            <ProgressBar
+                                Margin="0,8,0,0"
+                                BackgroundColor="#2A2A2A"
+                                HeightRequest="8"
+                                Progress="{Binding Progress}"
+                                ProgressColor="{StaticResource AccentColor}" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!--  Przyciski FAB  -->
+        <Button
+            x:Name="AddProjectBtn"
+            Margin="0,0,10,10"
+            BackgroundColor="{StaticResource AccentColor}"
+            Command="{Binding AddProjectCommand}"
+            CornerRadius="30"
+            FontSize="26"
+            HeightRequest="60"
+            HorizontalOptions="End"
+            Text="＋"
+            TextColor="Black"
+            VerticalOptions="End"
+            WidthRequest="60">
+
+            <Button.Shadow>
+                <Shadow
+                    Opacity="0.4"
+                    Radius="8" />
+            </Button.Shadow>
+        </Button>
+
+    </Grid>
 </ContentPage>
