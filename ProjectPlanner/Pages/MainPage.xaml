@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="ProjectPlanner.MainPage"
+    x:Class="ProjectPlanner.Pages.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:ProjectPlanner.Model;assembly=ProjectPlanner.Model"
     BackgroundColor="#121212">
 
     <ContentPage.Resources>
@@ -45,10 +46,9 @@
 
         <!--  Główna sekcja  -->
         <CollectionView
-            x:Name="ProjectsList"
-            Grid.Row="1"
             ItemsSource="{Binding Projects}"
-            SelectionMode="None">
+            SelectionChanged="OnProjectSelected"
+            SelectionMode="Single">
 
             <CollectionView.EmptyView>
                 <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
@@ -70,24 +70,14 @@
             </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="model:Project">
                     <Frame Style="{StaticResource ProjectCard}">
                         <VerticalStackLayout>
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="20"
-                                Text="{Binding Name}"
-                                TextColor="{StaticResource TextPrimary}" />
-                            <Label
-                                FontSize="14"
-                                Text="{Binding Description}"
-                                TextColor="{StaticResource TextSecondary}" />
-                            <ProgressBar
-                                Margin="0,8,0,0"
-                                BackgroundColor="#2A2A2A"
-                                HeightRequest="8"
-                                Progress="{Binding Progress}"
-                                ProgressColor="{StaticResource AccentColor}" />
+                                Text="{Binding Name}" />
+                            <Label FontSize="14" Text="{Binding Description}" />
                         </VerticalStackLayout>
                     </Frame>
                 </DataTemplate>
@@ -110,9 +100,7 @@
             WidthRequest="60">
 
             <Button.Shadow>
-                <Shadow
-                    Opacity="0.4"
-                    Radius="8" />
+                <Shadow Opacity="0.4" Radius="8" />
             </Button.Shadow>
         </Button>
 

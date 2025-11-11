@@ -19,7 +19,12 @@ namespace ProjectPlanner.ViewModels
             Projects = new ObservableCollection<Project>(projects);
             AddProjectCommand = new Command(OnAddProject);
         }
-
+        public void RefreshProjects()
+        {
+            Projects.Clear();
+            foreach (var project in _unitOfWork.Project.GetAll())
+                Projects.Add(project);
+        }
         private void OnAddProject()
         {
             var newProject = new Project

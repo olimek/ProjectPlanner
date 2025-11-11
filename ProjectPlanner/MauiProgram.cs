@@ -1,11 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
 using ProjectPlanner.Data.Contexts;
 using ProjectPlanner.Data.UnitOfWork;
+using ProjectPlanner.WinUI;
 
 namespace ProjectPlanner
 {
+
     public static class MauiProgram
     {
+        public static IServiceProvider Services { get; private set; }
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
@@ -22,6 +25,7 @@ namespace ProjectPlanner
 #endif
             builder.Services.AddDbContext<ProjectContext>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            Services = builder.Build().Services;
             return builder.Build();
         }
     }
