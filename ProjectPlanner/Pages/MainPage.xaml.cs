@@ -1,7 +1,4 @@
-﻿
-using ProjectPlanner.Data.UnitOfWork;
-
-using ProjectPlanner.ViewModels;
+﻿using ProjectPlanner.Data.UnitOfWork;
 
 namespace ProjectPlanner
 {
@@ -9,10 +6,7 @@ namespace ProjectPlanner
     {
         public MainPage(IUnitOfWork unitOfWork)
         {
-           
             InitializeComponent();
-            BindingContext = new MainPageViewModel(unitOfWork);
         }
-
     }
 }
