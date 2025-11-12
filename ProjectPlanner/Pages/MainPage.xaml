@@ -99,7 +99,8 @@
             x:Name="AddProjectBtn"
             Margin="0,0,10,10"
             BackgroundColor="{StaticResource AccentColor}"
-            Command="{Binding AddProjectCommand}"
+
+            Clicked="AddProjectBtn_Clicked"
             CornerRadius="30"
             FontSize="26"
             HeightRequest="60"
@@ -115,6 +116,5 @@
                     Radius="8" />
             </Button.Shadow>
         </Button>
-
     </Grid>
 </ContentPage>
