@@ -31,6 +31,12 @@ namespace ProjectPlanner.Service
             _uow.Save();
         }
 
+        public void DeleteAllProjects()
+        {
+            _uow.Project.RemoveAll();
+            _uow.Save();
+        }
+
         public List<Project> GetAllProjects()
         {
             var projects = _uow.Project.GetAll() ?? Enumerable.Empty<Project>();
