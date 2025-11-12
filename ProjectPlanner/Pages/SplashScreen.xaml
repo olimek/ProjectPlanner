@@ -12,6 +12,6 @@
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             Aspect="AspectFill"
-            Source="splash.png" />
+            Source="splash_screen.png" />
     </AbsoluteLayout>
 </ContentPage>

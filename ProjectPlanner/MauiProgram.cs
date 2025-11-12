@@ -24,8 +24,9 @@ namespace ProjectPlanner
             builder.Logging.AddDebug();
 #endif
             builder.Services.AddDbContext<ProjectContext>();
-            builder.Services.AddTransient<ProjectPage>();
+            builder.Services.AddScoped<ProjectPage>();
             builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<ITaskService, TaskService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             using (var scope = builder.Services.BuildServiceProvider().CreateScope())
             {
