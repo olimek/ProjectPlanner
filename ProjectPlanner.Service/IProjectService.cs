@@ -8,6 +8,8 @@ namespace ProjectPlanner.Service
 
         void DeleteProject(Project project);
 
+        void DeleteAllProjects();
+
         List<Project> GetAllProjects();
     }
 }

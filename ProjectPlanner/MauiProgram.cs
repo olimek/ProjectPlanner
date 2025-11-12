@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ProjectPlanner.Data.Contexts;
 using ProjectPlanner.Data.UnitOfWork;
 using ProjectPlanner.Service;
+using ProjectPlanner.Pages;
 
 namespace ProjectPlanner
 {
@@ -22,8 +24,22 @@ namespace ProjectPlanner
             builder.Logging.AddDebug();
 #endif
             builder.Services.AddDbContext<ProjectContext>();
+            builder.Services.AddTransient<ProjectPage>();
             builder.Services.AddScoped<IProjectService, ProjectService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ProjectContext>();
+
+                try
+                {
+                    db.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Database initialization error: {ex.Message}");
+                }
+            }
             return builder.Build();
         }
     }
