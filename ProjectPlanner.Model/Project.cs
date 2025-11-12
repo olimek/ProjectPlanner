@@ -10,6 +10,6 @@ namespace ProjectPlanner.Model
         public string Name { get; set; }
         public string? Description { get; set; }
         public ProjectType Type { get; set; }
-        public List<SubTask>? tasks { get; set; }
+        public List<SubTask>? tasks { get; set; } = new();
     }
 }
