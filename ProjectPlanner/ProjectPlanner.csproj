@@ -72,6 +72,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\ProjectPlanner.Data\ProjectPlanner.Data.csproj" />
+	  <ProjectReference Include="..\ProjectPlanner.Service\ProjectPlanner.Service.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

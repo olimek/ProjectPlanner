@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using ProjectPlanner.Data.Contexts;
 using ProjectPlanner.Data.UnitOfWork;
+using ProjectPlanner.Service;
 
 namespace ProjectPlanner
 {
@@ -21,6 +22,7 @@ namespace ProjectPlanner
             builder.Logging.AddDebug();
 #endif
             builder.Services.AddDbContext<ProjectContext>();
+            builder.Services.AddScoped<IProjectService, ProjectService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             return builder.Build();
         }
