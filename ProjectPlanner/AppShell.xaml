@@ -3,11 +3,8 @@
     x:Class="ProjectPlanner.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:ProjectPlanner"
+    xmlns:local="clr-namespace:ProjectPlanner.Pages"
     Title="ProjectPlanner">
 
-    <ShellContent
-
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <ShellContent ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage" />
 </Shell>
