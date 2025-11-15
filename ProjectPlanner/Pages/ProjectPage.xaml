@@ -6,7 +6,7 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
-            <Grid ColumnDefinitions="*,Auto" Padding="0,0,0,10">
+            <Grid ColumnDefinitions="*,Auto,Auto" Padding="0,0,0,10">
 
                 <Label x:Name="NameLabel"
                FontAttributes="Bold"
@@ -15,10 +15,24 @@
                Grid.Column="0"
                VerticalOptions="Center"
                LineBreakMode="TailTruncation" />
-
+                <Button
+x:Name="addTaskBtn"
+Grid.Column="1"
+BackgroundColor="{StaticResource AccentColor}"
+Clicked="addTaskBtn_Clicked"
+CornerRadius="30"
+FontSize="26"
+HeightRequest="50"
+WidthRequest="50"
+Text="➕"
+TextColor="Black"
+HorizontalOptions="End"
+VerticalOptions="Center"
+Padding="0"
+Margin="0,0,0,0" />
                 <Button
             x:Name="DelProjectBtn"
-            Grid.Column="1"
+            Grid.Column="2"
             BackgroundColor="{StaticResource AccentColor}"
             Clicked="DelProjectBtn_Clicked"
             CornerRadius="30"

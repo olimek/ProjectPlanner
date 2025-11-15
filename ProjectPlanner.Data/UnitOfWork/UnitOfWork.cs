@@ -12,12 +12,9 @@ namespace ProjectPlanner.Data.UnitOfWork
         {
             _db = db;
             Project = new ProjectRepository(_db);
-            Task = new TaskRepository(_db);
         }
 
         public IProjectRepository Project { get; private set; }
-
-        public ITaskRepository Task { get; private set; }
 
         public void Save()
         {

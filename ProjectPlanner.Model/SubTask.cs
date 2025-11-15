@@ -10,6 +10,5 @@ namespace ProjectPlanner.Model
         public string Name { get; set; }
 
         public string Description { get; set; }
-        public Project? Project { get; set; }
     }
 }
