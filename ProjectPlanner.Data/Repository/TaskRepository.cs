@@ -19,7 +19,7 @@ namespace ProjectPlanner.Data.Repository
             if (objFromDb != null)
             {
                 objFromDb.Name = entity.Name;
-                objFromDb.Description = entity.Description;
+                objFromDb.Decription = entity.Decription;
             }
         }
     }
