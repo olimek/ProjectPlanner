@@ -43,7 +43,7 @@ namespace ProjectPlanner.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Decription")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
