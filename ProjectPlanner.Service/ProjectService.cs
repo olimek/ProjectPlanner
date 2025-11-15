@@ -27,6 +27,9 @@ namespace ProjectPlanner.Service
 
         public void DeleteProject(Project project)
         {
+            var taskList = _uow.Task.GetAll(x => x.Project.Id == project.Id);
+            _uow.Task.RemoveList(taskList);
+            _uow.Save();
             _uow.Project.Remove(project);
             _uow.Save();
         }

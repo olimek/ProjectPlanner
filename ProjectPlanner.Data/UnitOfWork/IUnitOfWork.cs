@@ -5,7 +5,7 @@ namespace ProjectPlanner.Data.UnitOfWork
     public interface IUnitOfWork
     {
         IProjectRepository Project { get; }
-        ITaskRepository Task { get; }
+
         void Save();
     }
 }
