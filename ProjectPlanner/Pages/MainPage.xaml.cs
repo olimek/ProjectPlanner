@@ -14,7 +14,6 @@ namespace ProjectPlanner.Pages
         {
             InitializeComponent();
             _projectService = projectService;
-
             BindingContext = this;
         }
 
