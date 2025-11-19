@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace ProjectPlanner.Model
 {
@@ -7,9 +8,9 @@ namespace ProjectPlanner.Model
         [Key]
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
         public ProjectType Type { get; set; }
-        public List<SubTask>? tasks { get; set; } = new();
+        public List<SubTask> Tasks { get; set; } = new();
     }
 }

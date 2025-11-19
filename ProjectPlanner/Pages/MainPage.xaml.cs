@@ -2,7 +2,7 @@
 using ProjectPlanner.Pages;
 using ProjectPlanner.Service;
 
-namespace ProjectPlanner;
+namespace ProjectPlanner.Pages;
 
 public partial class MainPage : ContentPage
 {
