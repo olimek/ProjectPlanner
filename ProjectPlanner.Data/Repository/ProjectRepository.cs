@@ -1,4 +1,5 @@
-﻿using ProjectPlanner.Data.Contexts;
+﻿using System.Linq;
+using ProjectPlanner.Data.Contexts;
 using ProjectPlanner.Data.Repository.IRepository;
 using ProjectPlanner.Model;
 
@@ -21,7 +22,7 @@ namespace ProjectPlanner.Data.Repository
                 objFromDb.Name = entity.Name;
                 objFromDb.Description = entity.Description;
                 objFromDb.Type = entity.Type;
-                objFromDb.tasks = entity.tasks;
+                objFromDb.Tasks = entity.Tasks;
             }
         }
     }

@@ -18,9 +18,9 @@ namespace ProjectPlanner.Pages
             DescriptionLabel.Text = _project.Description;
             TypeLabel.Text = _project.Type.ToString();
 
-            if (_project.tasks != null)
+            if (_project.Tasks != null)
             {
-                TasksList.ItemsSource = _project.tasks;
+                TasksList.ItemsSource = _project.Tasks;
             }
         }
 

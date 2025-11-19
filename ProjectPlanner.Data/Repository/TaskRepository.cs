@@ -1,4 +1,5 @@
-﻿using ProjectPlanner.Data.Contexts;
+﻿using System.Linq;
+using ProjectPlanner.Data.Contexts;
 using ProjectPlanner.Data.Repository.IRepository;
 using ProjectPlanner.Model;
 
@@ -19,7 +20,7 @@ namespace ProjectPlanner.Data.Repository
             if (objFromDb != null)
             {
                 objFromDb.Name = entity.Name;
-                objFromDb.Decription = entity.Decription;
+                objFromDb.Description = entity.Description;
             }
         }
     }
