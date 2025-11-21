@@ -14,6 +14,26 @@ namespace ProjectPlanner.Service
             _uow = unitOfWork;
         }
 
+        public void AddTaskToProject(int projectId, string taskName, string? description = null)
+        {
+            var project = _uow.Project.GetById(projectId);
+
+            if (project == null)
+                throw new InvalidOperationException($"Nie znaleziono projektu o ID {projectId}.");
+
+            var subTask = new SubTask
+            {
+                Name = taskName,
+                Description = description
+            };
+
+            project.tasks ??= new List<SubTask>();
+            project.tasks.Add(subTask);
+
+            _uow.Project.Update(project);
+            _uow.Save();
+        }
+
         public void AddProject(string name)
         {
             var project = new Project
@@ -83,6 +103,17 @@ namespace ProjectPlanner.Service
 
             _uow.Project.Remove(dbProject);
             _uow.Save();
+        }
+
+        public List<SubTask> GetTasksForProject(int projectId)
+        {
+            var project = _uow.Project.GetById(projectId);
+
+            if (project == null)
+                throw new InvalidOperationException($"Nie znaleziono projektu o ID {projectId}.");
+
+            // jeśli tasks jest null, zwróć pustą listę
+            return project.tasks?.ToList() ?? new List<SubTask>();
         }
 
         public void DeleteAllProjects()
