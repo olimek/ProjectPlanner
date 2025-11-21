@@ -34,6 +34,11 @@ namespace ProjectPlanner.Data.Repository
             return query.ToList();
         }
 
+        public virtual T? GetById(int id)
+        {
+            return dbSet.Find(id);
+        }
+
         public virtual T? GetFirstOrDefault(Expression<Func<T, bool>> filter)
         {
             IQueryable<T> query = dbSet;
@@ -45,14 +50,16 @@ namespace ProjectPlanner.Data.Repository
         {
             dbSet.Remove(entity);
         }
+
         public virtual int CountAll()
         {
             return dbSet.Count();
         }
+
         public virtual void RemoveAll()
         {
             var entities = GetAll();
-            if (entities is not null) 
+            if (entities is not null)
                 RemoveList(entities);
         }
 

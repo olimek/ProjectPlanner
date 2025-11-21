@@ -1,4 +1,5 @@
-﻿using ProjectPlanner.Data.UnitOfWork;
+﻿using System;
+using ProjectPlanner.Data.UnitOfWork;
 using ProjectPlanner.Model;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace ProjectPlanner.Service
             _uow = unitOfWork;
         }
 
+        // Overload group: keep both overloads adjacent
         public void AddTaskToProject(int projectId, string taskName, string? description = null)
         {
             var project = _uow.Project.GetById(projectId);
@@ -24,24 +26,13 @@ namespace ProjectPlanner.Service
             var subTask = new SubTask
             {
                 Name = taskName,
-                Description = description
+                Description = description ?? string.Empty
             };
 
-            project.tasks ??= new List<SubTask>();
-            project.tasks.Add(subTask);
+            project.Tasks ??= new List<SubTask>();
+            project.Tasks.Add(subTask);
 
             _uow.Project.Update(project);
-            _uow.Save();
-        }
-
-        public void AddProject(string name)
-        {
-            var project = new Project
-            {
-                Name = name,
-            };
-
-            _uow.Project.Add(project);
             _uow.Save();
         }
 
@@ -60,22 +51,29 @@ namespace ProjectPlanner.Service
                 Name = name,
                 Description = description ?? string.Empty,
                 ProjectId = dbProject.Id
-                // Do NOT set Project = dbProject to avoid accidental re-insert/attach problems
             };
 
             _uow.Task.Add(task);
             _uow.Save();
 
             // Ensure caller's in-memory Project.Tasks is updated without duplications
-            if (project.Tasks == null)
-            {
-                project.Tasks = new List<SubTask>();
-            }
+            project.Tasks ??= new List<SubTask>();
 
             if (!project.Tasks.Any(t => t.Id == task.Id))
             {
                 project.Tasks.Add(task);
             }
+        }
+
+        public void AddProject(string name)
+        {
+            var project = new Project
+            {
+                Name = name,
+            };
+
+            _uow.Project.Add(project);
+            _uow.Save();
         }
 
         public void DeleteTask(SubTask task)
@@ -113,7 +111,7 @@ namespace ProjectPlanner.Service
                 throw new InvalidOperationException($"Nie znaleziono projektu o ID {projectId}.");
 
             // jeśli tasks jest null, zwróć pustą listę
-            return project.tasks?.ToList() ?? new List<SubTask>();
+            return project.Tasks?.ToList() ?? new List<SubTask>();
         }
 
         public void DeleteAllProjects()

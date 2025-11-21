@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectPlanner.Data.Contexts;
 using ProjectPlanner.Data.UnitOfWork;
@@ -9,6 +10,9 @@ namespace ProjectPlanner
 {
     public static class MauiProgram
     {
+        // Expose the built service provider so other code can access IServiceProvider via MauiProgram.Services
+        public static IServiceProvider? Services { get; private set; }
+
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
@@ -28,6 +32,8 @@ namespace ProjectPlanner
             builder.Services.AddTransient<ProjectDetailsPage>();
             builder.Services.AddScoped<IProjectService, ProjectService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            // perform migrations using a temporary provider scope
             using (var scope = builder.Services.BuildServiceProvider().CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<ProjectContext>();
@@ -41,7 +47,13 @@ namespace ProjectPlanner
                     System.Diagnostics.Debug.WriteLine($"Database initialization error: {ex.Message}");
                 }
             }
-            return builder.Build();
+
+            var app = builder.Build();
+
+            // assign the built service provider so callers can access DI container: MauiProgram.Services
+            Services = app.Services;
+
+            return app;
         }
     }
 }
