@@ -6,7 +6,6 @@ namespace ProjectPlanner.Data.Contexts
     public class ProjectContext : DbContext
     {
         public DbSet<Project> Projects { get; set; }
-        public DbSet<SubTask> Tasks { get; set; }
 
         public string DbPath { get; }
 

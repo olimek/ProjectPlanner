@@ -9,6 +9,7 @@ namespace ProjectPlanner.Pages
     {
         private readonly IProjectService _projectService;
         private readonly Project _project;
+        public List<SubTask> Tasks { get; set; } = new();
 
         public ProjectPage(Project project, IProjectService projectService)
         {
@@ -43,6 +44,25 @@ namespace ProjectPlanner.Pages
             }
         }
 
+        private void LoadTasks()
+        {
+            Tasks = _projectService.GetTasksForProject(_project.Id);
+            TasksList.ItemsSource = Tasks;
+        }
+
+        private async void addTaskBtn_Clicked(object sender, EventArgs e)
+        {
+            var taskName = await DisplayPromptAsync("Task name", "");
+            if (string.IsNullOrWhiteSpace(taskName)) return;
+
+            var description = await DisplayPromptAsync("Task description", "");
+            if (description is null) description = string.Empty;
+            _projectService.AddTaskToProject(_project.Id, taskName.Trim(), description.Trim());
+            // jeżeli Tasks to ItemsSource
+            TasksList.ItemsSource = null;
+            LoadTasks();
+        }
+
         private async void DelProjectBtn_Clicked(object sender, EventArgs e)
         {
             bool confirm = await DisplayAlert("Potwierdzenie",
@@ -54,7 +74,6 @@ namespace ProjectPlanner.Pages
                 return;
             }
 
-            // Usuń projekt przez serwis
             _projectService.DeleteProject(_project);
 
             // Wracamy do listy projektów

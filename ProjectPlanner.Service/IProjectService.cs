@@ -9,6 +9,10 @@ namespace ProjectPlanner.Service
 
         void DeleteProject(Project project);
 
+        void AddTaskToProject(int projectId, string taskName, string? description = null);
+
+        List<SubTask> GetTasksForProject(int projectId);
+
         void DeleteAllProjects();
 
         List<Project> GetAllProjects();
