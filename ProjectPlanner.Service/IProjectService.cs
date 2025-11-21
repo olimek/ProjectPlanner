@@ -1,4 +1,5 @@
 ﻿using ProjectPlanner.Model;
+using System.Collections.Generic;
 
 namespace ProjectPlanner.Service
 {
@@ -15,5 +16,9 @@ namespace ProjectPlanner.Service
         void DeleteAllProjects();
 
         List<Project> GetAllProjects();
+
+        void AddTaskToProject(Project project, string name, string? description = null);
+
+        void DeleteTask(SubTask task);
     }
 }
