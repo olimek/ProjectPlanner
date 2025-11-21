@@ -1,4 +1,6 @@
-﻿using ProjectPlanner.Model;
+﻿using System;
+using System.Linq;
+using ProjectPlanner.Model;
 using ProjectPlanner.Service;
 
 namespace ProjectPlanner.Pages
@@ -21,6 +23,23 @@ namespace ProjectPlanner.Pages
             if (_project.Tasks != null)
             {
                 TasksList.ItemsSource = _project.Tasks;
+            }
+        }
+
+        private async void AddTaskBtn_Clicked(object sender, EventArgs e)
+        {
+            _projectService.AddTaskToProject(_project, "test_" + _project.Name, "sdfsdthhsfgh");
+
+            // Refresh tasks list from service to ensure we show the DB state (prevents duplicates/inconsistency)
+            var updatedProject = _projectService.GetAllProjects().FirstOrDefault(p => p.Id == _project.Id);
+            if (updatedProject != null)
+            {
+                // reset the ItemsSource to force UI refresh
+                TasksList.ItemsSource = null;
+                TasksList.ItemsSource = updatedProject.Tasks;
+
+                // keep the local project instance in sync
+                _project.Tasks = updatedProject.Tasks;
             }
         }
 
