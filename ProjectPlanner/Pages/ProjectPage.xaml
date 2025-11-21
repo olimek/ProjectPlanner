@@ -6,46 +6,50 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
-            <Grid ColumnDefinitions="*,Auto,Auto" Padding="0,0,0,10">
+            <!-- Changed: added an extra Auto column and some spacing so buttons sit side-by-side on the right -->
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10" Padding="0,0,0,10">
 
                 <Label x:Name="NameLabel"
-               FontAttributes="Bold"
-               FontSize="26"
-               TextColor="{StaticResource TextPrimary}"
-               Grid.Column="0"
-               VerticalOptions="Center"
-               LineBreakMode="TailTruncation" />
+                       FontAttributes="Bold"
+                       FontSize="26"
+                       TextColor="{StaticResource TextPrimary}"
+                       Grid.Column="0"
+                       VerticalOptions="Center"
+                       LineBreakMode="TailTruncation" />
+
                 <Button
-x:Name="addTaskBtn"
-Grid.Column="1"
-BackgroundColor="{StaticResource AccentColor}"
-Clicked="addTaskBtn_Clicked"
-CornerRadius="30"
-FontSize="26"
-HeightRequest="50"
-WidthRequest="50"
-Text="➕"
-TextColor="Black"
-HorizontalOptions="End"
-VerticalOptions="Center"
-Padding="0"
-Margin="0,0,0,0" />
+                    x:Name="AddTaskBtn"
+                    Grid.Column="1"
+                    BackgroundColor="{StaticResource AccentColor}"
+                    Clicked="AddTaskBtn_Clicked"
+                    CornerRadius="30"
+                    FontSize="26"
+                    HeightRequest="50"
+                    WidthRequest="50"
+                    Text="+"
+                    TextColor="Black"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    Padding="0"
+                    Margin="0" />
+
                 <Button
-            x:Name="DelProjectBtn"
-            Grid.Column="2"
-            BackgroundColor="{StaticResource AccentColor}"
-            Clicked="DelProjectBtn_Clicked"
-            CornerRadius="30"
-            FontSize="26"
-            HeightRequest="50"
-            WidthRequest="50"
-            Text="🗑"
-            TextColor="Black"
-            HorizontalOptions="End"
-            VerticalOptions="Center"
-            Padding="0"
-            Margin="0,0,0,0" />
+                    x:Name="DelProjectBtn"
+                    Grid.Column="2"
+                    BackgroundColor="{StaticResource AccentColor}"
+                    Clicked="DelProjectBtn_Clicked"
+                    CornerRadius="30"
+                    FontSize="26"
+                    HeightRequest="50"
+                    WidthRequest="50"
+                    Text="🗑"
+                    TextColor="Black"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"
+                    Padding="0"
+                    Margin="0" />
             </Grid>
+
             <Label x:Name="DescriptionLabel"
                    FontSize="18"
                    TextColor="{StaticResource TextSecondary}" />

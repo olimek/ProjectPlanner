@@ -1,16 +1,23 @@
-﻿using ProjectPlanner.Model;
-using ProjectPlanner.ViewModels;
+﻿using System;
+using ProjectPlanner.Model;
 using ProjectPlanner.Data.UnitOfWork;
 
 namespace ProjectPlanner.Pages
 {
     public partial class ProjectDetailsPage : ContentPage
     {
-        public ProjectDetailsPage(Project project)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly Project _project;
+
+        public ProjectDetailsPage(Project project, IUnitOfWork unitOfWork)
         {
             InitializeComponent();
-            var unitOfWork = MauiProgram.Services.GetService<IUnitOfWork>(); // jeśli używasz DI
-            BindingContext = new ProjectDetailsViewModel(project, unitOfWork);
+
+            _project = project ?? throw new ArgumentNullException(nameof(project));
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+
+            // TODO: użyj _unitOfWork do załadowania/zapisania danych lub przypisz BindingContext
+            // BindingContext = new ProjectDetailsViewModel(_project, _unitOfWork);
         }
 
         private async void OnSubtaskSelected(object sender, SelectionChangedEventArgs e)
