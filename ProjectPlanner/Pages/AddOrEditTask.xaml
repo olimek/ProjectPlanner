@@ -5,8 +5,36 @@
              Title="AddOrEditTask">
     <VerticalStackLayout>
         <Label
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center"
-            HorizontalOptions="Center" />
+    Text="Project Name"
+    VerticalOptions="End"
+    HorizontalOptions="Start"
+    Margin="20" />
+        <Entry
+    TextChanged="OnEntryTextChanged_project_name"
+    x:Name="entry_project_name"
+    Placeholder="Enter project name"
+    VerticalOptions="Start"
+    Margin="20" />
+        <Label
+    Text="Task Name"
+    VerticalOptions="End"
+    HorizontalOptions="Start"
+    Margin="20" />
+        <Entry
+    TextChanged="OnEntryTextChanged_task_name"
+    x:Name="entry_task_name"
+    Placeholder="Enter task name"
+    VerticalOptions="Start"
+    Margin="20" />
+        <Label
+    Text="Project Description"
+    VerticalOptions="Center"
+    HorizontalOptions="Start"
+    Margin="20" />
+        <Entry
+    TextChanged="OnEntryTextChanged_task_description"
+    x:Name="entry_task_description"
+    Placeholder="Enter task description"
+    Margin="20" />
     </VerticalStackLayout>
 </ContentPage>
