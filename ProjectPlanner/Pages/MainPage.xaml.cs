@@ -1,5 +1,4 @@
 ﻿using ProjectPlanner.Model;
-using ProjectPlanner.Pages;
 using ProjectPlanner.Service;
 
 namespace ProjectPlanner.Pages;
@@ -32,12 +31,7 @@ public partial class MainPage : ContentPage
 
     private async void AddProjectBtn_Clicked(object sender, EventArgs e)
     {
-        string name = await DisplayPromptAsync("Nowy projekt", "Podaj nazwę projektu:");
-        if (string.IsNullOrWhiteSpace(name))
-            return;
-
-        _projectService.AddProject(name);
-        LoadProjects();
+        await Navigation.PushAsync(new AddOrEditProject(null, _projectService));
     }
 
     private async void ProjectsList_SelectionChanged(object sender, SelectionChangedEventArgs e)

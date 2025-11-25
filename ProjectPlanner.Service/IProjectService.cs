@@ -1,11 +1,12 @@
 ﻿using ProjectPlanner.Model;
-using System.Collections.Generic;
 
 namespace ProjectPlanner.Service
 {
     public interface IProjectService
     {
         void AddProject(string name);
+
+        Project AddProject(string name, string? description, ProjectType? type);
 
         void DeleteProject(Project project);
 

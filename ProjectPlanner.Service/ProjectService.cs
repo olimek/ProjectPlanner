@@ -1,8 +1,5 @@
-﻿using System;
-using ProjectPlanner.Data.UnitOfWork;
+﻿using ProjectPlanner.Data.UnitOfWork;
 using ProjectPlanner.Model;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ProjectPlanner.Service
 {
@@ -15,7 +12,26 @@ namespace ProjectPlanner.Service
             _uow = unitOfWork;
         }
 
-        // Overload group: keep both overloads adjacent
+        public void AddProject(string name)
+        {
+            AddProject(name, null, null);
+        }
+
+        public Project AddProject(string name, string? description, ProjectType? type)
+        {
+            var project = new Project
+            {
+                Name = name ?? string.Empty,
+                Description = description,
+                Type = type ?? default
+            };
+
+            _uow.Project.Add(project);
+            _uow.Save();
+
+            return project;
+        }
+
         public void AddTaskToProject(int projectId, string taskName, string? description = null)
         {
             var project = _uow.Project.GetById(projectId);
@@ -38,11 +54,9 @@ namespace ProjectPlanner.Service
 
         public void AddTaskToProject(Project project, string name, string? description = null)
         {
-            // Ensure we operate on the tracked DB project to avoid EF treating the passed Project as a new entity
             var dbProject = _uow.Project.GetFirstOrDefault(p => p.Id == project.Id);
             if (dbProject == null)
             {
-                // Project not found in DB - nothing to attach the task to
                 return;
             }
 
@@ -56,7 +70,6 @@ namespace ProjectPlanner.Service
             _uow.Task.Add(task);
             _uow.Save();
 
-            // Ensure caller's in-memory Project.Tasks is updated without duplications
             project.Tasks ??= new List<SubTask>();
 
             if (!project.Tasks.Any(t => t.Id == task.Id))
@@ -65,20 +78,8 @@ namespace ProjectPlanner.Service
             }
         }
 
-        public void AddProject(string name)
-        {
-            var project = new Project
-            {
-                Name = name,
-            };
-
-            _uow.Project.Add(project);
-            _uow.Save();
-        }
-
         public void DeleteTask(SubTask task)
         {
-            // Use tracked instance from DB to remove reliably
             var dbTask = _uow.Task.GetFirstOrDefault(t => t.Id == task.Id);
             if (dbTask == null) return;
 
@@ -88,11 +89,9 @@ namespace ProjectPlanner.Service
 
         public void DeleteProject(Project project)
         {
-            // Use tracked DB project to avoid attach/duplicate issues
             var dbProject = _uow.Project.GetFirstOrDefault(p => p.Id == project.Id);
             if (dbProject == null) return;
 
-            // Delete subtasks by ProjectId (safer than relying on navigation collection)
             var tasks = _uow.Task.GetAll()?.Where(t => t.ProjectId == dbProject.Id).ToList();
             if (tasks is not null && tasks.Any())
             {
@@ -110,7 +109,6 @@ namespace ProjectPlanner.Service
             if (project == null)
                 throw new InvalidOperationException($"Nie znaleziono projektu o ID {projectId}.");
 
-            // jeśli tasks jest null, zwróć pustą listę
             return project.Tasks?.ToList() ?? new List<SubTask>();
         }
 
@@ -126,7 +124,6 @@ namespace ProjectPlanner.Service
 
         public void DeleteAllProjects()
         {
-            // Remove all tasks first to avoid orphaned records
             _uow.Task.RemoveAll();
             _uow.Project.RemoveAll();
             _uow.Save();
@@ -143,15 +140,12 @@ namespace ProjectPlanner.Service
             if (project == null)
                 throw new ArgumentNullException(nameof(project));
 
-            // Operate on the tracked DB entity to avoid EF attach/duplicate problems
             var dbProject = _uow.Project.GetFirstOrDefault(p => p.Id == project.Id);
             if (dbProject == null)
                 throw new InvalidOperationException($"Nie znaleziono projektu o ID {project.Id}.");
 
-            // Update scalar properties only — avoid replacing the tracked entity instance
             dbProject.Name = project.Name;
 
-            // Reflection-safe update for optional 'Description' property
             var projectType = typeof(Project);
             var descProp = projectType.GetProperty("Description");
             if (descProp != null)
@@ -163,7 +157,6 @@ namespace ProjectPlanner.Service
                 }
             }
 
-            // Reflection-safe update for optional 'ProjectType' property
             var typeProp = projectType.GetProperty("ProjectType");
             if (typeProp != null)
             {
@@ -186,7 +179,6 @@ namespace ProjectPlanner.Service
 
             dbProject.Name = name;
 
-            // If Description exists on the model, update it when provided
             var projectTypeRef = typeof(Project);
             var descProp = projectTypeRef.GetProperty("Description");
             if (descProp != null && description is not null)
@@ -194,7 +186,6 @@ namespace ProjectPlanner.Service
                 descProp.SetValue(dbProject, description);
             }
 
-            // If ProjectType exists on the model, update it when provided
             var typeProp = projectTypeRef.GetProperty("ProjectType");
             if (typeProp != null && projectType is not null)
             {
