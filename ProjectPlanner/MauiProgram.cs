@@ -1,10 +1,9 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectPlanner.Data.Contexts;
 using ProjectPlanner.Data.UnitOfWork;
-using ProjectPlanner.Service;
 using ProjectPlanner.Pages;
+using ProjectPlanner.Service;
 
 namespace ProjectPlanner
 {

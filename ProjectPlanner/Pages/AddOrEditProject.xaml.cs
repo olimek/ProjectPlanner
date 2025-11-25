@@ -1,9 +1,5 @@
 ﻿using ProjectPlanner.Model;
 using ProjectPlanner.Service;
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Xml;
 
 namespace ProjectPlanner.Pages;
 
@@ -20,8 +16,6 @@ public partial class AddOrEditProject : ContentPage
     public AddOrEditProject(Project? project, IProjectService? projectService)
     {
         InitializeComponent();
-
-        // Provide a default Project if none was supplied.
         _project = project ?? new Project();
         _projectService = projectService;
 
@@ -32,7 +26,6 @@ public partial class AddOrEditProject : ContentPage
 
         picker.ItemsSource = typeNames;
 
-        // Safely set entry texts (avoid null refs).
         entry_project_name.Text = _project.Name ?? string.Empty;
         entry_project_description.Text = _project.Description ?? string.Empty;
 
@@ -42,19 +35,70 @@ public partial class AddOrEditProject : ContentPage
     }
 
     private void OnEntryTextChanged_project_name(object sender, EventArgs e)
-    { }
+    {
+        var name = entry_project_name.Text ?? string.Empty;
+        _project.Name = name;
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return;
+        }
+
+        if (_project.Id == 0)
+        {
+            var created = _projectService?.AddProject(name.Trim(), _project.Description, _project.Type);
+            if (created != null)
+            {
+                _project.Id = created.Id;
+            }
+        }
+        else
+        {
+            _projectService?.UpdateProject(_project.Id, _project.Name, description: _project.Description, projectType: _project.Type.ToString());
+        }
+    }
 
     private void OnEntryTextChanged_project_description(object sender, EventArgs e)
-    { }
+    {
+        var description = entry_project_description.Text ?? string.Empty;
+        _project.Description = description;
+
+        if (_project.Id != 0)
+        {
+            _projectService?.UpdateProject(_project.Id, _project.Name, description: _project.Description, projectType: _project.Type.ToString());
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(_project.Name))
+        {
+            var created = _projectService?.AddProject(_project.Name, _project.Description, _project.Type);
+            if (created != null)
+            {
+                _project.Id = created.Id;
+            }
+        }
+    }
 
     private void OnPickerSelectedIndexChanged(object sender, EventArgs e)
     {
-        if (picker.SelectedIndex != -1)
+        if (picker.SelectedIndex == -1) return;
+
+        string selectedItem = picker.Items[picker.SelectedIndex];
+        _project.Type = Enum.Parse<ProjectType>(selectedItem);
+
+        if (_project.Id != 0)
         {
-            string selectedItem = picker.Items[picker.SelectedIndex];
-            _project.Type = Enum.Parse<ProjectType>(selectedItem);
-            // Call UpdateProject only if a service is available.
-            _projectService?.UpdateProject(_project.Id, _project.Name, projectType: _project.Type.ToString());
+            _projectService?.UpdateProject(_project.Id, _project.Name, description: _project.Description, projectType: _project.Type.ToString());
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(_project.Name))
+        {
+            var created = _projectService?.AddProject(_project.Name, _project.Description, _project.Type);
+            if (created != null)
+            {
+                _project.Id = created.Id;
+            }
         }
     }
 }
