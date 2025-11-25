@@ -65,7 +65,7 @@ namespace ProjectPlanner.Pages
 
         private async void EditBtn_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new AddOrEditProject());
+            await Navigation.PushAsync(new AddOrEditProject(_project, _projectService));
         }
 
         private async void DelProjectBtn_Clicked(object sender, EventArgs e)
