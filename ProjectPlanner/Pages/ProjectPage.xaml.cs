@@ -8,7 +8,7 @@ namespace ProjectPlanner.Pages
     public partial class ProjectPage : ContentPage
     {
         private readonly IProjectService _projectService;
-        private readonly Project _project;
+        private Project _project;
         public List<SubTask> Tasks { get; set; } = new();
 
         public ProjectPage(Project project, IProjectService projectService)
@@ -16,15 +16,13 @@ namespace ProjectPlanner.Pages
             InitializeComponent();
             _project = project;
             _projectService = projectService;
+            ReloadAll();
+        }
 
-            NameLabel.Text = _project.Name;
-            DescriptionLabel.Text = _project.Description;
-            TypeLabel.Text = _project.Type.ToString();
-
-            if (_project.Tasks != null)
-            {
-                TasksList.ItemsSource = _project.Tasks;
-            }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            ReloadAll();
         }
 
         private async void AddTaskBtn_Clicked(object sender, EventArgs e)
@@ -41,13 +39,24 @@ namespace ProjectPlanner.Pages
 
                 // keep the local project instance in sync
                 _project.Tasks = updatedProject.Tasks;
+                ReloadAll();
             }
         }
 
-        private void LoadTasks()
+        private void ReloadAll()
         {
+            var projectasdasd = _projectService.GetProjectByID(_project.Id);
             Tasks = _projectService.GetTasksForProject(_project.Id);
             TasksList.ItemsSource = Tasks;
+
+            NameLabel.Text = projectasdasd.Name;
+            DescriptionLabel.Text = projectasdasd.Description;
+            TypeLabel.Text = projectasdasd.Type.ToString();
+
+            if (projectasdasd.Tasks != null)
+            {
+                TasksList.ItemsSource = projectasdasd.Tasks;
+            }
         }
 
         private async void addTaskBtn_Clicked(object sender, EventArgs e)
@@ -60,7 +69,7 @@ namespace ProjectPlanner.Pages
             _projectService.AddTaskToProject(_project.Id, taskName.Trim(), description.Trim());
             // jeżeli Tasks to ItemsSource
             TasksList.ItemsSource = null;
-            LoadTasks();
+            ReloadAll();
         }
 
         private async void EditBtn_Clicked(object sender, EventArgs e)

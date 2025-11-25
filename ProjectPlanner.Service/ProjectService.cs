@@ -114,6 +114,16 @@ namespace ProjectPlanner.Service
             return project.Tasks?.ToList() ?? new List<SubTask>();
         }
 
+        public Project GetProjectByID(int projectId)
+        {
+            var project = _uow.Project.GetById(projectId);
+
+            if (project == null)
+                throw new InvalidOperationException($"Nie znaleziono projektu o ID {projectId}.");
+
+            return project;
+        }
+
         public void DeleteAllProjects()
         {
             // Remove all tasks first to avoid orphaned records
@@ -126,6 +136,73 @@ namespace ProjectPlanner.Service
         {
             var projects = _uow.Project.GetAll() ?? Enumerable.Empty<Project>();
             return projects.ToList();
+        }
+
+        public void UpdateProject(Project project)
+        {
+            if (project == null)
+                throw new ArgumentNullException(nameof(project));
+
+            // Operate on the tracked DB entity to avoid EF attach/duplicate problems
+            var dbProject = _uow.Project.GetFirstOrDefault(p => p.Id == project.Id);
+            if (dbProject == null)
+                throw new InvalidOperationException($"Nie znaleziono projektu o ID {project.Id}.");
+
+            // Update scalar properties only — avoid replacing the tracked entity instance
+            dbProject.Name = project.Name;
+
+            // Reflection-safe update for optional 'Description' property
+            var projectType = typeof(Project);
+            var descProp = projectType.GetProperty("Description");
+            if (descProp != null)
+            {
+                var incomingDesc = descProp.GetValue(project) as string;
+                if (incomingDesc != null)
+                {
+                    descProp.SetValue(dbProject, incomingDesc);
+                }
+            }
+
+            // Reflection-safe update for optional 'ProjectType' property
+            var typeProp = projectType.GetProperty("ProjectType");
+            if (typeProp != null)
+            {
+                var incomingType = typeProp.GetValue(project) as string;
+                if (incomingType != null)
+                {
+                    typeProp.SetValue(dbProject, incomingType);
+                }
+            }
+
+            _uow.Project.Update(dbProject);
+            _uow.Save();
+        }
+
+        public void UpdateProject(int projectId, string name, string? description = null, string? projectType = null)
+        {
+            var dbProject = _uow.Project.GetById(projectId);
+            if (dbProject == null)
+                throw new InvalidOperationException($"Nie znaleziono projektu o ID {projectId}.");
+
+            dbProject.Name = name;
+
+            // If Description exists on the model, update it when provided
+            var projectTypeRef = typeof(Project);
+            var descProp = projectTypeRef.GetProperty("Description");
+            if (descProp != null && description is not null)
+            {
+                descProp.SetValue(dbProject, description);
+            }
+
+            // If ProjectType exists on the model, update it when provided
+            var typeProp = projectTypeRef.GetProperty("ProjectType");
+            if (typeProp != null && projectType is not null)
+            {
+                typeProp.SetValue(dbProject, projectType);
+            }
+
+            _uow.Project.Update(dbProject);
+            _uow.Save();
         }
     }
 }
