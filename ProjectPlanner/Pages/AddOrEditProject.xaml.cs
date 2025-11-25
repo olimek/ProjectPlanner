@@ -30,4 +30,20 @@ public partial class AddOrEditProject : ContentPage
         var index = typeNames.IndexOf(selectedName);
         picker.SelectedIndex = index;
     }
+
+    private void OnEntryTextChanged_project_name(object sender, EventArgs e)
+    { }
+
+    private void OnEntryTextChanged_project_description(object sender, EventArgs e)
+    { }
+
+    private void OnPickerSelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (picker.SelectedIndex != -1)
+        {
+            string selectedItem = picker.Items[picker.SelectedIndex];
+            _project.Type = Enum.Parse<ProjectType>(selectedItem);
+            _projectService.UpdateProject(_project.Id, _project.Name, projectType: _project.Type.ToString());
+        }
+    }
 }

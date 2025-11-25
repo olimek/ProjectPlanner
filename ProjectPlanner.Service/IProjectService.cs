@@ -20,5 +20,11 @@ namespace ProjectPlanner.Service
         void AddTaskToProject(Project project, string name, string? description = null);
 
         void DeleteTask(SubTask task);
+
+        void UpdateProject(int projectId, string name, string? description = null, string? projectType = null);
+
+        void UpdateProject(Project project);
+
+        public Project GetProjectByID(int projectId);
     }
 }

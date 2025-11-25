@@ -10,24 +10,27 @@
             HorizontalOptions="Start"
             Margin="20" />
         <Entry
+            TextChanged="OnEntryTextChanged_project_name"
             x:Name="entry_project_name"
             Placeholder="Enter project name"
             VerticalOptions="Start"
             Margin="20" />
         <Label
-    Text="Project Description"
-    VerticalOptions="Center"
-    HorizontalOptions="Start"
+            Text="Project Description"
+            VerticalOptions="Center"
+            HorizontalOptions="Start"
             Margin="20" />
         <Entry
-x:Name="entry_project_description"
-    Placeholder="Enter project description"
-    Margin="20" />
+            TextChanged="OnEntryTextChanged_project_description"
+            x:Name="entry_project_description"
+            Placeholder="Enter project description"
+            Margin="20" />
 
         <Picker x:Name="picker"
-        Title="Select project type"
-                Margin="20">
 
+                SelectedIndexChanged="OnPickerSelectedIndexChanged"
+                Title="Select project type"
+                Margin="20">
         </Picker>
     </VerticalStackLayout>
 </ContentPage>
