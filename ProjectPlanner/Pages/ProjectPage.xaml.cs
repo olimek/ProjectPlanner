@@ -63,6 +63,11 @@ namespace ProjectPlanner.Pages
             LoadTasks();
         }
 
+        private async void EditBtn_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new AddOrEditProject());
+        }
+
         private async void DelProjectBtn_Clicked(object sender, EventArgs e)
         {
             bool confirm = await DisplayAlert("Potwierdzenie",
