@@ -5,36 +5,29 @@
              Title="AddOrEditProject">
     <VerticalStackLayout>
         <Label
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center"
-            HorizontalOptions="Center" />
+            Text="Project Name"
+            VerticalOptions="End"
+            HorizontalOptions="Start"
+            Margin="20" />
         <Entry
+            x:Name="entry_project_name"
             Placeholder="Enter project name"
+            VerticalOptions="Start"
             Margin="20" />
         <Label
-    Text="Welcome to .NET MAUI!"
+    Text="Project Description"
     VerticalOptions="Center"
-    HorizontalOptions="Center" />
+    HorizontalOptions="Start"
+            Margin="20" />
         <Entry
-    Placeholder="Enter project name"
+x:Name="entry_project_description"
+    Placeholder="Enter project description"
     Margin="20" />
-        <Label
-    Text="Welcome to .NET MAUI!"
-    VerticalOptions="Center"
-    HorizontalOptions="Center" />
+
         <Picker x:Name="picker"
-        Title="Select a monkey">
-            <Picker.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
-                    <x:String>Baboon</x:String>
-                    <x:String>Capuchin Monkey</x:String>
-                    <x:String>Blue Monkey</x:String>
-                    <x:String>Squirrel Monkey</x:String>
-                    <x:String>Golden Lion Tamarin</x:String>
-                    <x:String>Howler Monkey</x:String>
-                    <x:String>Japanese Macaque</x:String>
-                </x:Array>
-            </Picker.ItemsSource>
+        Title="Select project type"
+                Margin="20">
+
         </Picker>
     </VerticalStackLayout>
 </ContentPage>
