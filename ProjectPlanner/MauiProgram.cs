@@ -19,8 +19,8 @@ namespace ProjectPlanner
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
                 {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("ChakraPetch-Bold.ttf", "HeaderFont");
+                    fonts.AddFont("ChakraPetch-Regular.ttf", "TechFont");
                 });
 
 #if DEBUG
@@ -31,7 +31,6 @@ namespace ProjectPlanner
             builder.Services.AddScoped<IProjectService, ProjectService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            // perform migrations using a temporary provider scope
             using (var scope = builder.Services.BuildServiceProvider().CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<ProjectContext>();
@@ -48,7 +47,6 @@ namespace ProjectPlanner
 
             var app = builder.Build();
 
-            // assign the built service provider so callers can access DI container: MauiProgram.Services
             Services = app.Services;
 
             return app;
