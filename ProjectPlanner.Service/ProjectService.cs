@@ -195,5 +195,52 @@ namespace ProjectPlanner.Service
             _uow.Project.Update(dbProject);
             _uow.Save();
         }
+
+        public void UpdateTask(SubTask task)
+        {
+            if (task == null)
+                throw new ArgumentNullException(nameof(task));
+
+            var dbTask = _uow.Task.GetFirstOrDefault(t => t.Id == task.Id);
+            if (dbTask == null)
+                throw new InvalidOperationException($"Nie znaleziono zadania o ID {task.Id}.");
+
+            dbTask.Name = task.Name;
+
+            if (task.Description is not null)
+            {
+                dbTask.Description = task.Description;
+            }
+
+            if (task.ProjectId != default && task.ProjectId != dbTask.ProjectId)
+            {
+                dbTask.ProjectId = task.ProjectId;
+            }
+
+            _uow.Task.Update(dbTask);
+            _uow.Save();
+        }
+
+        public void UpdateTask(int taskId, string name, string? description = null, int? projectId = null)
+        {
+            var dbTask = _uow.Task.GetById(taskId);
+            if (dbTask == null)
+                throw new InvalidOperationException($"Nie znaleziono zadania o ID {taskId}.");
+
+            dbTask.Name = name;
+
+            if (description is not null)
+            {
+                dbTask.Description = description;
+            }
+
+            if (projectId is not null)
+            {
+                dbTask.ProjectId = projectId.Value;
+            }
+
+            _uow.Task.Update(dbTask);
+            _uow.Save();
+        }
     }
 }

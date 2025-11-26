@@ -12,13 +12,15 @@ namespace ProjectPlanner.Service
 
         void AddTaskToProject(int projectId, string taskName, string? description = null);
 
+        void AddTaskToProject(Project project, string name, string? description = null);
+
         List<SubTask> GetTasksForProject(int projectId);
+
+        void UpdateTask(SubTask task);
 
         void DeleteAllProjects();
 
         List<Project> GetAllProjects();
-
-        void AddTaskToProject(Project project, string name, string? description = null);
 
         void DeleteTask(SubTask task);
 
