@@ -25,15 +25,7 @@ namespace ProjectPlanner.Pages
 
         private async void AddTaskBtn_Clicked(object sender, EventArgs e)
         {
-            _projectService.AddTaskToProject(_project, "test_" + _project.Name, "sdfsdthhsfgh");
-            var updatedProject = _projectService.GetAllProjects().FirstOrDefault(p => p.Id == _project.Id);
-            if (updatedProject != null)
-            {
-                TasksList.ItemsSource = null;
-                TasksList.ItemsSource = updatedProject.Tasks;
-
-                ReloadAll();
-            }
+            await Navigation.PushAsync(new AddOrEditTask(_project, _projectService));
         }
 
         private void ReloadAll()
@@ -50,17 +42,6 @@ namespace ProjectPlanner.Pages
             {
                 TasksList.ItemsSource = projectasdasd.Tasks;
             }
-        }
-
-        private async void addTaskBtn_Clicked(object sender, EventArgs e)
-        {
-            var taskName = await DisplayPromptAsync("Task name", "");
-            if (string.IsNullOrWhiteSpace(taskName)) return;
-
-            var description = await DisplayPromptAsync("Task description", "");
-            if (description is null) description = string.Empty;
-            _projectService.AddTaskToProject(_project.Id, taskName.Trim(), description.Trim());
-            ReloadAll();
         }
 
         private async void EditBtn_Clicked(object sender, EventArgs e)
@@ -81,6 +62,23 @@ namespace ProjectPlanner.Pages
 
             _projectService.DeleteProject(_project);
             await Navigation.PopAsync();
+        }
+
+        private async void OnCollectionViewSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selected = e.CurrentSelection.FirstOrDefault() as SubTask;
+            if (selected == null)
+            {
+                return;
+            }
+            var task = _projectService.GetTasksForProject(_project.Id).FirstOrDefault(p => p.Id == selected.Id) ?? selected;
+
+            await Navigation.PushAsync(new SubtaskDetailsPage(task, _projectService));
+
+            if (sender is CollectionView cv)
+            {
+                cv.SelectedItem = null;
+            }
         }
     }
 }

@@ -74,7 +74,9 @@
 
             <Label Text="Zadania:" FontAttributes="Bold" FontSize="20" Margin="0,20,0,10" />
 
-            <CollectionView x:Name="TasksList">
+            <CollectionView x:Name="TasksList"
+                             SelectionMode="Single"
+                SelectionChanged="OnCollectionViewSelectionChanged">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <HorizontalStackLayout Spacing="10">
