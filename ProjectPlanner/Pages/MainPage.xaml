@@ -40,10 +40,12 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="20"
+                                FontFamily="HeaderFont"
                                 Text="{Binding Name}"
                                 TextColor="{StaticResource TextPrimary}" />
                             <Label
                                 FontSize="14"
+                                FontFamily="TechFont"
                                 Text="{Binding Description}"
                                 TextColor="{StaticResource TextSecondary}" />
                             <ProgressBar
