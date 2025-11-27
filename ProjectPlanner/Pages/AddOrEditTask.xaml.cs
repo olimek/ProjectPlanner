@@ -1,4 +1,4 @@
-using ProjectPlanner.Model;
+﻿using ProjectPlanner.Model;
 using ProjectPlanner.Service;
 
 namespace ProjectPlanner.Pages;
@@ -7,10 +7,8 @@ public partial class AddOrEditTask : ContentPage
 {
     private readonly IProjectService _projectService;
     private readonly Project _project;
-    private readonly int? _taskId;
-    public int? TaskId => _taskId;
-
     private SubTask? _currentTask;
+    private readonly int? _taskId;
 
     public AddOrEditTask(Project project, IProjectService projectService, int? taskId = null)
     {
@@ -23,84 +21,64 @@ public partial class AddOrEditTask : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        LoadData();
+    }
 
-        var tasks = _projectService.GetTasksForProject(_project.Id) ?? Enumerable.Empty<SubTask>();
-
+    private void LoadData()
+    {
+        lbl_project_name.Text = _project.Name?.ToUpper() ?? "NIEZNANY PROJEKT";
         if (_taskId.HasValue)
         {
+            var tasks = _projectService.GetTasksForProject(_project.Id);
             _currentTask = tasks.FirstOrDefault(t => t.Id == _taskId.Value);
-            if (_currentTask == null)
-            {
-                _currentTask = new SubTask
-                {
-                    ProjectId = _project.Id,
-                    Name = string.Empty,
-                    Description = string.Empty
-                };
-            }
+        }
+        if (_currentTask != null)
+        {
+            entry_task_name.Text = _currentTask.Name;
+            entry_task_description.Text = _currentTask.Description;
+            Title = "EDYCJA ZADANIA";
         }
         else
         {
-            _currentTask = new SubTask
-            {
-                ProjectId = _project.Id,
-                Name = string.Empty,
-                Description = string.Empty
-            };
+            Title = "NOWE ZADANIE";
         }
-
-        entry_project_name.Text = _project.Name ?? string.Empty;
-        entry_task_name.Text = _currentTask.Name ?? string.Empty;
-        entry_task_description.Text = _currentTask.Description ?? string.Empty;
     }
 
-    private void OnEntryTextChanged_project_name(object sender, TextChangedEventArgs e)
+    private async void OnSaveClicked(object sender, EventArgs e)
     {
-    }
+        var nameInput = entry_task_name.Text?.Trim();
+        var descInput = entry_task_description.Text?.Trim();
 
-    private void OnEntryTextChanged_task_name(object sender, TextChangedEventArgs e)
-    {
-        if (_currentTask == null)
+        if (string.IsNullOrWhiteSpace(nameInput))
         {
+            await DisplayAlert("Błąd", "Nazwa zadania jest wymagana.", "OK");
             return;
         }
-
-        _currentTask.Name = e.NewTextValue ?? string.Empty;
-
-        PersistTaskChange();
-    }
-
-    private void OnEntryTextChanged_task_description(object sender, TextChangedEventArgs e)
-    {
-        if (_currentTask == null)
+        if (_currentTask != null)
         {
-            return;
-        }
+            _currentTask.Name = nameInput;
+            _currentTask.Description = descInput;
 
-        _currentTask.Description = e.NewTextValue ?? string.Empty;
-
-        PersistTaskChange();
-    }
-
-    private void PersistTaskChange()
-    {
-        if (_currentTask == null)
-        {
-            return;
-        }
-
-        if (_currentTask.Id > 0)
-        {
             _projectService.UpdateTask(_currentTask);
         }
         else
         {
-            _projectService.AddTaskToProject(_project, _currentTask.Name, _currentTask.Description);
-            var newTask = _projectService.GetTasksForProject(_project.Id).FirstOrDefault(t => t.Name == _currentTask.Name);
-            if (newTask != null)
+            var newTask = new SubTask
             {
-                _currentTask = newTask;
-            }
+                ProjectId = _project.Id,
+                Name = nameInput,
+                Description = descInput,
+                //IsDone = false
+            };
+
+            _projectService.AddTaskToProject(_project, newTask.Name, newTask.Description);
         }
+
+        await Shell.Current.GoToAsync("..");
+    }
+
+    private async void OnCancelClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("..");
     }
 }

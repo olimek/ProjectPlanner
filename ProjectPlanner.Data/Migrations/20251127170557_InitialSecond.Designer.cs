@@ -10,8 +10,8 @@ using ProjectPlanner.Data.Contexts;
 namespace ProjectPlanner.Data.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    [Migration("20251109173709_AddTaskDescription")]
-    partial class AddTaskDescription
+    [Migration("20251127170557_InitialSecond")]
+    partial class InitialSecond
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,7 +46,7 @@ namespace ProjectPlanner.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Decription")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -66,14 +66,16 @@ namespace ProjectPlanner.Data.Migrations
 
             modelBuilder.Entity("ProjectPlanner.Model.SubTask", b =>
                 {
-                    b.HasOne("ProjectPlanner.Model.Project", null)
-                        .WithMany("tasks")
+                    b.HasOne("ProjectPlanner.Model.Project", "Project")
+                        .WithMany("Tasks")
                         .HasForeignKey("ProjectId");
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("ProjectPlanner.Model.Project", b =>
                 {
-                    b.Navigation("tasks");
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }
