@@ -44,13 +44,11 @@ namespace ProjectPlanner.Service
             var subTask = new SubTask
             {
                 Name = taskName,
-                Description = description ?? string.Empty
+                Description = description ?? string.Empty,
+                IsDone = false,
+                ProjectId = projectId
             };
-
-            project.Tasks ??= new List<SubTask>();
-            project.Tasks.Add(subTask);
-
-            _uow.Project.Update(project);
+            _uow.Task.Add(subTask);
             _uow.Save();
         }
 
@@ -66,18 +64,12 @@ namespace ProjectPlanner.Service
             {
                 Name = name,
                 Description = description ?? string.Empty,
-                ProjectId = dbProject.Id
+                ProjectId = dbProject.Id,
+                IsDone = false
             };
 
             _uow.Task.Add(task);
             _uow.Save();
-
-            project.Tasks ??= new List<SubTask>();
-
-            if (!project.Tasks.Any(t => t.Id == task.Id))
-            {
-                project.Tasks.Add(task);
-            }
         }
 
         public void DeleteTask(SubTask task)
@@ -106,12 +98,8 @@ namespace ProjectPlanner.Service
 
         public List<SubTask> GetTasksForProject(int projectId)
         {
-            var project = _uow.Project.GetById(projectId);
-
-            if (project == null)
-                throw new InvalidOperationException($"Nie znaleziono projektu o ID {projectId}.");
-
-            return project.Tasks?.ToList() ?? new List<SubTask>();
+            var tasks = _uow.Task.GetAll()?.Where(t => t.ProjectId == projectId).ToList();
+            return tasks ?? new List<SubTask>();
         }
 
         public Project GetProjectByID(int projectId)
@@ -147,27 +135,8 @@ namespace ProjectPlanner.Service
                 throw new InvalidOperationException($"Nie znaleziono projektu o ID {project.Id}.");
 
             dbProject.Name = project.Name;
-
-            var projectType = typeof(Project);
-            var descProp = projectType.GetProperty("Description");
-            if (descProp != null)
-            {
-                var incomingDesc = descProp.GetValue(project) as string;
-                if (incomingDesc != null)
-                {
-                    descProp.SetValue(dbProject, incomingDesc);
-                }
-            }
-
-            var typeProp = projectType.GetProperty("ProjectType");
-            if (typeProp != null)
-            {
-                var incomingType = typeProp.GetValue(project) as string;
-                if (incomingType != null)
-                {
-                    typeProp.SetValue(dbProject, incomingType);
-                }
-            }
+            dbProject.Description = project.Description;
+            dbProject.Type = project.Type;
 
             _uow.Project.Update(dbProject);
             _uow.Save();
@@ -181,18 +150,11 @@ namespace ProjectPlanner.Service
 
             dbProject.Name = name;
 
-            var projectTypeRef = typeof(Project);
-            var descProp = projectTypeRef.GetProperty("Description");
-            if (descProp != null && description is not null)
-            {
-                descProp.SetValue(dbProject, description);
-            }
+            if (description != null)
+                dbProject.Description = description;
 
-            var typeProp = projectTypeRef.GetProperty("ProjectType");
-            if (typeProp != null && projectType is not null)
-            {
-                typeProp.SetValue(dbProject, projectType);
-            }
+            if (projectType != null && Enum.TryParse<ProjectType>(projectType, out var parsedType))
+                dbProject.Type = parsedType;
 
             _uow.Project.Update(dbProject);
             _uow.Save();
@@ -208,22 +170,15 @@ namespace ProjectPlanner.Service
                 throw new InvalidOperationException($"Nie znaleziono zadania o ID {task.Id}.");
 
             dbTask.Name = task.Name;
-
-            if (task.Description is not null)
-            {
-                dbTask.Description = task.Description;
-            }
-
-            if (task.ProjectId != default && task.ProjectId != dbTask.ProjectId)
-            {
-                dbTask.ProjectId = task.ProjectId;
-            }
+            dbTask.Description = task.Description;
+            dbTask.ProjectId = task.ProjectId;
+            dbTask.IsDone = task.IsDone;
 
             _uow.Task.Update(dbTask);
             _uow.Save();
         }
 
-        public void UpdateTask(int taskId, string name, string? description = null, int? projectId = null)
+        public void UpdateTask(int taskId, string name, string? description = null, int? projectId = null, bool? isDone = null)
         {
             var dbTask = _uow.Task.GetById(taskId);
             if (dbTask == null)
@@ -231,15 +186,14 @@ namespace ProjectPlanner.Service
 
             dbTask.Name = name;
 
-            if (description is not null)
-            {
+            if (description != null)
                 dbTask.Description = description;
-            }
 
-            if (projectId is not null)
-            {
+            if (projectId != null)
                 dbTask.ProjectId = projectId.Value;
-            }
+
+            if (isDone.HasValue)
+                dbTask.IsDone = isDone.Value;
 
             _uow.Task.Update(dbTask);
             _uow.Save();

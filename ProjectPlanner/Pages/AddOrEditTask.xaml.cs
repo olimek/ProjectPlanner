@@ -68,7 +68,7 @@ public partial class AddOrEditTask : ContentPage
                 ProjectId = _project.Id,
                 Name = nameInput,
                 Description = descInput,
-                //IsDone = false
+                IsDone = false
             };
 
             _projectService.AddTaskToProject(_project, newTask.Name, newTask.Description);

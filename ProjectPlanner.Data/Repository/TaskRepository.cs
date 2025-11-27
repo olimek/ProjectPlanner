@@ -20,6 +20,7 @@ namespace ProjectPlanner.Data.Repository
             {
                 objFromDb.Name = entity.Name;
                 objFromDb.Description = entity.Description;
+                objFromDb.IsDone = entity.IsDone;
             }
         }
     }
