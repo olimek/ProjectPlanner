@@ -1,16 +1,14 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectPlanner.Data.Contexts;
 using ProjectPlanner.Data.UnitOfWork;
-using ProjectPlanner.Service;
 using ProjectPlanner.Pages;
+using ProjectPlanner.Service;
 
 namespace ProjectPlanner
 {
     public static class MauiProgram
     {
-        // Expose the built service provider so other code can access IServiceProvider via MauiProgram.Services
         public static IServiceProvider? Services { get; private set; }
 
         public static MauiApp CreateMauiApp()
@@ -20,8 +18,8 @@ namespace ProjectPlanner
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
                 {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("ChakraPetch-Bold.ttf", "HeaderFont");
+                    fonts.AddFont("ChakraPetch-Regular.ttf", "TechFont");
                 });
 
 #if DEBUG
@@ -29,11 +27,9 @@ namespace ProjectPlanner
 #endif
             builder.Services.AddDbContext<ProjectContext>();
             builder.Services.AddTransient<ProjectPage>();
-            builder.Services.AddTransient<ProjectDetailsPage>();
             builder.Services.AddScoped<IProjectService, ProjectService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            // perform migrations using a temporary provider scope
             using (var scope = builder.Services.BuildServiceProvider().CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<ProjectContext>();
@@ -50,7 +46,6 @@ namespace ProjectPlanner
 
             var app = builder.Build();
 
-            // assign the built service provider so callers can access DI container: MauiProgram.Services
             Services = app.Services;
 
             return app;

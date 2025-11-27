@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ProjectPlanner.Pages.AddOrEditProject"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="NEW PROJECT"
+    BackgroundColor="{StaticResource BackgroundDark}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="24">
+
+            <Label
+                Margin="0,0,0,-10"
+                FontFamily="TechFont"
+                FontSize="12"
+                Text="// DATA ENTRY"
+                TextColor="{StaticResource TextSecondary}" />
+
+            <VerticalStackLayout Spacing="8">
+                <Label
+                    FontAttributes="Bold"
+                    FontFamily="HeaderFont"
+                    FontSize="14"
+                    Text="CODE NAME"
+                    TextColor="{StaticResource NeonAccent}" />
+
+                <Border
+                    BackgroundColor="{StaticResource SurfaceDark}"
+                    Stroke="{StaticResource BorderColor}"
+                    StrokeShape="RoundRectangle 4"
+                    StrokeThickness="1">
+                    <Entry
+                        Margin="12"
+                        x:Name="entry_project_name"
+                        FontFamily="TechFont"
+                        FontSize="16"
+                        Placeholder="EG. PC BUILD V1"
+                        PlaceholderColor="{StaticResource TextSecondary}"
+                        TextColor="{StaticResource TextPrimary}" />
+                </Border>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="8">
+                <Label
+                    FontAttributes="Bold"
+                    FontFamily="HeaderFont"
+                    FontSize="14"
+                    Text="CATEGORY"
+                    TextColor="{StaticResource NeonAccent}" />
+
+                <Border
+                    BackgroundColor="{StaticResource SurfaceDark}"
+                    Stroke="{StaticResource BorderColor}"
+                    StrokeShape="RoundRectangle 4"
+                    StrokeThickness="1">
+                    <Picker
+                        x:Name="picker"
+                        Margin="12"
+                        FontFamily="TechFont"
+                        FontSize="16"
+                        TextColor="{StaticResource TextPrimary}"
+                        TitleColor="{StaticResource TextSecondary}" />
+                </Border>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="8">
+                <Label
+                    FontAttributes="Bold"
+                    FontFamily="HeaderFont"
+                    FontSize="14"
+                    Text="TECHNICAL SPECIFICATIONS"
+                    TextColor="{StaticResource NeonAccent}" />
+
+                <Border
+
+                    BackgroundColor="{StaticResource SurfaceDark}"
+
+                    Stroke="{StaticResource BorderColor}"
+                    StrokeShape="RoundRectangle 4"
+                    StrokeThickness="1">
+                    <Editor
+                        Margin="12"
+                        x:Name="entry_project_description"
+                        AutoSize="TextChanges"
+                        FontFamily="TechFont"
+                        FontSize="14"
+                        Placeholder="Enter details, dimensions, required materials..."
+                        PlaceholderColor="{StaticResource TextSecondary}"
+                        TextColor="{StaticResource TextPrimary}"
+                        VerticalOptions="Start" />
+                </Border>
+            </VerticalStackLayout>
+
+            <Grid
+                Margin="0,20,0,0"
+                ColumnDefinitions="*,*"
+                ColumnSpacing="16">
+                <Button
+                    Grid.Column="0"
+                    BackgroundColor="Transparent"
+                    BorderColor="{StaticResource NeonAccent}"
+                    BorderWidth="1"
+                    Clicked="OnCancelClicked"
+                    FontFamily="HeaderFont"
+                    Text="CANCEL"
+                    TextColor="{StaticResource NeonAccent}" />
+
+                <Button
+                    Grid.Column="1"
+                    BackgroundColor="{StaticResource NeonAccent}"
+                    Clicked="OnSaveClicked"
+                    FontAttributes="Bold"
+                    FontFamily="HeaderFont"
+                    Text="SAVE"
+                    TextColor="{StaticResource Black}" />
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ProjectPlanner.Pages.AddOrEditTask"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="TASK"
+    BackgroundColor="{StaticResource BackgroundDark}">
+
+    <Grid RowDefinitions="*, Auto">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="24" Spacing="24">
+
+                <Label
+                    Margin="0,0,0,-10"
+                    FontFamily="TechFont"
+                    FontSize="12"
+                    Text="// TASK CONFIGURATION"
+                    TextColor="{StaticResource TextSecondary}" />
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="HeaderFont"
+                        FontSize="14"
+                        Text="PARENT PROJECT"
+                        TextColor="{StaticResource NeonAccent}" />
+
+                    <Border
+                        BackgroundColor="{StaticResource SurfaceDark}"
+                        Stroke="{StaticResource BorderColor}"
+                        StrokeShape="RoundRectangle 4"
+                        StrokeThickness="1">
+                        <Label
+                            x:Name="lbl_project_name"
+                            Margin="12"
+                            FontFamily="TechFont"
+                            FontSize="16"
+                            TextColor="{StaticResource TextSecondary}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="HeaderFont"
+                        FontSize="14"
+                        Text="TASK NAME"
+                        TextColor="{StaticResource NeonAccent}" />
+
+                    <Border
+                        BackgroundColor="{StaticResource SurfaceDark}"
+                        Stroke="{StaticResource BorderColor}"
+                        StrokeShape="RoundRectangle 4"
+                        StrokeThickness="1">
+                        <Entry
+                            x:Name="entry_task_name"
+                            Margin="12"
+                            FontFamily="TechFont"
+                            FontSize="16"
+                            Placeholder="ENTER NAME..."
+                            PlaceholderColor="{StaticResource TextSecondary}"
+                            TextColor="{StaticResource TextPrimary}" />
+                    </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="HeaderFont"
+                        FontSize="14"
+                        Text="DETAILS"
+                        TextColor="{StaticResource NeonAccent}" />
+
+                    <Border
+                        BackgroundColor="{StaticResource SurfaceDark}"
+                        Stroke="{StaticResource BorderColor}"
+                        StrokeShape="RoundRectangle 4"
+                        StrokeThickness="1">
+                        <Editor
+                            x:Name="entry_task_description"
+                            Margin="12"
+                            AutoSize="TextChanges"
+                            FontFamily="TechFont"
+                            FontSize="14"
+                            Placeholder="MORE DATA..."
+                            PlaceholderColor="{StaticResource TextSecondary}"
+                            TextColor="{StaticResource TextPrimary}"
+                            VerticalOptions="Start" />
+                    </Border>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid
+            Grid.Row="1"
+            Margin="24,10,24,24"
+            ColumnDefinitions="*,*"
+            ColumnSpacing="16">
+            <Button
+                Grid.Column="0"
+                BackgroundColor="Transparent"
+                BorderColor="{StaticResource NeonAccent}"
+                BorderWidth="1"
+                Clicked="OnCancelClicked"
+                FontFamily="HeaderFont"
+                Text="ANULUJ"
+                TextColor="{StaticResource NeonAccent}" />
+
+            <Button
+                Grid.Column="1"
+                BackgroundColor="{StaticResource NeonAccent}"
+                Clicked="OnSaveClicked"
+                FontAttributes="Bold"
+                FontFamily="HeaderFont"
+                Text="ZAPISZ"
+                TextColor="{StaticResource Black}" />
+        </Grid>
+    </Grid>
+</ContentPage>

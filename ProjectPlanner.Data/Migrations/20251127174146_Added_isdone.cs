@@ -5,24 +5,25 @@
 namespace ProjectPlanner.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class RenameTaskDecriptionToDescriptio : Migration
+    public partial class Added_isdone : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Decription",
+            migrationBuilder.AddColumn<bool>(
+                name: "IsDone",
                 table: "Tasks",
-                newName: "Description");
+                type: "INTEGER",
+                nullable: false,
+                defaultValue: false);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Description",
-                table: "Tasks",
-                newName: "Decription");
+            migrationBuilder.DropColumn(
+                name: "IsDone",
+                table: "Tasks");
         }
     }
 }

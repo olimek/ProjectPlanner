@@ -47,6 +47,9 @@ namespace ProjectPlanner.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsDone")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -58,7 +61,7 @@ namespace ProjectPlanner.Data.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("SubTask");
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("ProjectPlanner.Model.SubTask", b =>

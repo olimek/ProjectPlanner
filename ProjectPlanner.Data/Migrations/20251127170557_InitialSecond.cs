@@ -5,7 +5,7 @@
 namespace ProjectPlanner.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class ProjectPlannerMigration : Migration
+    public partial class InitialSecond : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,6 +32,7 @@ namespace ProjectPlanner.Data.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
                     ProjectId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>

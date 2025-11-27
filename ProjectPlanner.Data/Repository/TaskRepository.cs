@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using ProjectPlanner.Data.Contexts;
+﻿using ProjectPlanner.Data.Contexts;
 using ProjectPlanner.Data.Repository.IRepository;
 using ProjectPlanner.Model;
 
@@ -21,6 +20,7 @@ namespace ProjectPlanner.Data.Repository
             {
                 objFromDb.Name = entity.Name;
                 objFromDb.Description = entity.Description;
+                objFromDb.IsDone = entity.IsDone;
             }
         }
     }
