@@ -8,6 +8,7 @@ namespace ProjectPlanner.Pages
         private readonly IProjectService? _projectService;
 
         private SubTask _subtask;
+        private bool _isHandlingToggle = false;
 
         public SubtaskDetailsPage()
         {
@@ -22,12 +23,17 @@ namespace ProjectPlanner.Pages
             _subtask = subtask;
             _projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
 
-            BindingContext = _subtask;
+            //BindingContext = _subtask;
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            ReloadPage();
+        }
+
+        private void ReloadPage()
+        {
             if (_projectService == null || _subtask == null || _subtask.Id == 0) return;
 
             var freshTasks = _projectService.GetTasksForProject((int)_subtask.ProjectId);
@@ -36,16 +42,30 @@ namespace ProjectPlanner.Pages
             if (refreshedTask != null)
             {
                 _subtask = refreshedTask;
+
                 BindingContext = _subtask;
             }
         }
 
         private void OnStatusToggled(object sender, ToggledEventArgs e)
         {
+            if (_isHandlingToggle) return;
+
             if (_projectService == null) return;
 
-            //_subtask.IsDone = e.Value;
-            _projectService.UpdateTask(_subtask);
+            _isHandlingToggle = true;
+
+            try
+            {
+                _subtask.IsDone = e.Value;
+                _projectService.UpdateTask(_subtask);
+
+                ReloadPage();
+            }
+            finally
+            {
+                _isHandlingToggle = false;
+            }
         }
 
         private async void OnEditClicked(object sender, EventArgs e)
