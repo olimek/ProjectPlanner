@@ -10,8 +10,8 @@ using ProjectPlanner.Data.Contexts;
 namespace ProjectPlanner.Data.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    [Migration("20251119125935_RenameTaskDecriptionToDescriptio")]
-    partial class RenameTaskDecriptionToDescriptio
+    [Migration("20251127170557_InitialSecond")]
+    partial class InitialSecond
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

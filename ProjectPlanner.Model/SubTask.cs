@@ -12,6 +12,8 @@ namespace ProjectPlanner.Model
 
         public string Description { get; set; } = string.Empty;
 
+        public bool IsDone { get; set; }
+
         // FK & navigation
         public int? ProjectId { get; set; }
 

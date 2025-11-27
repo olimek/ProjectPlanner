@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ProjectPlanner.Data.Contexts;
 using ProjectPlanner.Data.Repository.IRepository;
 using ProjectPlanner.Model;
