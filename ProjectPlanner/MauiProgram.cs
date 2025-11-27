@@ -9,7 +9,6 @@ namespace ProjectPlanner
 {
     public static class MauiProgram
     {
-        // Expose the built service provider so other code can access IServiceProvider via MauiProgram.Services
         public static IServiceProvider? Services { get; private set; }
 
         public static MauiApp CreateMauiApp()
