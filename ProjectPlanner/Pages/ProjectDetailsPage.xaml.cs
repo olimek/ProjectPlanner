@@ -30,17 +30,17 @@ namespace ProjectPlanner.Pages
 
         private void ReloadAll()
         {
-            var projectasdasd = _projectService.GetProjectByID(_project.Id);
+            var project = _projectService.GetProjectByID(_project.Id);
             Tasks = _projectService.GetTasksForProject(_project.Id);
             TasksList.ItemsSource = Tasks;
 
-            NameLabel.Text = projectasdasd.Name;
-            DescriptionLabel.Text = projectasdasd.Description;
-            TypeLabel.Text = projectasdasd.Type.ToString();
+            NameLabel.Text = $"Project name: {System.Environment.NewLine} {project.Name}";
+            DescriptionLabel.Text = $"Description: {System.Environment.NewLine} {project.Description}";
+            TypeLabel.Text = $"Project type: {System.Environment.NewLine} {project.Type.ToString()}";
 
-            if (projectasdasd.Tasks != null)
+            if (project.Tasks != null)
             {
-                TasksList.ItemsSource = projectasdasd.Tasks;
+                TasksList.ItemsSource = project.Tasks;
             }
         }
 

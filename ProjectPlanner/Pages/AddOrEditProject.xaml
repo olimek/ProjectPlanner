@@ -20,9 +20,10 @@
             VerticalOptions="Center"
             HorizontalOptions="Start"
             Margin="20" />
-        <Entry
+        <Editor
             TextChanged="OnEntryTextChanged_project_description"
             x:Name="entry_project_description"
+            AutoSize="TextChanges"
             Placeholder="Enter project description"
             Margin="20" />
 
