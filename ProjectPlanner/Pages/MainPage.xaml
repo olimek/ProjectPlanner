@@ -1,79 +1,152 @@
-﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:converters="clr-namespace:ProjectPlanner.helpers"
-             x:Class="ProjectPlanner.Pages.MainPage">
+﻿<ContentPage
+    x:Class="ProjectPlanner.Pages.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ProjectPlanner.helpers"
+    Title="MAIN PANEL"
+    BackgroundColor="{StaticResource BackgroundDark}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:TextTruncateConverter x:Key="TruncateConv" />
         </ResourceDictionary>
     </ContentPage.Resources>
+
     <Grid RowDefinitions="*,Auto">
 
-        <CollectionView x:Name="ProjectsList"
-                        Grid.Row="0"
-                        ItemsSource="{Binding Projects}"
-                        SelectionChanged="ProjectsList_SelectionChanged"
-                        SelectionMode="Single">
+        <CollectionView
+            x:Name="ProjectsList"
+            Grid.Row="0"
+            Margin="16"
+            ItemsSource="{Binding Projects}"
+            SelectionChanged="ProjectsList_SelectionChanged"
+            SelectionMode="Single">
 
             <CollectionView.EmptyView>
-                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                    <Image HeightRequest="150"
-                           Opacity="0.6"
-                           Source="empty_state.png" />
-                    <Label Margin="0,10,0,5"
-                           FontSize="18"
-                           HorizontalOptions="Center"
-                           Text="Brak projektów"
-                           TextColor="{StaticResource TextSecondary}" />
-                    <Button Clicked="AddProjectBtn_Clicked"
-                            Text="➕ Dodaj projekt"
-                            WidthRequest="200" />
+                <VerticalStackLayout
+                    HorizontalOptions="Center"
+                    Spacing="10"
+                    VerticalOptions="Center">
+                    <Label
+                        FontFamily="TechFont"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        Text="// SYSTEM MESSAGE"
+                        TextColor="{StaticResource TextSecondary}" />
+
+                    <Label
+                        FontFamily="HeaderFont"
+                        FontSize="24"
+                        HorizontalOptions="Center"
+                        Text="NO ACTIVE PROJECTS"
+                        TextColor="{StaticResource TextPrimary}" />
+
+                    <Label
+                        FontFamily="TechFont"
+                        HorizontalOptions="Center"
+                        Text="Initialize new workflow to begin."
+                        TextColor="{StaticResource TextSecondary}" />
+
+                    <Button
+                        Margin="0,20,0,0"
+                        BackgroundColor="Transparent"
+                        BorderColor="{StaticResource NeonAccent}"
+                        BorderWidth="1"
+                        Clicked="AddProjectBtn_Clicked"
+                        FontFamily="HeaderFont"
+                        Text="INITIALIZE PROJECT [+]"
+                        TextColor="{StaticResource NeonAccent}"
+                        WidthRequest="220" />
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Margin="5"
-                          Padding="10"
-                          BackgroundColor="#202020"
-                          ColumnDefinitions="Auto,*,Auto">
+                    <Border
+                        Margin="0,0,0,12"
+                        Padding="0"
+                        BackgroundColor="{StaticResource SurfaceDark}"
+                        Stroke="{StaticResource BorderColor}"
+                        StrokeShape="RoundRectangle 8"
+                        StrokeThickness="1">
 
-                        <VerticalStackLayout Grid.Column="1">
-                            <Label FontAttributes="Bold"
-                                   FontFamily="HeaderFont"
-                                   FontSize="20"
-                                   Text="{Binding Name}"
-                                   TextColor="{StaticResource TextPrimary}" />
+                        <Grid ColumnDefinitions="6, *" RowDefinitions="Auto, Auto, Auto">
 
-                            <Label FontFamily="TechFont"
-                                   FontSize="14"
-                                   Text="{Binding Description, Converter={StaticResource TruncateConv}, ConverterParameter='15'}"
-                                   TextColor="{StaticResource TextSecondary}" />
+                            <BoxView
+                                Grid.RowSpan="3"
+                                Grid.Column="0"
+                                Color="{StaticResource NeonAccent}" />
 
-                            <ProgressBar Margin="0,8,0,0"
-                                         BackgroundColor="#2A2A2A"
-                                         HeightRequest="8"
-                                         Progress="{Binding Progress}"
-                                         ProgressColor="{StaticResource AccentColor}" />
-                        </VerticalStackLayout>
-                    </Grid>
+                            <VerticalStackLayout
+                                Grid.Column="1"
+                                Padding="16,12"
+                                Spacing="6">
+
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <Label
+                                        Grid.Column="0"
+                                        FontAttributes="Bold"
+                                        FontFamily="HeaderFont"
+                                        FontSize="18"
+                                        Text="{Binding Name}"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        TextTransform="Uppercase" />
+
+                                    <Label
+                                        Grid.Column="1"
+                                        FontSize="18"
+                                        Text="&#10142;"
+                                        TextColor="{StaticResource TextSecondary}" />
+                                </Grid>
+
+                                <Label
+                                    FontFamily="TechFont"
+                                    FontSize="13"
+                                    MaxLines="2"
+                                    Text="{Binding Description, Converter={StaticResource TruncateConv}, ConverterParameter='50'}"
+                                    TextColor="{StaticResource TextSecondary}" />
+
+                                <Grid Margin="0,8,0,0" ColumnDefinitions="*, Auto">
+                                    <ProgressBar
+                                        Grid.Column="0"
+                                        BackgroundColor="{StaticResource BorderColor}"
+                                        Progress="{Binding Progress}"
+                                        ProgressColor="{StaticResource NeonAccent}"
+                                        ScaleY="2"
+                                        VerticalOptions="Center" />
+
+                                    <Label
+                                        Grid.Column="1"
+                                        Margin="10,0,0,0"
+                                        FontFamily="TechFont"
+                                        FontSize="12"
+                                        Text="{Binding Progress, StringFormat='{0:P0}'}"
+                                        TextColor="{StaticResource NeonAccent}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <Button x:Name="AddProjectBtn"
-                Grid.Row="1"
-                Margin="0,10,10,10"
-                BackgroundColor="{StaticResource AccentColor}"
-                Clicked="AddProjectBtn_Clicked"
-                CornerRadius="30"
-                FontSize="26"
-                HeightRequest="60"
-                HorizontalOptions="End"
-                Text="＋"
-                TextColor="Black"
-                VerticalOptions="End"
-                WidthRequest="60" />
+        <Button
+            x:Name="AddProjectBtn"
+            Grid.Row="1"
+            Margin="20"
+            Padding="0"
+            BackgroundColor="{StaticResource NeonAccent}"
+            Clicked="AddProjectBtn_Clicked"
+            CornerRadius="16"
+            FontFamily="HeaderFont"
+            FontSize="32"
+            HeightRequest="64"
+            HorizontalOptions="End"
+            Shadow="{StaticResource Shadow}"
+            Text="+"
+            TextColor="{StaticResource Black}"
+            VerticalOptions="End"
+            WidthRequest="64" />
     </Grid>
 </ContentPage>

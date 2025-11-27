@@ -14,7 +14,6 @@ namespace ProjectPlanner.Pages
             InitializeComponent();
             _project = project;
             _projectService = projectService;
-            ReloadAll();
         }
 
         protected override void OnAppearing()
@@ -23,25 +22,24 @@ namespace ProjectPlanner.Pages
             ReloadAll();
         }
 
+        private void ReloadAll()
+        {
+            var currentProject = _projectService.GetProjectByID(_project.Id);
+            if (currentProject == null) return;
+
+            _project = currentProject;
+            NameLabel.Text = _project.Name;
+            DescriptionLabel.Text = string.IsNullOrWhiteSpace(_project.Description) ? "BRAK DANYCH" : _project.Description;
+            TypeLabel.Text = _project.Type.ToString().ToUpper();
+
+            Tasks = _projectService.GetTasksForProject(_project.Id);
+
+            TasksList.ItemsSource = Tasks ?? new List<SubTask>();
+        }
+
         private async void AddTaskBtn_Clicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new AddOrEditTask(_project, _projectService));
-        }
-
-        private void ReloadAll()
-        {
-            var project = _projectService.GetProjectByID(_project.Id);
-            Tasks = _projectService.GetTasksForProject(_project.Id);
-            TasksList.ItemsSource = Tasks;
-
-            NameLabel.Text = $"Project name: {System.Environment.NewLine} {project.Name}";
-            DescriptionLabel.Text = $"Description: {System.Environment.NewLine} {project.Description}";
-            TypeLabel.Text = $"Project type: {System.Environment.NewLine} {project.Type.ToString()}";
-
-            if (project.Tasks != null)
-            {
-                TasksList.ItemsSource = project.Tasks;
-            }
         }
 
         private async void EditBtn_Clicked(object sender, EventArgs e)
@@ -51,14 +49,11 @@ namespace ProjectPlanner.Pages
 
         private async void DelProjectBtn_Clicked(object sender, EventArgs e)
         {
-            bool confirm = await DisplayAlert("Potwierdzenie",
-                $"Czy na pewno chcesz usunąć projekt \"{_project.Name}\"?",
-                "Usuń", "Anuluj");
+            bool confirm = await DisplayAlert("USUWANIE DANYCH",
+                $"Czy permanentnie usunąć projekt [{_project.Name}]? Operacji nie można cofnąć.",
+                "USUŃ", "ANULUJ");
 
-            if (!confirm)
-            {
-                return;
-            }
+            if (!confirm) return;
 
             _projectService.DeleteProject(_project);
             await Navigation.PopAsync();
@@ -67,10 +62,8 @@ namespace ProjectPlanner.Pages
         private async void OnCollectionViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selected = e.CurrentSelection.FirstOrDefault() as SubTask;
-            if (selected == null)
-            {
-                return;
-            }
+            if (selected == null) return;
+
             var task = _projectService.GetTasksForProject(_project.Id).FirstOrDefault(p => p.Id == selected.Id) ?? selected;
 
             await Navigation.PushAsync(new SubtaskDetailsPage(task, _projectService));

@@ -58,7 +58,7 @@ namespace ProjectPlanner.Data.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("SubTask");
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("ProjectPlanner.Model.SubTask", b =>
