@@ -24,9 +24,9 @@ public partial class AddOrEditTask : ContentPage
         LoadData();
     }
 
-    private void LoadData()
-    {
-        lbl_project_name.Text = _project.Name?.ToUpper() ?? "NIEZNANY PROJEKT";
+        private void LoadData()
+        {
+            lbl_project_name.Text = _project.Name?.ToUpper() ?? "UNKNOWN PROJECT";
         if (_taskId.HasValue)
         {
             var tasks = _projectService.GetTasksForProject(_project.Id);
@@ -36,11 +36,11 @@ public partial class AddOrEditTask : ContentPage
         {
             entry_task_name.Text = _currentTask.Name;
             entry_task_description.Text = _currentTask.Description;
-            Title = "EDYCJA ZADANIA";
+            Title = "EDIT TASK";
         }
         else
         {
-            Title = "NOWE ZADANIE";
+            Title = "NEW TASK";
         }
     }
 
@@ -51,7 +51,7 @@ public partial class AddOrEditTask : ContentPage
 
         if (string.IsNullOrWhiteSpace(nameInput))
         {
-            await DisplayAlert("Błąd", "Nazwa zadania jest wymagana.", "OK");
+            await DisplayAlert("Error", "Task name is required.", "OK");
             return;
         }
         if (_currentTask != null)

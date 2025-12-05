@@ -1,5 +1,6 @@
 ﻿using ProjectPlanner.Model;
 using ProjectPlanner.Service;
+using Microsoft.Maui.Controls;
 
 namespace ProjectPlanner.Pages;
 
@@ -21,6 +22,16 @@ public partial class MainPage : ContentPage
     {
         base.OnAppearing();
         LoadProjects();
+        MessagingCenter.Subscribe<object>(this, "ProjectsUpdated", (sender) =>
+        {
+            MainThread.BeginInvokeOnMainThread(() => LoadProjects());
+        });
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        MessagingCenter.Unsubscribe<object>(this, "ProjectsUpdated");
     }
 
     private void LoadProjects()

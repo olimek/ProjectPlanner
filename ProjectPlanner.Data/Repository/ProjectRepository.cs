@@ -26,7 +26,6 @@ namespace ProjectPlanner.Data.Repository
             }
         }
 
-        // Ensure tasks are loaded with projects when fetching all projects
         public override IEnumerable<Project>? GetAll()
         {
             return _db.Projects.Include(p => p.Tasks).ToList();

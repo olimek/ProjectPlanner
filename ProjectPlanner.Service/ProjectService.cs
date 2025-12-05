@@ -2,6 +2,7 @@
 using ProjectPlanner.Data.Contexts;
 using ProjectPlanner.Data.UnitOfWork;
 using ProjectPlanner.Model;
+using Microsoft.Maui.Controls;
 
 namespace ProjectPlanner.Service
 {
@@ -31,6 +32,8 @@ namespace ProjectPlanner.Service
             _uow.Project.Add(project);
             _uow.Save();
 
+            MessagingCenter.Send<object>(this, "ProjectsUpdated");
+
             return project;
         }
 
@@ -39,7 +42,7 @@ namespace ProjectPlanner.Service
             var project = _uow.Project.GetById(projectId);
 
             if (project == null)
-                throw new InvalidOperationException($"Nie znaleziono projektu o ID {projectId}.");
+                throw new InvalidOperationException($"Project with ID {projectId} not found.");
 
             var subTask = new SubTask
             {
@@ -50,6 +53,8 @@ namespace ProjectPlanner.Service
             };
             _uow.Task.Add(subTask);
             _uow.Save();
+
+            MessagingCenter.Send<object>(this, "ProjectsUpdated");
         }
 
         public void AddTaskToProject(Project project, string name, string? description = null)
@@ -70,6 +75,8 @@ namespace ProjectPlanner.Service
 
             _uow.Task.Add(task);
             _uow.Save();
+
+            MessagingCenter.Send<object>(this, "ProjectsUpdated");
         }
 
         public void DeleteTask(SubTask task)
@@ -79,6 +86,8 @@ namespace ProjectPlanner.Service
 
             _uow.Task.Remove(dbTask);
             _uow.Save();
+
+            MessagingCenter.Send<object>(this, "ProjectsUpdated");
         }
 
         public void DeleteProject(Project project)
@@ -94,6 +103,8 @@ namespace ProjectPlanner.Service
 
             _uow.Project.Remove(dbProject);
             _uow.Save();
+
+            MessagingCenter.Send<object>(this, "ProjectsUpdated");
         }
 
         public List<SubTask> GetTasksForProject(int projectId)
@@ -107,7 +118,7 @@ namespace ProjectPlanner.Service
             var project = _uow.Project.GetById(projectId);
 
             if (project == null)
-                throw new InvalidOperationException($"Nie znaleziono projektu o ID {projectId}.");
+                throw new InvalidOperationException($"Project with ID {projectId} not found.");
 
             return project;
         }
@@ -117,12 +128,21 @@ namespace ProjectPlanner.Service
             _uow.Task.RemoveAll();
             _uow.Project.RemoveAll();
             _uow.Save();
+
+            MessagingCenter.Send<object>(this, "ProjectsUpdated");
         }
 
         public List<Project> GetAllProjects()
         {
             var projects = _uow.Project.GetAll() ?? Enumerable.Empty<Project>();
-            return projects.ToList();
+            var list = projects.ToList();
+
+            foreach (var proj in list)
+            {
+                proj.Tasks = GetTasksForProject(proj.Id);
+            }
+
+            return list;
         }
 
         public void UpdateProject(Project project)
@@ -132,7 +152,7 @@ namespace ProjectPlanner.Service
 
             var dbProject = _uow.Project.GetFirstOrDefault(p => p.Id == project.Id);
             if (dbProject == null)
-                throw new InvalidOperationException($"Nie znaleziono projektu o ID {project.Id}.");
+                throw new InvalidOperationException($"Project with ID {project.Id} not found.");
 
             dbProject.Name = project.Name;
             dbProject.Description = project.Description;
@@ -146,7 +166,7 @@ namespace ProjectPlanner.Service
         {
             var dbProject = _uow.Project.GetById(projectId);
             if (dbProject == null)
-                throw new InvalidOperationException($"Nie znaleziono projektu o ID {projectId}.");
+                throw new InvalidOperationException($"Project with ID {projectId} not found.");
 
             dbProject.Name = name;
 
@@ -167,7 +187,7 @@ namespace ProjectPlanner.Service
 
             var dbTask = _uow.Task.GetFirstOrDefault(t => t.Id == task.Id);
             if (dbTask == null)
-                throw new InvalidOperationException($"Nie znaleziono zadania o ID {task.Id}.");
+                throw new InvalidOperationException($"Task with ID {task.Id} not found.");
 
             dbTask.Name = task.Name;
             dbTask.Description = task.Description;
@@ -176,13 +196,15 @@ namespace ProjectPlanner.Service
 
             _uow.Task.Update(dbTask);
             _uow.Save();
+
+            MessagingCenter.Send<object>(this, "ProjectsUpdated");
         }
 
         public void UpdateTask(int taskId, string name, string? description = null, int? projectId = null, bool? isDone = null)
         {
             var dbTask = _uow.Task.GetById(taskId);
             if (dbTask == null)
-                throw new InvalidOperationException($"Nie znaleziono zadania o ID {taskId}.");
+                throw new InvalidOperationException($"Task with ID {taskId} not found.");
 
             dbTask.Name = name;
 
@@ -197,6 +219,8 @@ namespace ProjectPlanner.Service
 
             _uow.Task.Update(dbTask);
             _uow.Save();
+
+            MessagingCenter.Send<object>(this, "ProjectsUpdated");
         }
     }
 }

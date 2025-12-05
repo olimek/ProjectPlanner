@@ -46,13 +46,13 @@ public partial class AddOrEditProject : ContentPage
 
         if (string.IsNullOrWhiteSpace(nameInput))
         {
-            await DisplayAlert("Błąd", "Nazwa projektu jest wymagana.", "OK");
+            await DisplayAlert("Error", "Project name is required.", "OK");
             return;
         }
 
         if (picker.SelectedIndex == -1)
         {
-            await DisplayAlert("Błąd", "Musisz wybrać typ projektu.", "OK");
+            await DisplayAlert("Error", "You must select a project type.", "OK");
             return;
         }
 

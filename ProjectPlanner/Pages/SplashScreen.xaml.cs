@@ -40,7 +40,7 @@ public partial class SplashScreen : ContentPage
         var window = Platform.CurrentActivity?.Window;
         if (window != null)
         {
-            window.DecorView.SystemUiVisibility = 0; // przywraca paski
+            window.DecorView.SystemUiVisibility = 0;
         }
 #endif
     }

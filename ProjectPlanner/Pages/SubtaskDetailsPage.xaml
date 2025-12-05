@@ -61,7 +61,7 @@
 
                         <Switch
                             Grid.Column="1"
-                            IsToggled="{Binding IsDone}"
+                            IsToggled="{Binding IsDone, Mode=TwoWay}"
                             OnColor="{StaticResource NeonAccent}"
                             ThumbColor="{StaticResource Black}"
                             Toggled="OnStatusToggled" />

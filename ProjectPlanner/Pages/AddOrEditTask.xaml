@@ -103,7 +103,7 @@
                 BorderWidth="1"
                 Clicked="OnCancelClicked"
                 FontFamily="HeaderFont"
-                Text="ANULUJ"
+                Text="CANCEL"
                 TextColor="{StaticResource NeonAccent}" />
 
             <Button
@@ -112,7 +112,7 @@
                 Clicked="OnSaveClicked"
                 FontAttributes="Bold"
                 FontFamily="HeaderFont"
-                Text="ZAPISZ"
+                Text="SAVE"
                 TextColor="{StaticResource Black}" />
         </Grid>
     </Grid>

@@ -15,6 +15,7 @@ namespace ProjectPlanner.Pages
             InitializeComponent();
             _subtask = new SubTask();
             _projectService = null;
+            BindingContext = _subtask;
         }
 
         public SubtaskDetailsPage(SubTask subtask, IProjectService projectService)
@@ -22,8 +23,7 @@ namespace ProjectPlanner.Pages
             InitializeComponent();
             _subtask = subtask;
             _projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
-
-            //BindingContext = _subtask;
+            BindingContext = _subtask;
         }
 
         protected override void OnAppearing()
@@ -80,7 +80,7 @@ namespace ProjectPlanner.Pages
             }
             else
             {
-                await DisplayAlert("Błąd", "Nie znaleziono projektu nadrzędnego.", "OK");
+                await DisplayAlert("Error", "Parent project not found.", "OK");
             }
         }
 
@@ -88,9 +88,9 @@ namespace ProjectPlanner.Pages
         {
             if (_projectService == null) return;
 
-            bool confirm = await DisplayAlert("USUWANIE",
-                "Czy na pewno usunąć to zadanie?",
-                "USUŃ", "ANULUJ");
+            bool confirm = await DisplayAlert("DELETE",
+                "Are you sure you want to delete this task?",
+                "DELETE", "CANCEL");
 
             if (confirm)
             {

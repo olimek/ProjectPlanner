@@ -29,7 +29,7 @@ namespace ProjectPlanner.Pages
 
             _project = currentProject;
             NameLabel.Text = _project.Name;
-            DescriptionLabel.Text = string.IsNullOrWhiteSpace(_project.Description) ? "BRAK DANYCH" : _project.Description;
+            DescriptionLabel.Text = string.IsNullOrWhiteSpace(_project.Description) ? "NO DATA" : _project.Description;
             TypeLabel.Text = _project.Type.ToString().ToUpper();
 
             Tasks = _projectService.GetTasksForProject(_project.Id);
@@ -49,9 +49,9 @@ namespace ProjectPlanner.Pages
 
         private async void DelProjectBtn_Clicked(object sender, EventArgs e)
         {
-            bool confirm = await DisplayAlert("USUWANIE DANYCH",
-                $"Czy permanentnie usunąć projekt [{_project.Name}]? Operacji nie można cofnąć.",
-                "USUŃ", "ANULUJ");
+            bool confirm = await DisplayAlert("DELETE PROJECT",
+                $"Permanently delete project [{_project.Name}]? This operation cannot be undone.",
+                "DELETE", "CANCEL");
 
             if (!confirm) return;
 
