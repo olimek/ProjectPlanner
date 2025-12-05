@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /ProjectPlanner/build_diag.txt
 /ProjectPlanner/myapp.keystore
+/ProjectPlanner/version_iteration.txt

@@ -26,9 +26,20 @@
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.projectplanner</ApplicationId>
 
-		<!-- Versions -->
-		<ApplicationDisplayVersion>0.1.01</ApplicationDisplayVersion>
-		<ApplicationVersion>2</ApplicationVersion>
+	<!-- Versions - Auto-increment using PropertyGroup-based initialization -->
+		<VersionPrefix>0.1</VersionPrefix>
+		<VersionFilePath>$(MSBuildProjectDirectory)\version_iteration.txt</VersionFilePath>
+		<VersionSentinelFile>$(MSBuildProjectDirectory)\VersionIncremented.sentinel</VersionSentinelFile>
+		
+		<!-- Read version iteration directly from file in PropertyGroup (happens BEFORE any target) -->
+		<VersionIteration Condition="Exists('$(VersionFilePath)')">$([System.IO.File]::ReadAllText('$(VersionFilePath)').Trim())</VersionIteration>
+		<VersionIteration Condition="'$(VersionIteration)' == '' or '$(VersionIteration)' == '0'">1</VersionIteration>
+		
+		<!-- Set all version properties immediately -->
+		<ApplicationDisplayVersion>$(VersionPrefix).$(VersionIteration)</ApplicationDisplayVersion>
+		<ApplicationVersion>$(VersionIteration)</ApplicationVersion>
+		<AndroidVersionCode>$(VersionIteration)</AndroidVersionCode>
+		<AndroidVersionName>$(VersionPrefix).$(VersionIteration)</AndroidVersionName>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
 		<WindowsPackageType>None</WindowsPackageType>
@@ -95,69 +106,41 @@
 	  </Compile>
 	</ItemGroup>
 
-  <!-- Automatic version generation: use git commit count as an incremental iteration -->
-  <PropertyGroup>
-    <!-- Base version prefix you can bump manually -->
-    <VersionPrefix>0.1</VersionPrefix>
 
-    <!-- Fallback values in case git is not available at build time -->
-    <GeneratedAppDisplayVersion>$(VersionPrefix).0</GeneratedAppDisplayVersion>
-    <GeneratedAppVersionCode>1</GeneratedAppVersionCode>
-
-    <!-- Android-specific version values (will be overridden at build by the target below when git is available) -->
-    <AndroidVersionCode>$(GeneratedAppVersionCode)</AndroidVersionCode>
-    <AndroidVersionName>$(GeneratedAppDisplayVersion)</AndroidVersionName>
-
-    <!-- MAUI properties used for packaging and display -->
-    <ApplicationDisplayVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">$(VersionPrefix).0</ApplicationDisplayVersion>
-    <ApplicationVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">1</ApplicationVersion>
-
-    <!-- Non-windows platforms use generated display/version (may be replaced below) -->
-    <ApplicationDisplayVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">$(GeneratedAppDisplayVersion)</ApplicationDisplayVersion>
-    <ApplicationVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">$(GeneratedAppVersionCode)</ApplicationVersion>
-
-    <!-- Assembly informational and file versions (human readable) -->
-    <AssemblyInformationalVersion>$(GeneratedAppDisplayVersion)</AssemblyInformationalVersion>
-    <FileVersion>$(GeneratedAppDisplayVersion)</FileVersion>
-    <InformationalVersion>$(GeneratedAppDisplayVersion)</InformationalVersion>
-  </PropertyGroup>
-
-  <!-- Run git to produce a deterministic incremental iteration number (commit count) -->
-  <Target Name="SetGeneratedVersionFromGit" BeforeTargets="PrepareForBuild;GenerateBundle;Pack;Build">
-    <!-- Try to read git commit count; if git isn't available or this isn't a repo, leave fallbacks above -->
-    <Exec Command="git rev-list --count HEAD" WorkingDirectory="$(MSBuildProjectDirectory)" IgnoreExitCode="true">
-      <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitCountRaw" />
-    </Exec>
-
+  <!-- Increment version ONLY during Android packaging, ONLY once per build session -->
+  <Target Name="IncrementVersionForPackaging" BeforeTargets="Build" 
+          Condition="$(TargetFramework.Contains('android')) AND '$(AndroidPackageFormat)' != '' AND !Exists('$(VersionSentinelFile)')">
     <PropertyGroup>
-      <!-- Clean output from exec (trim whitespace/newlines) -->
-      <GitCommitCount>$([System.Text.RegularExpressions.Regex]::Replace('$(GitCommitCountRaw)', '\s+', ''))</GitCommitCount>
-
-      <!-- Also compute a datetime-based numeric code (same scheme as previously used) so we always have
-           a monotonic increasing integer suitable for Android versionCode even if git isn't available. -->
-      <GeneratedAppVersionCodeDate>$([System.String]::Format('{0}{1:000}{2:00}{3:00}',$([System.DateTime]::UtcNow.ToString('yy')),$([System.DateTime]::UtcNow.DayOfYear),$([System.DateTime]::UtcNow.Hour),$([System.DateTime]::UtcNow.Minute)))</GeneratedAppVersionCodeDate>
-      <GeneratedAppDisplayVersionDate>$(VersionPrefix).$([System.DateTime]::UtcNow.ToString('yyyy.MM.dd.HHmm'))</GeneratedAppDisplayVersionDate>
-
-      <!-- If we have a git commit count prefer that for the display and for a simple iteration value. -->
-      <GeneratedAppDisplayVersion Condition="'$(GitCommitCount)' != ''">$(VersionPrefix).$(GitCommitCount)</GeneratedAppDisplayVersion>
-      <GeneratedAppVersionCode Condition="'$(GitCommitCount)' != ''">$(GitCommitCount)</GeneratedAppVersionCode>
-
-      <!-- When git isn't available use datetime-based fallbacks -->
-      <GeneratedAppDisplayVersion Condition="'$(GeneratedAppDisplayVersion)' == ''">$(GeneratedAppDisplayVersionDate)</GeneratedAppDisplayVersion>
-      <GeneratedAppVersionCode Condition="'$(GeneratedAppVersionCode)' == ''">$(GeneratedAppVersionCodeDate)</GeneratedAppVersionCode>
-
-      <!-- Apply to platform-specific properties. For Android we prefer the datetime-based numeric scheme
-           because it is monotonic and will be greater than older publishes that used this scheme. -->
-      <AndroidVersionCode>$(GeneratedAppVersionCode)</AndroidVersionCode>
-      <AndroidVersionName>$(GeneratedAppDisplayVersion)</AndroidVersionName>
-      <ApplicationDisplayVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">$(GeneratedAppDisplayVersion)</ApplicationDisplayVersion>
-      <ApplicationVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">$(GeneratedAppVersionCode)</ApplicationVersion>
-
-      <AssemblyInformationalVersion>$(GeneratedAppDisplayVersion)</AssemblyInformationalVersion>
-      <FileVersion>$(GeneratedAppDisplayVersion)</FileVersion>
-      <InformationalVersion>$(GeneratedAppDisplayVersion)</InformationalVersion>
+      <!-- Read current value from file to get accurate 'before' number -->
+      <CurrentIterationFromFile>$([System.IO.File]::ReadAllText('$(VersionFilePath)').Trim())</CurrentIterationFromFile>
+      <NewVersionIteration>$([MSBuild]::Add($(CurrentIterationFromFile), 1))</NewVersionIteration>
     </PropertyGroup>
+
+    <!-- Write incremented version to file -->
+    <WriteLinesToFile File="$(VersionFilePath)" Lines="$(NewVersionIteration)" Overwrite="true" />
+
+    <!-- Create sentinel to prevent multiple increments -->
+    <WriteLinesToFile File="$(VersionSentinelFile)" Lines="Incremented" Overwrite="true" />
+
+    <!-- Update properties for current build -->
+    <PropertyGroup>
+      <VersionIteration>$(NewVersionIteration)</VersionIteration>
+      <ApplicationDisplayVersion>$(VersionPrefix).$(NewVersionIteration)</ApplicationDisplayVersion>
+      <ApplicationVersion>$(NewVersionIteration)</ApplicationVersion>
+      <AndroidVersionCode>$(NewVersionIteration)</AndroidVersionCode>
+      <AndroidVersionName>$(VersionPrefix).$(NewVersionIteration)</AndroidVersionName>
+    </PropertyGroup>
+
+    <Message Text="***** PACKAGING: Incremented version from $(CurrentIterationFromFile) to $(NewVersionIteration) *****" Importance="high" />
   </Target>
+
+  <!-- Clean sentinel file on Clean -->
+  <Target Name="CleanVersionSentinel" AfterTargets="Clean">
+    <Delete Files="$(VersionSentinelFile)" Condition="Exists('$(VersionSentinelFile)')" />
+    <Message Text="***** Cleaned version sentinel file *****" Importance="high" />
+  </Target>
+
+
 
 	<ItemGroup>
 	  <MauiXaml Update="Pages\AddOrEditProject.xaml">
@@ -175,30 +158,6 @@
 	  <Folder Include="Messaging\" />
 	</ItemGroup>
 
-  <!-- Increment local version iteration file on publish -->
-  <Target Name="IncrementVersionIteration" AfterTargets="Publish">
-    <PropertyGroup>
-      <VersionIterationFile>$(MSBuildProjectDirectory)\version_iteration.txt</VersionIterationFile>
-    </PropertyGroup>
-
-    <!-- Create file with initial 0 if it doesn't exist -->
-    <WriteLinesToFile File="$(VersionIterationFile)" Lines="0" Overwrite="true" Condition="!Exists('$(VersionIterationFile)')" />
-
-    <!-- Read current iteration (first non-empty line) -->
-    <ReadLinesFromFile File="$(VersionIterationFile)">
-      <Output TaskParameter="Lines" ItemName="VersionIterationLines" />
-    </ReadLinesFromFile>
-
-    <PropertyGroup>
-      <!-- Trim whitespace/newlines and fallback to 0 if empty -->
-      <VersionIterationRaw>%(VersionIterationLines.Identity)</VersionIterationRaw>
-      <VersionIteration>$([System.Text.RegularExpressions.Regex]::Replace('$(VersionIterationRaw)', '\s+', ''))</VersionIteration>
-      <VersionIteration Condition="'$(VersionIteration)' == ''">0</VersionIteration>
-      <VersionIterationIncremented>$([System.Int32]::Parse('$(VersionIteration)') + 1)</VersionIterationIncremented>
-    </PropertyGroup>
-
-    <WriteLinesToFile File="$(VersionIterationFile)" Lines="$(VersionIterationIncremented)" Overwrite="true" />
-    <Message Text="version_iteration.txt incremented from $(VersionIteration) to $(VersionIterationIncremented)" Importance="high" />
-  </Target>
+  
 
 </Project>
