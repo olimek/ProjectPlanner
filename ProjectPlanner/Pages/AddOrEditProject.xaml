@@ -30,8 +30,8 @@
                     StrokeShape="RoundRectangle 4"
                     StrokeThickness="1">
                     <Entry
-                        Margin="12"
                         x:Name="entry_project_name"
+                        Margin="12"
                         FontFamily="TechFont"
                         FontSize="16"
                         Placeholder="EG. PC BUILD V1"
@@ -72,15 +72,13 @@
                     TextColor="{StaticResource NeonAccent}" />
 
                 <Border
-
                     BackgroundColor="{StaticResource SurfaceDark}"
-
                     Stroke="{StaticResource BorderColor}"
                     StrokeShape="RoundRectangle 4"
                     StrokeThickness="1">
                     <Editor
-                        Margin="12"
                         x:Name="entry_project_description"
+                        Margin="12"
                         AutoSize="TextChanges"
                         FontFamily="TechFont"
                         FontSize="14"

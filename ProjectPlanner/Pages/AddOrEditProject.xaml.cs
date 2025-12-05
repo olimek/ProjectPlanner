@@ -36,7 +36,16 @@ public partial class AddOrEditProject : ContentPage
 
     private async void OnCancelClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("..");
+        if (Navigation != null)
+        {
+            await Navigation.PopAsync();
+            return;
+        }
+
+        if (Shell.Current != null)
+        {
+            await Shell.Current.GoToAsync("..");
+        }
     }
 
     private async void OnSaveClicked(object sender, EventArgs e)
@@ -64,7 +73,13 @@ public partial class AddOrEditProject : ContentPage
 
         if (_project.Id == 0)
         {
-            var createdProject = _projectService?.AddProject(
+            if (_projectService == null)
+            {
+                await DisplayAlert("Error", "Project service is not available.", "OK");
+                return;
+            }
+
+            var createdProject = _projectService.AddProject(
                 _project.Name,
                 _project.Description,
                 _project.Type
@@ -85,6 +100,15 @@ public partial class AddOrEditProject : ContentPage
             );
         }
 
-        await Shell.Current.GoToAsync("..");
+        if (Navigation != null)
+        {
+            await Navigation.PopAsync();
+            return;
+        }
+
+        if (Shell.Current != null)
+        {
+            await Shell.Current.GoToAsync("..");
+        }
     }
 }

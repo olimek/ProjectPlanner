@@ -74,11 +74,29 @@ public partial class AddOrEditTask : ContentPage
             _projectService.AddTaskToProject(_project, newTask.Name, newTask.Description);
         }
 
-        await Shell.Current.GoToAsync("..");
+        if (Navigation != null)
+        {
+            await Navigation.PopAsync();
+            return;
+        }
+
+        if (Shell.Current != null)
+        {
+            await Shell.Current.GoToAsync("..");
+        }
     }
 
     private async void OnCancelClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("..");
+        if (Navigation != null)
+        {
+            await Navigation.PopAsync();
+            return;
+        }
+
+        if (Shell.Current != null)
+        {
+            await Shell.Current.GoToAsync("..");
+        }
     }
 }

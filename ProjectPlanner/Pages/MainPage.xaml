@@ -115,7 +115,10 @@
                                         ScaleY="2"
                                         VerticalOptions="Center">
                                         <ProgressBar.Triggers>
-                                            <DataTrigger TargetType="ProgressBar" Binding="{Binding Progress}" Value="0">
+                                            <DataTrigger
+                                                Binding="{Binding Progress}"
+                                                TargetType="ProgressBar"
+                                                Value="0">
                                                 <Setter Property="IsVisible" Value="False" />
                                             </DataTrigger>
                                         </ProgressBar.Triggers>
@@ -130,7 +133,10 @@
                                         TextColor="{StaticResource NeonAccent}"
                                         VerticalOptions="Center">
                                         <Label.Triggers>
-                                            <DataTrigger TargetType="Label" Binding="{Binding Progress}" Value="0">
+                                            <DataTrigger
+                                                Binding="{Binding Progress}"
+                                                TargetType="Label"
+                                                Value="0">
                                                 <Setter Property="IsVisible" Value="False" />
                                             </DataTrigger>
                                         </Label.Triggers>
