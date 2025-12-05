@@ -27,8 +27,8 @@
 		<ApplicationId>com.companyname.projectplanner</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
+		<ApplicationDisplayVersion>0.1.01</ApplicationDisplayVersion>
+		<ApplicationVersion>2</ApplicationVersion>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
 		<WindowsPackageType>None</WindowsPackageType>
@@ -39,6 +39,11 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- Suppress implicit MAUI package validation warning if desired -->
+		<SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
@@ -55,7 +60,7 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" ForegroundScale="0.65" Color="#0A1320" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundScale="0.65" Color="#0A1320" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0A1320" BaseSize="250,250" />
@@ -72,9 +77,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
-		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.111" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+		<PackageReference Include="sqlite-net-pcl" Version="1.9.172">
+		  <TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -88,6 +95,60 @@
 	  </Compile>
 	</ItemGroup>
 
+  <!-- Automatic version generation: use git commit count as an incremental iteration -->
+  <PropertyGroup>
+    <!-- Base version prefix you can bump manually -->
+    <VersionPrefix>0.1</VersionPrefix>
+
+    <!-- Fallback values in case git is not available at build time -->
+    <GeneratedAppDisplayVersion>$(VersionPrefix).0</GeneratedAppDisplayVersion>
+    <GeneratedAppVersionCode>1</GeneratedAppVersionCode>
+
+    <!-- Android-specific version values (will be overridden at build by the target below when git is available) -->
+    <AndroidVersionCode>$(GeneratedAppVersionCode)</AndroidVersionCode>
+    <AndroidVersionName>$(GeneratedAppDisplayVersion)</AndroidVersionName>
+
+    <!-- MAUI properties used for packaging and display -->
+    <ApplicationDisplayVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">$(VersionPrefix).0</ApplicationDisplayVersion>
+    <ApplicationVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">1</ApplicationVersion>
+
+    <!-- Non-windows platforms use generated display/version (may be replaced below) -->
+    <ApplicationDisplayVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">$(GeneratedAppDisplayVersion)</ApplicationDisplayVersion>
+    <ApplicationVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">$(GeneratedAppVersionCode)</ApplicationVersion>
+
+    <!-- Assembly informational and file versions (human readable) -->
+    <AssemblyInformationalVersion>$(GeneratedAppDisplayVersion)</AssemblyInformationalVersion>
+    <FileVersion>$(GeneratedAppDisplayVersion)</FileVersion>
+    <InformationalVersion>$(GeneratedAppDisplayVersion)</InformationalVersion>
+  </PropertyGroup>
+
+  <!-- Run git to produce a deterministic incremental iteration number (commit count) -->
+  <Target Name="SetGeneratedVersionFromGit" BeforeTargets="PrepareForBuild;GenerateBundle;Pack;Build">
+    <!-- Try to read git commit count; if git isn't available or this isn't a repo, leave fallbacks above -->
+    <Exec Command="git rev-list --count HEAD" WorkingDirectory="$(MSBuildProjectDirectory)" IgnoreExitCode="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitCountRaw" />
+    </Exec>
+
+    <PropertyGroup>
+      <!-- Clean output from exec (trim whitespace/newlines) -->
+      <GitCommitCount>$([System.Text.RegularExpressions.Regex]::Replace('$(GitCommitCountRaw)', '\s+', ''))</GitCommitCount>
+
+      <!-- Only set generated values if we actually obtained a commit count -->
+      <GeneratedAppDisplayVersion Condition="'$(GitCommitCount)' != ''">$(VersionPrefix).$(GitCommitCount)</GeneratedAppDisplayVersion>
+      <GeneratedAppVersionCode Condition="'$(GitCommitCount)' != ''">$(GitCommitCount)</GeneratedAppVersionCode>
+
+      <!-- Apply to platform-specific properties -->
+      <AndroidVersionCode Condition="'$(GitCommitCount)' != ''">$(GeneratedAppVersionCode)</AndroidVersionCode>
+      <AndroidVersionName Condition="'$(GitCommitCount)' != ''">$(GeneratedAppDisplayVersion)</AndroidVersionName>
+      <ApplicationDisplayVersion Condition="'$(GitCommitCount)' != '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">$(GeneratedAppDisplayVersion)</ApplicationDisplayVersion>
+      <ApplicationVersion Condition="'$(GitCommitCount)' != '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">$(GeneratedAppVersionCode)</ApplicationVersion>
+
+      <AssemblyInformationalVersion Condition="'$(GitCommitCount)' != ''">$(GeneratedAppDisplayVersion)</AssemblyInformationalVersion>
+      <FileVersion Condition="'$(GitCommitCount)' != ''">$(GeneratedAppDisplayVersion)</FileVersion>
+      <InformationalVersion Condition="'$(GitCommitCount)' != ''">$(GeneratedAppDisplayVersion)</InformationalVersion>
+    </PropertyGroup>
+  </Target>
+
 	<ItemGroup>
 	  <MauiXaml Update="Pages\AddOrEditProject.xaml">
 	    <Generator>MSBuild:Compile</Generator>
@@ -98,6 +159,10 @@
 	  <MauiXaml Update="Pages\ProjectDetailsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Messaging\" />
 	</ItemGroup>
 
 </Project>

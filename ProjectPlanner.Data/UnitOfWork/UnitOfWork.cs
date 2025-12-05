@@ -6,7 +6,7 @@ namespace ProjectPlanner.Data.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private ProjectContext _db;
+        private readonly ProjectContext _db;
 
         public UnitOfWork(ProjectContext db)
         {

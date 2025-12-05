@@ -7,7 +7,7 @@ namespace ProjectPlanner.Data.Repository
 {
     public class ProjectRepository : Repository<Project>, IProjectRepository
     {
-        private ProjectContext _db;
+        private readonly ProjectContext _db;
 
         public ProjectRepository(ProjectContext db) : base(db)
         {

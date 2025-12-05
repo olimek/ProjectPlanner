@@ -1,6 +1,8 @@
 ﻿using ProjectPlanner.Model;
 using ProjectPlanner.Service;
 using Microsoft.Maui.Controls;
+using CommunityToolkit.Mvvm.Messaging;
+using ProjectPlanner.Model.Messaging;
 
 namespace ProjectPlanner.Pages;
 
@@ -22,7 +24,7 @@ public partial class MainPage : ContentPage
     {
         base.OnAppearing();
         LoadProjects();
-        MessagingCenter.Subscribe<object>(this, "ProjectsUpdated", (sender) =>
+        WeakReferenceMessenger.Default.Register<ProjectsUpdatedMessage>(this, (r, m) =>
         {
             MainThread.BeginInvokeOnMainThread(() => LoadProjects());
         });
@@ -31,7 +33,7 @@ public partial class MainPage : ContentPage
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        MessagingCenter.Unsubscribe<object>(this, "ProjectsUpdated");
+        WeakReferenceMessenger.Default.Unregister<ProjectsUpdatedMessage>(this);
     }
 
     private void LoadProjects()

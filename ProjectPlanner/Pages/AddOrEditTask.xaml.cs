@@ -34,8 +34,8 @@ public partial class AddOrEditTask : ContentPage
         }
         if (_currentTask != null)
         {
-            entry_task_name.Text = _currentTask.Name;
-            entry_task_description.Text = _currentTask.Description;
+            entry_task_name.Text = _currentTask.Name ?? string.Empty;
+            entry_task_description.Text = _currentTask.Description ?? string.Empty;
             Title = "EDIT TASK";
         }
         else

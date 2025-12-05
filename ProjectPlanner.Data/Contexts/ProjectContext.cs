@@ -5,19 +5,25 @@ namespace ProjectPlanner.Data.Contexts
 {
     public class ProjectContext : DbContext
     {
-        public DbSet<Project> Projects { get; set; }
-        public DbSet<SubTask> Tasks { get; set; }
+        public DbSet<Project> Projects { get; set; } = null!;
+        public DbSet<SubTask> Tasks { get; set; } = null!;
 
         public string DbPath { get; }
 
-        public ProjectContext()
+        // DI constructor
+        public ProjectContext(DbContextOptions<ProjectContext> options) : base(options)
         {
             var folder = Environment.SpecialFolder.LocalApplicationData;
             var path = Environment.GetFolderPath(folder);
             DbPath = System.IO.Path.Join(path, "projectsplanner.db3");
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite($"Data Source={DbPath}");
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlite($"Data Source={DbPath}");
+            }
+        }
     }
 }

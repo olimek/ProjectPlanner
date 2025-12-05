@@ -34,9 +34,9 @@ namespace ProjectPlanner.Pages
 
         private void ReloadPage()
         {
-            if (_projectService == null || _subtask == null || _subtask.Id == 0) return;
+            if (_projectService == null || _subtask == null || _subtask.Id == 0 || !_subtask.ProjectId.HasValue) return;
 
-            var freshTasks = _projectService.GetTasksForProject((int)_subtask.ProjectId);
+            var freshTasks = _projectService.GetTasksForProject(_subtask.ProjectId.Value);
             var refreshedTask = freshTasks?.FirstOrDefault(t => t.Id == _subtask.Id);
 
             if (refreshedTask != null)

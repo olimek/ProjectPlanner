@@ -9,7 +9,10 @@ namespace ProjectPlanner
         public App()
         {
             InitializeComponent();
-            Application.Current.UserAppTheme = AppTheme.Dark;
+            if (Application.Current != null)
+            {
+                Application.Current.UserAppTheme = AppTheme.Dark;
+            }
         }
 
         protected override Window CreateWindow(IActivationState? activationState)

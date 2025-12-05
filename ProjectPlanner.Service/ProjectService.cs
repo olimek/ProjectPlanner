@@ -2,7 +2,8 @@
 using ProjectPlanner.Data.Contexts;
 using ProjectPlanner.Data.UnitOfWork;
 using ProjectPlanner.Model;
-using Microsoft.Maui.Controls;
+using CommunityToolkit.Mvvm.Messaging;
+using ProjectPlanner.Model.Messaging;
 
 namespace ProjectPlanner.Service
 {
@@ -32,7 +33,7 @@ namespace ProjectPlanner.Service
             _uow.Project.Add(project);
             _uow.Save();
 
-            MessagingCenter.Send<object>(this, "ProjectsUpdated");
+            WeakReferenceMessenger.Default.Send(new ProjectsUpdatedMessage());
 
             return project;
         }
@@ -54,7 +55,7 @@ namespace ProjectPlanner.Service
             _uow.Task.Add(subTask);
             _uow.Save();
 
-            MessagingCenter.Send<object>(this, "ProjectsUpdated");
+            WeakReferenceMessenger.Default.Send(new ProjectsUpdatedMessage());
         }
 
         public void AddTaskToProject(Project project, string name, string? description = null)
@@ -76,7 +77,7 @@ namespace ProjectPlanner.Service
             _uow.Task.Add(task);
             _uow.Save();
 
-            MessagingCenter.Send<object>(this, "ProjectsUpdated");
+            WeakReferenceMessenger.Default.Send(new ProjectsUpdatedMessage());
         }
 
         public void DeleteTask(SubTask task)
@@ -87,7 +88,7 @@ namespace ProjectPlanner.Service
             _uow.Task.Remove(dbTask);
             _uow.Save();
 
-            MessagingCenter.Send<object>(this, "ProjectsUpdated");
+            WeakReferenceMessenger.Default.Send(new ProjectsUpdatedMessage());
         }
 
         public void DeleteProject(Project project)
@@ -104,7 +105,7 @@ namespace ProjectPlanner.Service
             _uow.Project.Remove(dbProject);
             _uow.Save();
 
-            MessagingCenter.Send<object>(this, "ProjectsUpdated");
+            WeakReferenceMessenger.Default.Send(new ProjectsUpdatedMessage());
         }
 
         public List<SubTask> GetTasksForProject(int projectId)
@@ -129,7 +130,7 @@ namespace ProjectPlanner.Service
             _uow.Project.RemoveAll();
             _uow.Save();
 
-            MessagingCenter.Send<object>(this, "ProjectsUpdated");
+            WeakReferenceMessenger.Default.Send(new ProjectsUpdatedMessage());
         }
 
         public List<Project> GetAllProjects()
@@ -197,7 +198,7 @@ namespace ProjectPlanner.Service
             _uow.Task.Update(dbTask);
             _uow.Save();
 
-            MessagingCenter.Send<object>(this, "ProjectsUpdated");
+            WeakReferenceMessenger.Default.Send(new ProjectsUpdatedMessage());
         }
 
         public void UpdateTask(int taskId, string name, string? description = null, int? projectId = null, bool? isDone = null)
@@ -220,7 +221,7 @@ namespace ProjectPlanner.Service
             _uow.Task.Update(dbTask);
             _uow.Save();
 
-            MessagingCenter.Send<object>(this, "ProjectsUpdated");
+            WeakReferenceMessenger.Default.Send(new ProjectsUpdatedMessage());
         }
     }
 }
