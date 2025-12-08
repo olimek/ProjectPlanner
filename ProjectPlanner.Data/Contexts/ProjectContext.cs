@@ -11,7 +11,6 @@ namespace ProjectPlanner.Data.Contexts
 
         public string DbPath { get; }
 
-        // DI constructor
         public ProjectContext(DbContextOptions<ProjectContext> options) : base(options)
         {
             var folder = Environment.SpecialFolder.LocalApplicationData;
@@ -31,7 +30,6 @@ namespace ProjectPlanner.Data.Contexts
         {
             base.OnModelCreating(modelBuilder);
 
-            // Seed predefiniowanych typów projektów
             modelBuilder.Entity<ProjectType>().HasData(
                 new ProjectType { Id = 1, Name = ProjectType.Predefined.Electronics, IsCustom = false },
                 new ProjectType { Id = 2, Name = ProjectType.Predefined.Programming, IsCustom = false },
@@ -40,12 +38,11 @@ namespace ProjectPlanner.Data.Contexts
                 new ProjectType { Id = 5, Name = ProjectType.Predefined.Other, IsCustom = false }
             );
 
-            // Konfiguracja relacji
             modelBuilder.Entity<Project>()
                 .HasOne(p => p.Type)
                 .WithMany()
                 .HasForeignKey(p => p.ProjectTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

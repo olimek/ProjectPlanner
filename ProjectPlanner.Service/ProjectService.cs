@@ -27,7 +27,7 @@ namespace ProjectPlanner.Service
             {
                 Name = name ?? string.Empty,
                 Description = description,
-                ProjectTypeId = type?.Id ?? 5 // Default to "Other" (Id = 5)
+                ProjectTypeId = type?.Id ?? 5
             };
 
             _uow.Project.Add(project);

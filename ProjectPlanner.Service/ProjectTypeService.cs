@@ -97,12 +97,7 @@ namespace ProjectPlanner.Service
 
             if (!projectType.IsCustom)
                 throw new InvalidOperationException("Cannot delete predefined project types.");
-
-            // Sprawd?, czy typ nie jest u?ywany w ?adnym projekcie
-            var projects = _uow.Project.GetAll();
-            if (projects?.Any(p => p.ProjectTypeId == id) == true)
-                throw new InvalidOperationException("Cannot delete project type that is used by existing projects.");
-
+            
             _uow.ProjectType.Remove(projectType);
             _uow.Save();
 

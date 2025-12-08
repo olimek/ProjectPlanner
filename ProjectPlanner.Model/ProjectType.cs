@@ -15,7 +15,6 @@ namespace ProjectPlanner.Model
 
         public bool IsCustom { get; set; }
 
-        // Predefiniowane typy jako stałe
         public static class Predefined
         {
             public const string Electronics = "Electronics";

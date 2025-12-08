@@ -11,7 +11,7 @@ namespace ProjectPlanner.Model
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
         
-        public int ProjectTypeId { get; set; }
+        public int? ProjectTypeId { get; set; }
         
         [ForeignKey(nameof(ProjectTypeId))]
         public ProjectType? Type { get; set; }

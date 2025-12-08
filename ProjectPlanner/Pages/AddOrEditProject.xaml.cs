@@ -9,7 +9,7 @@ public partial class AddOrEditProject : ContentPage
     private readonly IProjectTypeService? _projectTypeService;
     private readonly Project _project;
     private List<ProjectType> _projectTypes = new();
-    private const string ADD_CUSTOM_TYPE_OPTION = "➕ Add own project type...";
+    private const string ADD_CUSTOM_TYPE_OPTION = "[+] Add own project type...";
 
     public AddOrEditProject()
         : this(null, null, null)
@@ -32,6 +32,12 @@ public partial class AddOrEditProject : ContentPage
         picker.SelectedIndexChanged += OnPickerSelectedIndexChanged;
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        LoadProjectTypes();
+    }
+
     private void LoadProjectTypes()
     {
         if (_projectTypeService == null)
@@ -43,7 +49,6 @@ public partial class AddOrEditProject : ContentPage
         _projectTypes = _projectTypeService.GetAllProjectTypes();
         var typeNames = _projectTypes.Select(t => t.Name).ToList();
         
-        // Dodaj opcję tworzenia własnego typu na końcu
         typeNames.Add(ADD_CUSTOM_TYPE_OPTION);
         
         picker.ItemsSource = typeNames;
@@ -54,6 +59,12 @@ public partial class AddOrEditProject : ContentPage
         if (_project.Type != null)
         {
             var selectedIndex = _projectTypes.FindIndex(t => t.Id == _project.Type.Id);
+            if (selectedIndex >= 0)
+                picker.SelectedIndex = selectedIndex;
+        }
+        else if (_project.ProjectTypeId.HasValue)
+        {
+            var selectedIndex = _projectTypes.FindIndex(t => t.Id == _project.ProjectTypeId.Value);
             if (selectedIndex >= 0)
                 picker.SelectedIndex = selectedIndex;
         }
@@ -102,13 +113,11 @@ public partial class AddOrEditProject : ContentPage
         {
             var newType = _projectTypeService.AddCustomProjectType(typeName, description);
             
-            // Przeładuj listę typów
             _projectTypes = _projectTypeService.GetAllProjectTypes();
             var typeNames = _projectTypes.Select(t => t.Name).ToList();
             typeNames.Add(ADD_CUSTOM_TYPE_OPTION);
             picker.ItemsSource = typeNames;
             
-            // Wybierz nowo utworzony typ
             var newTypeIndex = _projectTypes.FindIndex(t => t.Id == newType.Id);
             if (newTypeIndex >= 0)
             {
@@ -138,6 +147,17 @@ public partial class AddOrEditProject : ContentPage
         }
     }
 
+    private async void OnManageTypesClicked(object sender, EventArgs e)
+    {
+        if (_projectTypeService == null || _projectService == null)
+        {
+            await DisplayAlert("Error", "Services are not available.", "OK");
+            return;
+        }
+
+        await Navigation.PushAsync(new ManageProjectTypesPage(_projectTypeService, _projectService));
+    }
+
     private async void OnSaveClicked(object sender, EventArgs e)
     {
         var nameInput = entry_project_name.Text?.Trim();
@@ -155,7 +175,6 @@ public partial class AddOrEditProject : ContentPage
             return;
         }
 
-        // Sprawdź, czy użytkownik przypadkowo nie wybrał opcji "Add own project type"
         var selectedItem = picker.Items[picker.SelectedIndex];
         if (selectedItem == ADD_CUSTOM_TYPE_OPTION)
         {
