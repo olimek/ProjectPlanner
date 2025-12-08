@@ -27,7 +27,7 @@ namespace ProjectPlanner.Service
             {
                 Name = name ?? string.Empty,
                 Description = description,
-                Type = type ?? default
+                ProjectTypeId = type?.Id ?? 5 // Default to "Other" (Id = 5)
             };
 
             _uow.Project.Add(project);
@@ -157,7 +157,7 @@ namespace ProjectPlanner.Service
 
             dbProject.Name = project.Name;
             dbProject.Description = project.Description;
-            dbProject.Type = project.Type;
+            dbProject.ProjectTypeId = project.ProjectTypeId;
 
             _uow.Project.Update(dbProject);
             _uow.Save();
@@ -174,8 +174,12 @@ namespace ProjectPlanner.Service
             if (description != null)
                 dbProject.Description = description;
 
-            if (projectType != null && Enum.TryParse<ProjectType>(projectType, out var parsedType))
-                dbProject.Type = parsedType;
+            if (projectType != null)
+            {
+                var type = _uow.ProjectType.GetByName(projectType);
+                if (type != null)
+                    dbProject.ProjectTypeId = type.Id;
+            }
 
             _uow.Project.Update(dbProject);
             _uow.Save();

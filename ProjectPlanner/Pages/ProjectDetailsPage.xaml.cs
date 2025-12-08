@@ -30,7 +30,7 @@ namespace ProjectPlanner.Pages
             _project = currentProject;
             NameLabel.Text = _project.Name;
             DescriptionLabel.Text = string.IsNullOrWhiteSpace(_project.Description) ? "NO DATA" : _project.Description;
-            TypeLabel.Text = _project.Type.ToString().ToUpper();
+            TypeLabel.Text = _project.Type?.Name?.ToUpper() ?? "NO TYPE";
 
             Tasks = _projectService.GetTasksForProject(_project.Id);
 

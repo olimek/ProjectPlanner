@@ -108,8 +108,7 @@
 
 
   <!-- Increment version ONLY during Android packaging, ONLY once per build session -->
-  <Target Name="IncrementVersionForPackaging" BeforeTargets="Build" 
-          Condition="$(TargetFramework.Contains('android')) AND '$(AndroidPackageFormat)' != '' AND !Exists('$(VersionSentinelFile)')">
+  <Target Name="IncrementVersionForPackaging" BeforeTargets="Build" Condition="$(TargetFramework.Contains('android')) AND '$(AndroidPackageFormat)' != '' AND !Exists('$(VersionSentinelFile)')">
     <PropertyGroup>
       <!-- Read current value from file to get accurate 'before' number -->
       <CurrentIterationFromFile>$([System.IO.File]::ReadAllText('$(VersionFilePath)').Trim())</CurrentIterationFromFile>

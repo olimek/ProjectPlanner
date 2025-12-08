@@ -6,6 +6,7 @@ namespace ProjectPlanner.Data.UnitOfWork
     {
         IProjectRepository Project { get; }
         ITaskRepository Task { get; }
+        IProjectTypeRepository ProjectType { get; }
 
         void Save();
     }
