@@ -3,6 +3,10 @@
     "Windows Machine": {
       "commandName": "Project",
       "nativeDebugging": false
+    },
+    "Android Emulator": {
+      "commandName": "MauiAndroid",
+      "nativeDebugging": false
     }
   }
 }
