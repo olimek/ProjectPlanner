@@ -14,12 +14,12 @@
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    <Grid RowDefinitions="*, Auto">
+
+    <Grid RowDefinitions="*,Auto">
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Padding="20" Spacing="24">
 
-                <Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="12">
-
+                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
                     <Label
                         x:Name="NameLabel"
                         Grid.Column="0"
@@ -41,11 +41,11 @@
                         Clicked="EditBtn_Clicked"
                         CornerRadius="8"
                         FontFamily="HeaderFont"
-                        FontSize="18"
+                        FontSize="16"
                         HeightRequest="50"
-                        Text="✎"
+                        Text="EDIT"
                         TextColor="{StaticResource TextPrimary}"
-                        WidthRequest="50" />
+                        WidthRequest="70" />
 
                     <Button
                         x:Name="DelProjectBtn"
@@ -56,52 +56,140 @@
                         Clicked="DelProjectBtn_Clicked"
                         CornerRadius="8"
                         FontFamily="HeaderFont"
-                        FontSize="18"
+                        FontSize="16"
                         HeightRequest="50"
-                        Text="✕"
+                        Text="DEL"
                         TextColor="{StaticResource Magenta}"
-                        WidthRequest="50" />
+                        WidthRequest="70" />
                 </Grid>
 
                 <Border
-                    Padding="16"
+                    Padding="20"
                     BackgroundColor="{StaticResource SurfaceDark}"
                     Stroke="{StaticResource BorderColor}"
                     StrokeShape="RoundRectangle 8"
                     StrokeThickness="1">
-                    <VerticalStackLayout Spacing="16">
+                    <Grid>
+                        <VerticalStackLayout x:Name="view_mode_content" Spacing="16">
+                            <VerticalStackLayout Spacing="4">
+                                <Label
+                                    FontFamily="TechFont"
+                                    FontSize="12"
+                                    Text="CATEGORY"
+                                    TextColor="{StaticResource TextSecondary}" />
+                                <Label
+                                    x:Name="TypeLabel"
+                                    FontFamily="TechFont"
+                                    FontSize="18"
+                                    Text="NO TYPE"
+                                    TextColor="{StaticResource TextPrimary}" />
+                            </VerticalStackLayout>
 
-                        <VerticalStackLayout Spacing="4">
-                            <Label
-                                FontFamily="TechFont"
-                                FontSize="12"
-                                Text="CATEGORY"
-                                TextColor="{StaticResource NeonAccent}" />
-                            <Label
-                                x:Name="TypeLabel"
-                                FontFamily="TechFont"
-                                FontSize="16"
-                                Text="DIY / Woodworking"
-                                TextColor="{StaticResource TextPrimary}" />
+                            <BoxView HeightRequest="1" Color="{StaticResource BorderColor}" />
+
+                            <VerticalStackLayout Spacing="4">
+                                <Label
+                                    FontFamily="TechFont"
+                                    FontSize="12"
+                                    Text="SPECIFICATION"
+                                    TextColor="{StaticResource TextSecondary}" />
+                                <Label
+                                    x:Name="DescriptionLabel"
+                                    FontFamily="TechFont"
+                                    FontSize="14"
+                                    LineHeight="1.2"
+                                    Text="NO DATA"
+                                    TextColor="{StaticResource TextSecondary}" />
+                            </VerticalStackLayout>
                         </VerticalStackLayout>
 
-                        <BoxView HeightRequest="1" Color="{StaticResource BorderColor}" />
+                        <VerticalStackLayout x:Name="edit_mode_content" Spacing="16" IsVisible="False">
+                            <VerticalStackLayout Spacing="8">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontFamily="HeaderFont"
+                                    FontSize="14"
+                                    Text="PROJECT NAME"
+                                    TextColor="{StaticResource NeonAccent}" />
+                                <Border
+                                    BackgroundColor="{StaticResource BackgroundDark}"
+                                    Stroke="{StaticResource BorderColor}"
+                                    StrokeShape="RoundRectangle 4"
+                                    StrokeThickness="1">
+                                    <Entry
+                                        x:Name="entry_project_name"
+                                        Margin="12"
+                                        FontFamily="TechFont"
+                                        FontSize="16"
+                                        Placeholder="ENTER NAME..."
+                                        PlaceholderColor="{StaticResource TextSecondary}"
+                                        TextColor="{StaticResource TextPrimary}" />
+                                </Border>
+                            </VerticalStackLayout>
 
-                        <VerticalStackLayout Spacing="4">
-                            <Label
-                                FontFamily="TechFont"
-                                FontSize="12"
-                                Text="SPECIFICATION"
-                                TextColor="{StaticResource NeonAccent}" />
-                            <Label
-                                x:Name="DescriptionLabel"
-                                FontFamily="TechFont"
-                                FontSize="14"
-                                LineHeight="1.2"
-                                Text="..."
-                                TextColor="{StaticResource TextSecondary}" />
+                            <VerticalStackLayout Spacing="8">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontFamily="HeaderFont"
+                                    FontSize="14"
+                                    Text="CATEGORY"
+                                    TextColor="{StaticResource NeonAccent}" />
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                    <Border
+                                        Grid.Column="0"
+                                        BackgroundColor="{StaticResource BackgroundDark}"
+                                        Stroke="{StaticResource BorderColor}"
+                                        StrokeShape="RoundRectangle 4"
+                                        StrokeThickness="1">
+                                        <Picker
+                                            x:Name="picker_type"
+                                            Margin="12"
+                                            FontFamily="TechFont"
+                                            FontSize="16"
+                                            TextColor="{StaticResource TextPrimary}" />
+                                    </Border>
+                                    <Button
+                                        Grid.Column="1"
+                                        BackgroundColor="Transparent"
+                                        BorderColor="{StaticResource NeonAccent}"
+                                        BorderWidth="1"
+                                        Clicked="OnManageTypesClicked"
+                                        CornerRadius="6"
+                                        FontFamily="HeaderFont"
+                                        FontSize="12"
+                                        HeightRequest="48"
+                                        Padding="12,0"
+                                        Text="MANAGE"
+                                        TextColor="{StaticResource NeonAccent}" />
+                                </Grid>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="8">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontFamily="HeaderFont"
+                                    FontSize="14"
+                                    Text="DESCRIPTION"
+                                    TextColor="{StaticResource NeonAccent}" />
+                                <Border
+                                    BackgroundColor="{StaticResource BackgroundDark}"
+                                    Stroke="{StaticResource BorderColor}"
+                                    StrokeShape="RoundRectangle 4"
+                                    StrokeThickness="1">
+                                    <Editor
+                                        x:Name="editor_description"
+                                        Margin="12"
+                                        AutoSize="TextChanges"
+                                        FontFamily="TechFont"
+                                        FontSize="14"
+                                        Placeholder="MORE DATA..."
+                                        PlaceholderColor="{StaticResource TextSecondary}"
+                                        TextColor="{StaticResource TextPrimary}"
+                                        VerticalOptions="Start" />
+                                </Border>
+                            </VerticalStackLayout>
                         </VerticalStackLayout>
-                    </VerticalStackLayout>
+                    </Grid>
                 </Border>
 
                 <VerticalStackLayout Spacing="12">
@@ -142,15 +230,13 @@
                                     Stroke="{StaticResource BorderColor}"
                                     StrokeShape="RoundRectangle 4"
                                     StrokeThickness="1">
-                                    <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="12">
-
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                                         <Label
                                             Grid.Column="0"
                                             FontSize="20"
                                             Text="{Binding IsDone, Converter={StaticResource BoolToIconConverter}}"
                                             TextColor="{Binding IsDone, Converter={StaticResource BoolToColorConverter}}"
                                             VerticalOptions="Center" />
-
                                         <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
                                             <Label
                                                 FontFamily="TechFont"
@@ -159,11 +245,10 @@
                                                 Text="{Binding Name}"
                                                 TextColor="{StaticResource TextPrimary}" />
                                         </VerticalStackLayout>
-
                                         <Label
                                             Grid.Column="2"
-                                            FontSize="24"
-                                            Text="›"
+                                            FontSize="20"
+                                            Text=">"
                                             TextColor="{StaticResource TextSecondary}"
                                             VerticalOptions="Center" />
                                     </Grid>
@@ -188,8 +273,41 @@
             FontFamily="HeaderFont"
             FontSize="16"
             HeightRequest="56"
-            Shadow="{StaticResource Shadow}"
             Text="+ ADD NEW TASK"
             TextColor="{StaticResource Black}" />
+
+        <Grid
+            x:Name="edit_buttons_grid"
+            Grid.Row="1"
+            Padding="20"
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="16"
+            IsVisible="False">
+            <Button
+                x:Name="btn_save_project"
+                Grid.Column="0"
+                BackgroundColor="{StaticResource NeonAccent}"
+                Clicked="OnSaveClicked"
+                CornerRadius="8"
+                FontAttributes="Bold"
+                FontFamily="HeaderFont"
+                HeightRequest="56"
+                Text="SAVE"
+                TextColor="{StaticResource Black}" />
+            <Button
+                x:Name="btn_cancel_project"
+                Grid.Column="1"
+                BackgroundColor="Transparent"
+                BorderColor="{StaticResource NeonAccent}"
+                BorderWidth="1"
+                Clicked="EditBtn_Clicked"
+                CornerRadius="8"
+                FontFamily="HeaderFont"
+                FontSize="16"
+                HeightRequest="56"
+                Text="CANCEL"
+                TextColor="{StaticResource NeonAccent}"
+                WidthRequest="120" />
+        </Grid>
     </Grid>
 </ContentPage>

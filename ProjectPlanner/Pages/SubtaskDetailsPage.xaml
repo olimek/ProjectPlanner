@@ -3,122 +3,390 @@
     x:Class="ProjectPlanner.Pages.SubtaskDetailsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:ProjectPlanner.Model;assembly=ProjectPlanner.Model"
+    xmlns:local="clr-namespace:ProjectPlanner.Pages"
     xmlns:converters="clr-namespace:ProjectPlanner.helpers"
     Title="TASK DETAILS"
     BackgroundColor="{StaticResource BackgroundDark}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
+            <converters:BoolToIconConverter x:Key="BoolToIconConverter" />
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="*, Auto">
-        <ScrollView>
-            <VerticalStackLayout Padding="24" Spacing="24">
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="20" Spacing="20">
 
                 <Label
-                    Margin="0,0,0,-10"
-                    FontFamily="TechFont"
-                    FontSize="12"
-                    Text="// TASK DIAGNOSIS"
-                    TextColor="{StaticResource TextSecondary}" />
+                    FontAttributes="Bold"
+                    FontFamily="HeaderFont"
+                    FontSize="26"
+                    Text="SUBTASK"
+                    TextColor="{StaticResource NeonAccent}" />
 
                 <Border
+                    Padding="16"
                     BackgroundColor="{StaticResource SurfaceDark}"
-                    Stroke="{Binding IsDone, Converter={StaticResource BoolToColorConverter}}"
+                    Stroke="{StaticResource BorderColor}"
                     StrokeShape="RoundRectangle 8"
                     StrokeThickness="1">
-                    <Grid ColumnDefinitions="*, Auto">
-                        <VerticalStackLayout Margin="20">
+                    <VerticalStackLayout Spacing="12">
+                        <!-- Task name -->
+                        <Label
+                            FontFamily="TechFont"
+                            FontSize="22"
+                            Text="{Binding Name}"
+                            TextColor="{StaticResource TextPrimary}" />
+
+                        <!-- Status toggle -->
+                        <Border
+                            Padding="12"
+                            BackgroundColor="{StaticResource BackgroundDark}"
+                            Stroke="{StaticResource BorderColor}"
+                            StrokeShape="RoundRectangle 6"
+                            StrokeThickness="1">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <VerticalStackLayout VerticalOptions="Center">
+                                    <Label
+                                        FontFamily="HeaderFont"
+                                        FontSize="14"
+                                        Text="STATUS"
+                                        TextColor="{StaticResource NeonAccent}" />
+                                    <Label
+                                        x:Name="lbl_status_text"
+                                        FontFamily="TechFont"
+                                        FontSize="12"
+                                        Text="MARK AS COMPLETE"
+                                        TextColor="{StaticResource TextSecondary}" />
+                                </VerticalStackLayout>
+                                <Switch
+                                    x:Name="switch_status"
+                                    Grid.Column="1"
+                                    OnColor="{StaticResource NeonAccent}"
+                                    ThumbColor="{StaticResource TextPrimary}"
+                                    Toggled="OnStatusSwitchToggled"
+                                    VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+
+                        <Grid x:Name="view_date_priority" ColumnDefinitions="*,*" ColumnSpacing="16">
+                            <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                <Label
+                                    FontFamily="TechFont"
+                                    FontSize="12"
+                                    Text="PRIORITY"
+                                    TextColor="{StaticResource TextSecondary}" />
+                                <Label
+                                    x:Name="lbl_priority"
+                                    FontFamily="TechFont"
+                                    FontSize="16"
+                                    Text="NONE"
+                                    TextColor="{StaticResource TextPrimary}" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                <Label
+                                    FontFamily="TechFont"
+                                    FontSize="12"
+                                    Text="DUE DATE"
+                                    TextColor="{StaticResource TextSecondary}" />
+                                <Label
+                                    x:Name="lbl_due_date"
+                                    FontFamily="TechFont"
+                                    FontSize="16"
+                                    Text="NOT SET"
+                                    TextColor="{StaticResource TextPrimary}" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <BoxView HeightRequest="1" Color="{StaticResource BorderColor}" />
+
+                        <Label
+                            FontFamily="TechFont"
+                            FontSize="14"
+                            LineHeight="1.2"
+                            Text="{Binding Description}"
+                            TextColor="{StaticResource TextSecondary}" />
+
+                        <VerticalStackLayout Spacing="4">
                             <Label
                                 FontFamily="TechFont"
                                 FontSize="12"
-                                Text="OPERATION STATUS"
+                                Text="TAGS"
                                 TextColor="{StaticResource TextSecondary}" />
-
                             <Label
-                                FontAttributes="Bold"
-                                FontFamily="HeaderFont"
-                                FontSize="20"
-                                TextColor="{Binding IsDone, Converter={StaticResource BoolToColorConverter}}">
-                                <Label.Triggers>
-                                    <DataTrigger
-                                        Binding="{Binding IsDone}"
-                                        TargetType="Label"
-                                        Value="True">
-                                        <Setter Property="Text" Value="DONE [OK]" />
-                                    </DataTrigger>
-                                    <DataTrigger
-                                        Binding="{Binding IsDone}"
-                                        TargetType="Label"
-                                        Value="False">
-                                        <Setter Property="Text" Value="ONGOING..." />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
+                                x:Name="lbl_tags"
+                                FontFamily="TechFont"
+                                FontSize="16"
+                                Text="NO TAGS"
+                                TextColor="{StaticResource TextPrimary}" />
                         </VerticalStackLayout>
-
-                        <Switch
-                            Grid.Column="1"
-                            IsToggled="{Binding IsDone, Mode=TwoWay}"
-                            OnColor="{StaticResource NeonAccent}"
-                            ThumbColor="{StaticResource Black}"
-                            Toggled="OnStatusToggled" />
-                    </Grid>
+                    </VerticalStackLayout>
                 </Border>
 
-                <VerticalStackLayout Spacing="16">
+                <!-- VIEW MODE CONTENT - Attachments, Links, Notes -->
+                <VerticalStackLayout x:Name="view_mode_content" Spacing="20">
+                    
+                    <!-- ATTACHMENTS SECTION -->
                     <VerticalStackLayout Spacing="8">
                         <Label
+                            FontAttributes="Bold"
+                            FontFamily="HeaderFont"
+                            FontSize="14"
+                            Text="ATTACHMENTS"
+                            TextColor="{StaticResource NeonAccent}" />
+
+                        <Border
+                            BackgroundColor="{StaticResource SurfaceDark}"
+                            Stroke="{StaticResource BorderColor}"
+                            StrokeShape="RoundRectangle 4"
+                            StrokeThickness="1">
+                            <VerticalStackLayout Padding="12" Spacing="8">
+                                <Label
+                                    x:Name="lbl_no_attachments"
+                                    FontFamily="TechFont"
+                                    FontSize="12"
+                                    HorizontalOptions="Center"
+                                    Text="NO ATTACHMENTS."
+                                    TextColor="{StaticResource TextSecondary}" />
+                                <VerticalStackLayout
+                                    x:Name="attachments_list"
+                                    Spacing="8">
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Button
+                            BackgroundColor="Transparent"
+                            BorderColor="{StaticResource NeonAccent}"
+                            BorderWidth="1"
+                            Clicked="OnAddAttachmentClicked"
+                            CornerRadius="6"
+                            FontFamily="HeaderFont"
+                            FontSize="12"
+                            HeightRequest="42"
+                            Text="+ ADD ATTACHMENT"
+                            TextColor="{StaticResource NeonAccent}" />
+                    </VerticalStackLayout>
+
+                    <!-- LINKS SECTION -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label
+                            FontAttributes="Bold"
+                            FontFamily="HeaderFont"
+                            FontSize="14"
+                            Text="LINKS"
+                            TextColor="{StaticResource NeonAccent}" />
+
+                        <Border
+                            BackgroundColor="{StaticResource SurfaceDark}"
+                            Stroke="{StaticResource BorderColor}"
+                            StrokeShape="RoundRectangle 4"
+                            StrokeThickness="1">
+                            <VerticalStackLayout Padding="12" Spacing="8">
+                                <Label
+                                    x:Name="lbl_no_links"
+                                    FontFamily="TechFont"
+                                    FontSize="12"
+                                    HorizontalOptions="Center"
+                                    Text="NO LINKS."
+                                    TextColor="{StaticResource TextSecondary}" />
+                                <VerticalStackLayout
+                                    x:Name="links_list"
+                                    Spacing="8">
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Button
+                            BackgroundColor="Transparent"
+                            BorderColor="{StaticResource NeonAccent}"
+                            BorderWidth="1"
+                            Clicked="OnAddLinkClicked"
+                            CornerRadius="6"
+                            FontFamily="HeaderFont"
+                            FontSize="12"
+                            HeightRequest="42"
+                            Text="+ ADD LINK"
+                            TextColor="{StaticResource NeonAccent}" />
+                    </VerticalStackLayout>
+
+                    <!-- NOTES SECTION -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label
+                            FontAttributes="Bold"
+                            FontFamily="HeaderFont"
+                            FontSize="14"
+                            Text="NOTES"
+                            TextColor="{StaticResource NeonAccent}" />
+
+                        <Border
+                            BackgroundColor="{StaticResource SurfaceDark}"
+                            Stroke="{StaticResource BorderColor}"
+                            StrokeShape="RoundRectangle 4"
+                            StrokeThickness="1">
+                            <VerticalStackLayout Padding="12" Spacing="8">
+                                <Label
+                                    x:Name="lbl_no_notes"
+                                    FontFamily="TechFont"
+                                    FontSize="12"
+                                    HorizontalOptions="Center"
+                                    Text="NO NOTES."
+                                    TextColor="{StaticResource TextSecondary}" />
+                                <VerticalStackLayout
+                                    x:Name="notes_list"
+                                    Spacing="8">
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Button
+                            BackgroundColor="Transparent"
+                            BorderColor="{StaticResource NeonAccent}"
+                            BorderWidth="1"
+                            Clicked="OnAddNoteClicked"
+                            CornerRadius="6"
+                            FontFamily="HeaderFont"
+                            FontSize="12"
+                            HeightRequest="42"
+                            Text="+ ADD NOTE"
+                            TextColor="{StaticResource NeonAccent}" />
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- EDIT MODE CONTENT -->
+                <VerticalStackLayout x:Name="edit_mode_content" Spacing="16" IsVisible="False">
+                    <VerticalStackLayout Spacing="8">
+                        <Label
+                            FontAttributes="Bold"
                             FontFamily="HeaderFont"
                             FontSize="14"
                             Text="TASK NAME"
                             TextColor="{StaticResource NeonAccent}" />
-
-                        <Label
-                            FontAttributes="Bold"
-                            FontFamily="HeaderFont"
-                            FontSize="24"
-                            Text="{Binding Name}"
-                            TextColor="{StaticResource TextPrimary}" />
+                        <Border
+                            BackgroundColor="{StaticResource SurfaceDark}"
+                            Stroke="{StaticResource BorderColor}"
+                            StrokeShape="RoundRectangle 4"
+                            StrokeThickness="1">
+                            <Entry
+                                x:Name="entry_task_name"
+                                Margin="12"
+                                FontFamily="TechFont"
+                                FontSize="16"
+                                Placeholder="ENTER NAME..."
+                                PlaceholderColor="{StaticResource TextSecondary}"
+                                TextColor="{StaticResource TextPrimary}" />
+                        </Border>
                     </VerticalStackLayout>
-
-                    <BoxView HeightRequest="1" Color="{StaticResource BorderColor}" />
 
                     <VerticalStackLayout Spacing="8">
                         <Label
+                            FontAttributes="Bold"
                             FontFamily="HeaderFont"
                             FontSize="14"
                             Text="DESCRIPTION"
                             TextColor="{StaticResource NeonAccent}" />
-
                         <Border
-                            Padding="16"
                             BackgroundColor="{StaticResource SurfaceDark}"
-                            MinimumHeightRequest="100"
                             Stroke="{StaticResource BorderColor}"
                             StrokeShape="RoundRectangle 4"
                             StrokeThickness="1">
-                            <Label
+                            <Editor
+                                x:Name="editor_description"
+                                Margin="12"
+                                AutoSize="TextChanges"
                                 FontFamily="TechFont"
-                                FontSize="16"
-                                LineHeight="1.2"
-                                Text="{Binding Description}"
-                                TextColor="{StaticResource TextSecondary}" />
+                                FontSize="14"
+                                Placeholder="MORE DATA..."
+                                PlaceholderColor="{StaticResource TextSecondary}"
+                                TextColor="{StaticResource TextPrimary}" />
                         </Border>
                     </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="8">
+                        <Label
+                            FontAttributes="Bold"
+                            FontFamily="HeaderFont"
+                            FontSize="14"
+                            Text="TAGS"
+                            TextColor="{StaticResource NeonAccent}" />
+                        <Border
+                            BackgroundColor="{StaticResource SurfaceDark}"
+                            Stroke="{StaticResource BorderColor}"
+                            StrokeShape="RoundRectangle 4"
+                            StrokeThickness="1">
+                            <Entry
+                                x:Name="entry_tags"
+                                Margin="12"
+                                FontFamily="TechFont"
+                                FontSize="14"
+                                Placeholder="TAGS (COMMA SEPARATED)..."
+                                PlaceholderColor="{StaticResource TextSecondary}"
+                                TextColor="{StaticResource TextPrimary}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                        <VerticalStackLayout Grid.Column="0" Spacing="8">
+                            <Label
+                                FontAttributes="Bold"
+                                FontFamily="HeaderFont"
+                                FontSize="14"
+                                Text="PRIORITY"
+                                TextColor="{StaticResource NeonAccent}" />
+                            <Border
+                                BackgroundColor="{StaticResource SurfaceDark}"
+                                Stroke="{StaticResource BorderColor}"
+                                StrokeShape="RoundRectangle 4"
+                                StrokeThickness="1">
+                                <Picker
+                                    x:Name="picker_priority"
+                                    Margin="12"
+                                    FontFamily="TechFont"
+                                    FontSize="16"
+                                    TextColor="{StaticResource TextPrimary}">
+                                    <Picker.Items>
+                                        <x:String>0 - NONE</x:String>
+                                        <x:String>1 - LOW</x:String>
+                                        <x:String>2 - MEDIUM</x:String>
+                                        <x:String>3 - HIGH</x:String>
+                                        <x:String>4 - URGENT</x:String>
+                                        <x:String>5 - CRITICAL</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="8">
+                            <Label
+                                FontAttributes="Bold"
+                                FontFamily="HeaderFont"
+                                FontSize="14"
+                                Text="DUE DATE"
+                                TextColor="{StaticResource NeonAccent}" />
+                            <Border
+                                BackgroundColor="{StaticResource SurfaceDark}"
+                                Stroke="{StaticResource BorderColor}"
+                                StrokeShape="RoundRectangle 4"
+                                StrokeThickness="1">
+                                <DatePicker
+                                    x:Name="picker_due_date"
+                                    Margin="12"
+                                    FontFamily="TechFont"
+                                    FontSize="16"
+                                    TextColor="{StaticResource TextPrimary}" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
 
-        <Grid
-            Grid.Row="1"
-            Padding="24,10,24,24"
-            ColumnDefinitions="*,Auto"
-            ColumnSpacing="16">
-
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="16" Padding="20">
             <Button
+                x:Name="btn_edit"
+                Grid.Row="0"
                 Grid.Column="0"
                 BackgroundColor="{StaticResource NeonAccent}"
                 Clicked="OnEditClicked"
@@ -126,10 +394,12 @@
                 FontAttributes="Bold"
                 FontFamily="HeaderFont"
                 HeightRequest="50"
-                Text="EDIT DATA"
+                Text="EDIT"
                 TextColor="{StaticResource Black}" />
 
             <Button
+                x:Name="btn_delete"
+                Grid.Row="0"
                 Grid.Column="1"
                 BackgroundColor="Transparent"
                 BorderColor="{StaticResource Magenta}"
@@ -137,11 +407,42 @@
                 Clicked="OnDeleteClicked"
                 CornerRadius="8"
                 FontFamily="HeaderFont"
-                FontSize="20"
+                FontSize="16"
                 HeightRequest="50"
-                Text="🗑"
+                Text="DELETE"
                 TextColor="{StaticResource Magenta}"
-                WidthRequest="60" />
+                WidthRequest="120" />
+
+            <Button
+                x:Name="btn_save"
+                Grid.Row="1"
+                Grid.Column="0"
+                BackgroundColor="{StaticResource NeonAccent}"
+                Clicked="OnSaveClicked"
+                CornerRadius="8"
+                FontAttributes="Bold"
+                FontFamily="HeaderFont"
+                HeightRequest="50"
+                IsVisible="False"
+                Text="SAVE"
+                TextColor="{StaticResource Black}" />
+
+            <Button
+                x:Name="btn_cancel"
+                Grid.Row="1"
+                Grid.Column="1"
+                BackgroundColor="Transparent"
+                BorderColor="{StaticResource NeonAccent}"
+                BorderWidth="1"
+                Clicked="OnEditClicked"
+                CornerRadius="8"
+                FontFamily="HeaderFont"
+                FontSize="16"
+                HeightRequest="50"
+                IsVisible="False"
+                Text="CANCEL"
+                TextColor="{StaticResource NeonAccent}"
+                WidthRequest="120" />
         </Grid>
     </Grid>
 </ContentPage>

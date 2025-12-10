@@ -8,6 +8,9 @@ namespace ProjectPlanner.Data.Contexts
         public DbSet<Project> Projects { get; set; } = null!;
         public DbSet<SubTask> Tasks { get; set; } = null!;
         public DbSet<ProjectType> ProjectTypes { get; set; } = null!;
+        public DbSet<TaskAttachment> TaskAttachments { get; set; } = null!;
+        public DbSet<TaskLink> TaskLinks { get; set; } = null!;
+        public DbSet<TaskNote> TaskNotes { get; set; } = null!;
 
         public string DbPath { get; }
 
@@ -40,6 +43,24 @@ namespace ProjectPlanner.Data.Contexts
                 .WithMany()
                 .HasForeignKey(p => p.ProjectTypeId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<SubTask>()
+                .HasMany(t => t.Attachments)
+                .WithOne(a => a.SubTask)
+                .HasForeignKey(a => a.SubTaskId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SubTask>()
+                .HasMany(t => t.Links)
+                .WithOne(l => l.SubTask)
+                .HasForeignKey(l => l.SubTaskId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SubTask>()
+                .HasMany(t => t.Notes)
+                .WithOne(n => n.SubTask)
+                .HasForeignKey(n => n.SubTaskId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

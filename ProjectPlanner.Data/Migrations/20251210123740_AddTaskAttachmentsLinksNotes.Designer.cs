@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectPlanner.Data.Contexts;
 
@@ -10,9 +11,11 @@ using ProjectPlanner.Data.Contexts;
 namespace ProjectPlanner.Data.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    partial class ProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20251210123740_AddTaskAttachmentsLinksNotes")]
+    partial class AddTaskAttachmentsLinksNotes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.8");
@@ -80,9 +83,6 @@ namespace ProjectPlanner.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("DueDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<bool>("IsDone")
                         .HasColumnType("INTEGER");
 
@@ -90,15 +90,8 @@ namespace ProjectPlanner.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Priority")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int?>("ProjectId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Tags")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -222,7 +215,7 @@ namespace ProjectPlanner.Data.Migrations
             modelBuilder.Entity("ProjectPlanner.Model.TaskAttachment", b =>
                 {
                     b.HasOne("ProjectPlanner.Model.SubTask", "SubTask")
-                        .WithMany("Attachments")
+                        .WithMany()
                         .HasForeignKey("SubTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -233,7 +226,7 @@ namespace ProjectPlanner.Data.Migrations
             modelBuilder.Entity("ProjectPlanner.Model.TaskLink", b =>
                 {
                     b.HasOne("ProjectPlanner.Model.SubTask", "SubTask")
-                        .WithMany("Links")
+                        .WithMany()
                         .HasForeignKey("SubTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -244,7 +237,7 @@ namespace ProjectPlanner.Data.Migrations
             modelBuilder.Entity("ProjectPlanner.Model.TaskNote", b =>
                 {
                     b.HasOne("ProjectPlanner.Model.SubTask", "SubTask")
-                        .WithMany("Notes")
+                        .WithMany()
                         .HasForeignKey("SubTaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -255,15 +248,6 @@ namespace ProjectPlanner.Data.Migrations
             modelBuilder.Entity("ProjectPlanner.Model.Project", b =>
                 {
                     b.Navigation("Tasks");
-                });
-
-            modelBuilder.Entity("ProjectPlanner.Model.SubTask", b =>
-                {
-                    b.Navigation("Attachments");
-
-                    b.Navigation("Links");
-
-                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }
