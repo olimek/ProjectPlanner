@@ -17,11 +17,7 @@ namespace ProjectPlanner.Model
 
         public static class Predefined
         {
-            public const string Electronics = "Electronics";
-            public const string Programming = "Programming";
-            public const string Mechanics = "Mechanics";
             public const string Home = "Home";
-            public const string Other = "Other";
         }
 
         public override string ToString() => Name;

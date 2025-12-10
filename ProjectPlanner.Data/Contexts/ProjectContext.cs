@@ -31,12 +31,9 @@ namespace ProjectPlanner.Data.Contexts
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<ProjectType>().HasData(
-                new ProjectType { Id = 1, Name = ProjectType.Predefined.Electronics, IsCustom = false },
-                new ProjectType { Id = 2, Name = ProjectType.Predefined.Programming, IsCustom = false },
-                new ProjectType { Id = 3, Name = ProjectType.Predefined.Mechanics, IsCustom = false },
-                new ProjectType { Id = 4, Name = ProjectType.Predefined.Home, IsCustom = false },
-                new ProjectType { Id = 5, Name = ProjectType.Predefined.Other, IsCustom = false }
-            );
+
+                new ProjectType { Id = 1, Name = ProjectType.Predefined.Home, IsCustom = false }
+                            );
 
             modelBuilder.Entity<Project>()
                 .HasOne(p => p.Type)
