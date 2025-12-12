@@ -22,10 +22,11 @@ namespace ProjectPlanner
                     fonts.AddFont("ChakraPetch-Regular.ttf", "TechFont");
                 });
 
-// Debug logging provider is not required here. If needed, add logging providers via builder.Logging.AddProvider(...)
             builder.Services.AddDbContext<ProjectContext>();
             builder.Services.AddTransient<ProjectPage>();
+            builder.Services.AddTransient<ManageProjectTypesPage>();
             builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<IProjectTypeService, ProjectTypeService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             using (var scope = builder.Services.BuildServiceProvider().CreateScope())

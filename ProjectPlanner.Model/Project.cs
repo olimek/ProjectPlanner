@@ -10,7 +10,12 @@ namespace ProjectPlanner.Model
 
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
-        public ProjectType Type { get; set; }
+        
+        public int? ProjectTypeId { get; set; }
+        
+        [ForeignKey(nameof(ProjectTypeId))]
+        public ProjectType? Type { get; set; }
+        
         public List<SubTask> Tasks { get; set; } = new();
 
         [NotMapped]

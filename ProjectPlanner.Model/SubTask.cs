@@ -33,9 +33,37 @@ namespace ProjectPlanner.Model
             set => SetProperty(ref _isDone, value);
         }
 
+        private string _tags = string.Empty;
+
+        public string Tags
+        {
+            get => _tags;
+            set => SetProperty(ref _tags, value);
+        }
+
+        private int _priority;
+
+        public int Priority
+        {
+            get => _priority;
+            set => SetProperty(ref _priority, value);
+        }
+
+        private DateTime? _dueDate;
+
+        public DateTime? DueDate
+        {
+            get => _dueDate;
+            set => SetProperty(ref _dueDate, value);
+        }
+
         public int? ProjectId { get; set; }
 
         public Project? Project { get; set; }
+
+        public List<TaskAttachment> Attachments { get; set; } = new();
+        public List<TaskLink> Links { get; set; } = new();
+        public List<TaskNote> Notes { get; set; } = new();
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

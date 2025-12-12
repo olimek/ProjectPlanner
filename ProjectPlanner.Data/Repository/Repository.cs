@@ -7,7 +7,7 @@ namespace ProjectPlanner.Data.Repository
 {
     public abstract class Repository<T> : IRepository<T> where T : class
     {
-        private readonly ProjectContext _db; // Make _db readonly
+        private readonly ProjectContext _db;
         internal DbSet<T> dbSet;
 
         public Repository(ProjectContext db)

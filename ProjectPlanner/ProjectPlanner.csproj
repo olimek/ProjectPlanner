@@ -88,7 +88,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.111" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.120" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172">
 		  <TreatAsUsed>true</TreatAsUsed>
@@ -108,8 +108,7 @@
 
 
   <!-- Increment version ONLY during Android packaging, ONLY once per build session -->
-  <Target Name="IncrementVersionForPackaging" BeforeTargets="Build" 
-          Condition="$(TargetFramework.Contains('android')) AND '$(AndroidPackageFormat)' != '' AND !Exists('$(VersionSentinelFile)')">
+  <Target Name="IncrementVersionForPackaging" BeforeTargets="Build" Condition="$(TargetFramework.Contains('android')) AND '$(AndroidPackageFormat)' != '' AND !Exists('$(VersionSentinelFile)')">
     <PropertyGroup>
       <!-- Read current value from file to get accurate 'before' number -->
       <CurrentIterationFromFile>$([System.IO.File]::ReadAllText('$(VersionFilePath)').Trim())</CurrentIterationFromFile>
@@ -149,7 +148,13 @@
 	  <MauiXaml Update="Pages\AddOrEditTask.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\ManageProjectTypesPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\ProjectDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\ProjectDetailsPage_NEW.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

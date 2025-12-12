@@ -95,7 +95,7 @@
                                     <Label
                                         Grid.Column="1"
                                         FontSize="18"
-                                        Text="&#10142;"
+                                        Text=">"
                                         TextColor="{StaticResource TextSecondary}" />
                                 </Grid>
 

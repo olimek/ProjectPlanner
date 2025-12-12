@@ -41,12 +41,27 @@
             </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="8">
-                <Label
-                    FontAttributes="Bold"
-                    FontFamily="HeaderFont"
-                    FontSize="14"
-                    Text="CATEGORY"
-                    TextColor="{StaticResource NeonAccent}" />
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label
+                        Grid.Column="0"
+                        FontAttributes="Bold"
+                        FontFamily="HeaderFont"
+                        FontSize="14"
+                        Text="CATEGORY"
+                        TextColor="{StaticResource NeonAccent}"
+                        VerticalOptions="Center" />
+                    <Button
+                        Grid.Column="1"
+                        Padding="8,4"
+                        BackgroundColor="Transparent"
+                        BorderColor="{StaticResource NeonAccent}"
+                        BorderWidth="1"
+                        Clicked="OnManageTypesClicked"
+                        FontFamily="TechFont"
+                        FontSize="10"
+                        Text="[MANAGE]"
+                        TextColor="{StaticResource NeonAccent}" />
+                </Grid>
 
                 <Border
                     BackgroundColor="{StaticResource SurfaceDark}"

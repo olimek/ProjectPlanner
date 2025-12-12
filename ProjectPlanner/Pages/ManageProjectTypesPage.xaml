@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ProjectPlanner.Pages.ManageProjectTypesPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ProjectPlanner.helpers"
+    Title="MANAGE PROJECT TYPES"
+    BackgroundColor="{StaticResource BackgroundDark}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="24">
+
+            <Label
+                Margin="0,0,0,-10"
+                FontFamily="TechFont"
+                FontSize="12"
+                Text="// PROJECT TYPE CONFIGURATION"
+                TextColor="{StaticResource TextSecondary}" />
+
+            <VerticalStackLayout Spacing="8">
+                <Label
+                    FontAttributes="Bold"
+                    FontFamily="HeaderFont"
+                    FontSize="16"
+                    Text="SYSTEM TYPES"
+                    TextColor="{StaticResource NeonAccent}" />
+
+                <Label
+                    FontFamily="TechFont"
+                    FontSize="12"
+                    Text="Built-in project types (cannot be modified)"
+                    TextColor="{StaticResource TextSecondary}" />
+
+                <CollectionView x:Name="PredefinedTypesList" Margin="0,8,0,0">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="0,0,0,8"
+                                Padding="16,12"
+                                BackgroundColor="{StaticResource SurfaceDark}"
+                                Stroke="{StaticResource BorderColor}"
+                                StrokeShape="RoundRectangle 6"
+                                StrokeThickness="1">
+                                <Grid ColumnDefinitions="6, *">
+                                    <BoxView Grid.Column="0" Color="{StaticResource TextSecondary}" />
+                                    <VerticalStackLayout Grid.Column="1" Padding="12,0,0,0">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontFamily="HeaderFont"
+                                            FontSize="15"
+                                            Text="{Binding Name}"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            TextTransform="Uppercase" />
+                                        <Label
+                                            FontFamily="TechFont"
+                                            FontSize="12"
+                                            IsVisible="{Binding Description, Converter={StaticResource IsNotNullConverter}}"
+                                            Text="{Binding Description}"
+                                            TextColor="{StaticResource TextSecondary}" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout Spacing="8">
+                <Label
+                    FontAttributes="Bold"
+                    FontFamily="HeaderFont"
+                    FontSize="16"
+                    Text="CUSTOM TYPES"
+                    TextColor="{StaticResource NeonAccent}" />
+
+                <Label
+                    FontFamily="TechFont"
+                    FontSize="12"
+                    Text="Your custom project types (tap to edit/delete)"
+                    TextColor="{StaticResource TextSecondary}" />
+
+                <CollectionView
+                    x:Name="CustomTypesList"
+                    Margin="0,8,0,0"
+                    SelectionChanged="OnCustomTypeSelected"
+                    SelectionMode="Single">
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout Padding="20" Spacing="8">
+                            <Label
+                                FontFamily="TechFont"
+                                FontSize="12"
+                                HorizontalOptions="Center"
+                                Text="No custom types yet"
+                                TextColor="{StaticResource TextSecondary}" />
+                            <Label
+                                FontFamily="TechFont"
+                                FontSize="11"
+                                HorizontalOptions="Center"
+                                Text="Create one using the button below"
+                                TextColor="{StaticResource TextSecondary}" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="0,0,0,8"
+                                Padding="16,12"
+                                BackgroundColor="{StaticResource SurfaceDark}"
+                                Stroke="{StaticResource NeonAccent}"
+                                StrokeShape="RoundRectangle 6"
+                                StrokeThickness="1">
+                                <Grid ColumnDefinitions="6, *, Auto">
+                                    <BoxView Grid.Column="0" Color="{StaticResource NeonAccent}" />
+                                    <VerticalStackLayout Grid.Column="1" Padding="12,0,0,0">
+                                        <Label
+                                            FontAttributes="Bold"
+                                            FontFamily="HeaderFont"
+                                            FontSize="15"
+                                            Text="{Binding Name}"
+                                            TextColor="{StaticResource TextPrimary}"
+                                            TextTransform="Uppercase" />
+                                        <Label
+                                            FontFamily="TechFont"
+                                            FontSize="12"
+                                            IsVisible="{Binding Description, Converter={StaticResource IsNotNullConverter}}"
+                                            Text="{Binding Description}"
+                                            TextColor="{StaticResource TextSecondary}" />
+                                    </VerticalStackLayout>
+                                    <Label
+                                        Grid.Column="2"
+                                        FontSize="20"
+                                        Text=">"
+                                        TextColor="{StaticResource NeonAccent}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <Button
+                Margin="0,20,0,0"
+                BackgroundColor="{StaticResource NeonAccent}"
+                Clicked="OnAddCustomTypeClicked"
+                FontAttributes="Bold"
+                FontFamily="HeaderFont"
+                Text="[+] ADD CUSTOM TYPE"
+                TextColor="{StaticResource Black}" />
+
+            <Label
+                Margin="0,10,0,0"
+                FontFamily="TechFont"
+                FontSize="11"
+                HorizontalTextAlignment="Center"
+                Text="Tip: You can also add types directly when creating a project"
+                TextColor="{StaticResource TextSecondary}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

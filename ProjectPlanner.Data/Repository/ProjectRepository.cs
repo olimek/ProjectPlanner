@@ -21,14 +21,17 @@ namespace ProjectPlanner.Data.Repository
             {
                 objFromDb.Name = entity.Name;
                 objFromDb.Description = entity.Description;
-                objFromDb.Type = entity.Type;
+                objFromDb.ProjectTypeId = entity.ProjectTypeId;
                 objFromDb.Tasks = entity.Tasks;
             }
         }
 
         public override IEnumerable<Project>? GetAll()
         {
-            return _db.Projects.Include(p => p.Tasks).ToList();
+            return _db.Projects
+                .Include(p => p.Tasks)
+                .Include(p => p.Type)
+                .ToList();
         }
     }
 }

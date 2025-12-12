@@ -32,8 +32,8 @@ namespace ProjectPlanner.helpers
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value is bool isDone && isDone) return "☑";
-            return "☐";
+            if (value is bool isDone && isDone) return "[X]";
+            return "[ ]";
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -60,6 +60,19 @@ namespace ProjectPlanner.helpers
                     return (Color)grayColor;
                 return Colors.Gray;
             }
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class IsNotNullConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            return value != null && !string.IsNullOrWhiteSpace(value.ToString());
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

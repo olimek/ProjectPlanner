@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ProjectPlanner.Pages.ProjectDetailsPage_NEW"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="PROJECT DETAILS"
+    BackgroundColor="{StaticResource BackgroundDark}">
+
+    <VerticalStackLayout Padding="24" Spacing="12">
+        <Label
+            FontFamily="HeaderFont"
+            FontSize="20"
+            Text="PROJECT DETAILS (NEW)"
+            TextColor="{StaticResource NeonAccent}" />
+        <Label
+            FontFamily="TechFont"
+            FontSize="14"
+            Text="This page is a placeholder."
+            TextColor="{StaticResource TextSecondary}" />
+    </VerticalStackLayout>
+</ContentPage>
