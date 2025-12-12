@@ -27,7 +27,7 @@
 		<ApplicationId>com.companyname.projectplanner</ApplicationId>
 
 	<!-- Versions - Auto-increment using PropertyGroup-based initialization -->
-		<VersionPrefix>0.1</VersionPrefix>
+		<VersionPrefix>1.0</VersionPrefix>
 		<VersionFilePath>$(MSBuildProjectDirectory)\version_iteration.txt</VersionFilePath>
 		<VersionSentinelFile>$(MSBuildProjectDirectory)\VersionIncremented.sentinel</VersionSentinelFile>
 		
