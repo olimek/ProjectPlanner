@@ -24,22 +24,13 @@
 		<ApplicationTitle>ProjectPlanner</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.projectplanner</ApplicationId>
+		<ApplicationId>personalprojectplanner</ApplicationId>
 
-	<!-- Versions - Auto-increment using PropertyGroup-based initialization -->
-		<VersionPrefix>1.0</VersionPrefix>
-		<VersionFilePath>$(MSBuildProjectDirectory)\version_iteration.txt</VersionFilePath>
-		<VersionSentinelFile>$(MSBuildProjectDirectory)\VersionIncremented.sentinel</VersionSentinelFile>
-		
-		<!-- Read version iteration directly from file in PropertyGroup (happens BEFORE any target) -->
-		<VersionIteration Condition="Exists('$(VersionFilePath)')">$([System.IO.File]::ReadAllText('$(VersionFilePath)').Trim())</VersionIteration>
-		<VersionIteration Condition="'$(VersionIteration)' == '' or '$(VersionIteration)' == '0'">1</VersionIteration>
-		
-		<!-- Set all version properties immediately -->
-		<ApplicationDisplayVersion>$(VersionPrefix).$(VersionIteration)</ApplicationDisplayVersion>
-		<ApplicationVersion>$(VersionIteration)</ApplicationVersion>
-		<AndroidVersionCode>$(VersionIteration)</AndroidVersionCode>
-		<AndroidVersionName>$(VersionPrefix).$(VersionIteration)</AndroidVersionName>
+		<!-- Versions - manual configuration -->
+		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+		<ApplicationVersion>100100</ApplicationVersion>
+		<AndroidVersionCode>100100</AndroidVersionCode>
+		<AndroidVersionName>1.0.0</AndroidVersionName>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
 		<WindowsPackageType>None</WindowsPackageType>
@@ -105,42 +96,6 @@
 	    <DependentUpon>ProjectDetailsPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
-
-
-  <!-- Increment version ONLY during Android packaging, ONLY once per build session -->
-  <Target Name="IncrementVersionForPackaging" BeforeTargets="Build" Condition="$(TargetFramework.Contains('android')) AND '$(AndroidPackageFormat)' != '' AND !Exists('$(VersionSentinelFile)')">
-    <PropertyGroup>
-      <!-- Read current value from file to get accurate 'before' number -->
-      <CurrentIterationFromFile>$([System.IO.File]::ReadAllText('$(VersionFilePath)').Trim())</CurrentIterationFromFile>
-      <NewVersionIteration>$([MSBuild]::Add($(CurrentIterationFromFile), 1))</NewVersionIteration>
-    </PropertyGroup>
-
-    <!-- Write incremented version to file -->
-    <WriteLinesToFile File="$(VersionFilePath)" Lines="$(NewVersionIteration)" Overwrite="true" />
-
-    <!-- Create sentinel to prevent multiple increments -->
-    <WriteLinesToFile File="$(VersionSentinelFile)" Lines="Incremented" Overwrite="true" />
-
-    <!-- Update properties for current build -->
-    <PropertyGroup>
-      <VersionIteration>$(NewVersionIteration)</VersionIteration>
-      <ApplicationDisplayVersion>$(VersionPrefix).$(NewVersionIteration)</ApplicationDisplayVersion>
-      <ApplicationVersion>$(NewVersionIteration)</ApplicationVersion>
-      <AndroidVersionCode>$(NewVersionIteration)</AndroidVersionCode>
-      <AndroidVersionName>$(VersionPrefix).$(NewVersionIteration)</AndroidVersionName>
-    </PropertyGroup>
-
-    <Message Text="***** PACKAGING: Incremented version from $(CurrentIterationFromFile) to $(NewVersionIteration) *****" Importance="high" />
-  </Target>
-
-  <!-- Clean sentinel file on Clean -->
-  <Target Name="CleanVersionSentinel" AfterTargets="Clean">
-    <Delete Files="$(VersionSentinelFile)" Condition="Exists('$(VersionSentinelFile)')" />
-    <Message Text="***** Cleaned version sentinel file *****" Importance="high" />
-  </Target>
-
-
-
 	<ItemGroup>
 	  <MauiXaml Update="Pages\AddOrEditProject.xaml">
 	    <Generator>MSBuild:Compile</Generator>
