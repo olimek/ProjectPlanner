@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Microsoft.Maui.Controls;
+using ProjectPlanner.Model;
 
 namespace ProjectPlanner.helpers
 {
@@ -73,6 +74,38 @@ namespace ProjectPlanner.helpers
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             return value != null && !string.IsNullOrWhiteSpace(value.ToString());
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class TaskStatusBadgeConverter : IValueConverter
+    {
+        private static readonly string[] PriorityNames =
+            { "NONE", "LOW", "MEDIUM", "HIGH", "URGENT", "CRITICAL" };
+
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is SubTask task)
+            {
+                if (task.IsDone)
+                {
+                    return "[X]";
+                }
+
+                var index = task.Priority;
+                if (index < 0 || index >= PriorityNames.Length)
+                {
+                    index = 0;
+                }
+
+                return $"[{PriorityNames[index]}]";
+            }
+
+            return "[ ]";
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

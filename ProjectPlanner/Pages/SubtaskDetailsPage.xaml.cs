@@ -61,10 +61,6 @@ namespace ProjectPlanner.Pages
                 ? priorityNames[_subtask.Priority]
                 : "NONE";
 
-            lbl_due_date.Text = _subtask.DueDate.HasValue
-                ? _subtask.DueDate.Value.ToString("dd MMM yyyy")
-                : "NOT SET";
-
             lbl_tags.Text = string.IsNullOrWhiteSpace(_subtask.Tags) ? "NO TAGS" : _subtask.Tags.ToUpper();
 
             UpdateStatusDisplay();
@@ -152,6 +148,17 @@ namespace ProjectPlanner.Pages
 
         private View CreateAttachmentView(TaskAttachment attachment)
         {
+            var border = new Border
+            {
+                BackgroundColor = (Color)Application.Current!.Resources["BackgroundDark"],
+                Stroke = (Color)Application.Current!.Resources["BorderColor"],
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 6 },
+                StrokeThickness = 1,
+                Padding = new Thickness(12),
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Center
+            };
+
             var grid = new Grid
             {
                 ColumnDefinitions = new ColumnDefinitionCollection
@@ -159,18 +166,26 @@ namespace ProjectPlanner.Pages
                     new ColumnDefinition(GridLength.Star),
                     new ColumnDefinition(GridLength.Auto)
                 },
-                ColumnSpacing = 12
+                ColumnSpacing = 12,
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Fill
             };
 
-            var stack = new VerticalStackLayout { Spacing = 2 };
-            
+            var infoStack = new VerticalStackLayout
+            {
+                Spacing = 2,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            };
+
             var fileNameLabel = new Label
             {
                 Text = attachment.FileName,
                 FontFamily = "TechFont",
                 FontSize = 15,
                 TextColor = (Color)Application.Current!.Resources["NeonAccent"],
-                TextDecorations = TextDecorations.Underline
+                TextDecorations = TextDecorations.Underline,
+                HorizontalTextAlignment = TextAlignment.Center
             };
 
             var tapGesture = new TapGestureRecognizer();
@@ -190,13 +205,14 @@ namespace ProjectPlanner.Pages
             };
             fileNameLabel.GestureRecognizers.Add(tapGesture);
 
-            stack.Children.Add(fileNameLabel);
-            stack.Children.Add(new Label
+            infoStack.Children.Add(fileNameLabel);
+            infoStack.Children.Add(new Label
             {
-                Text = attachment.FilePath,
+                Text = $"{(string.IsNullOrWhiteSpace(attachment.FileType) ? "FILE" : attachment.FileType.ToUpperInvariant())} • {FormatFileSize(attachment.FileSize)}",
                 FontFamily = "TechFont",
                 FontSize = 12,
-                TextColor = (Color)Application.Current!.Resources["TextSecondary"]
+                TextColor = (Color)Application.Current!.Resources["TextSecondary"],
+                HorizontalTextAlignment = TextAlignment.Center
             });
 
             var removeBtn = new Button
@@ -209,18 +225,31 @@ namespace ProjectPlanner.Pages
                 BorderColor = (Color)Application.Current!.Resources["Magenta"],
                 BorderWidth = 1,
                 TextColor = (Color)Application.Current!.Resources["Magenta"],
-                CommandParameter = attachment
+                CommandParameter = attachment,
+                VerticalOptions = LayoutOptions.Center
             };
             removeBtn.Clicked += OnRemoveAttachmentClicked;
 
-            grid.Add(stack, 0, 0);
+            grid.Add(infoStack, 0, 0);
             grid.Add(removeBtn, 1, 0);
 
-            return grid;
+            border.Content = grid;
+            return border;
         }
 
         private View CreateLinkView(TaskLink link)
         {
+            var border = new Border
+            {
+                BackgroundColor = (Color)Application.Current!.Resources["BackgroundDark"],
+                Stroke = (Color)Application.Current!.Resources["BorderColor"],
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 6 },
+                StrokeThickness = 1,
+                Padding = new Thickness(12),
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Center
+            };
+
             var grid = new Grid
             {
                 ColumnDefinitions = new ColumnDefinitionCollection
@@ -228,10 +257,17 @@ namespace ProjectPlanner.Pages
                     new ColumnDefinition(GridLength.Star),
                     new ColumnDefinition(GridLength.Auto)
                 },
-                ColumnSpacing = 12
+                ColumnSpacing = 12,
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Fill
             };
 
-            var stack = new VerticalStackLayout { Spacing = 2 };
+            var infoStack = new VerticalStackLayout
+            {
+                Spacing = 2,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            };
 
             var titleLabel = new Label
             {
@@ -239,7 +275,8 @@ namespace ProjectPlanner.Pages
                 FontFamily = "TechFont",
                 FontSize = 15,
                 TextColor = (Color)Application.Current!.Resources["NeonAccent"],
-                TextDecorations = TextDecorations.Underline
+                TextDecorations = TextDecorations.Underline,
+                HorizontalTextAlignment = TextAlignment.Center
             };
 
             var tapGesture = new TapGestureRecognizer();
@@ -256,13 +293,14 @@ namespace ProjectPlanner.Pages
             };
             titleLabel.GestureRecognizers.Add(tapGesture);
 
-            stack.Children.Add(titleLabel);
-            stack.Children.Add(new Label
+            infoStack.Children.Add(titleLabel);
+            infoStack.Children.Add(new Label
             {
                 Text = link.Url,
                 FontFamily = "TechFont",
                 FontSize = 12,
-                TextColor = (Color)Application.Current!.Resources["TextSecondary"]
+                TextColor = (Color)Application.Current!.Resources["TextSecondary"],
+                HorizontalTextAlignment = TextAlignment.Center
             });
 
             var removeBtn = new Button
@@ -275,18 +313,31 @@ namespace ProjectPlanner.Pages
                 BorderColor = (Color)Application.Current!.Resources["Magenta"],
                 BorderWidth = 1,
                 TextColor = (Color)Application.Current!.Resources["Magenta"],
-                CommandParameter = link
+                CommandParameter = link,
+                VerticalOptions = LayoutOptions.Center
             };
             removeBtn.Clicked += OnRemoveLinkClicked;
 
-            grid.Add(stack, 0, 0);
+            grid.Add(infoStack, 0, 0);
             grid.Add(removeBtn, 1, 0);
 
-            return grid;
+            border.Content = grid;
+            return border;
         }
 
         private View CreateNoteView(TaskNote note)
         {
+            var border = new Border
+            {
+                BackgroundColor = (Color)Application.Current!.Resources["BackgroundDark"],
+                Stroke = (Color)Application.Current!.Resources["BorderColor"],
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 6 },
+                StrokeThickness = 1,
+                Padding = new Thickness(12),
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Center
+            };
+
             var grid = new Grid
             {
                 ColumnDefinitions = new ColumnDefinitionCollection
@@ -294,24 +345,33 @@ namespace ProjectPlanner.Pages
                     new ColumnDefinition(GridLength.Star),
                     new ColumnDefinition(GridLength.Auto)
                 },
-                ColumnSpacing = 12
+                ColumnSpacing = 12,
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Fill
             };
 
-            var stack = new VerticalStackLayout { Spacing = 2 };
-            stack.Children.Add(new Label
+            var infoStack = new VerticalStackLayout
+            {
+                Spacing = 4,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center
+            };
+            infoStack.Children.Add(new Label
             {
                 Text = note.Content,
                 FontFamily = "TechFont",
                 FontSize = 15,
                 TextColor = (Color)Application.Current!.Resources["TextPrimary"],
-                LineBreakMode = LineBreakMode.WordWrap
+                LineBreakMode = LineBreakMode.WordWrap,
+                HorizontalTextAlignment = TextAlignment.Center
             });
-            stack.Children.Add(new Label
+            infoStack.Children.Add(new Label
             {
                 Text = $"CREATED {note.CreatedAt:dd MMM yyyy HH:mm}",
                 FontFamily = "TechFont",
                 FontSize = 12,
-                TextColor = (Color)Application.Current!.Resources["TextSecondary"]
+                TextColor = (Color)Application.Current!.Resources["TextSecondary"],
+                HorizontalTextAlignment = TextAlignment.Center
             });
 
             var removeBtn = new Button
@@ -324,14 +384,16 @@ namespace ProjectPlanner.Pages
                 BorderColor = (Color)Application.Current!.Resources["Magenta"],
                 BorderWidth = 1,
                 TextColor = (Color)Application.Current!.Resources["Magenta"],
-                CommandParameter = note
+                CommandParameter = note,
+                VerticalOptions = LayoutOptions.Center
             };
             removeBtn.Clicked += OnRemoveNoteClicked;
 
-            grid.Add(stack, 0, 0);
+            grid.Add(infoStack, 0, 0);
             grid.Add(removeBtn, 1, 0);
 
-            return grid;
+            border.Content = grid;
+            return border;
         }
 
         private void SetEditMode(bool enable)
@@ -351,14 +413,6 @@ namespace ProjectPlanner.Pages
                 editor_description.Text = _subtask?.Description ?? string.Empty;
                 entry_tags.Text = _subtask?.Tags ?? string.Empty;
                 picker_priority.SelectedIndex = _subtask?.Priority ?? 0;
-                if (_subtask?.DueDate.HasValue == true)
-                {
-                    picker_due_date.Date = _subtask.DueDate.Value;
-                }
-                else
-                {
-                    picker_due_date.Date = DateTime.Today;
-                }
             }
         }
 
@@ -389,7 +443,6 @@ namespace ProjectPlanner.Pages
             _subtask.Description = updatedDescription ?? string.Empty;
             _subtask.Tags = updatedTags ?? string.Empty;
             _subtask.Priority = picker_priority.SelectedIndex >= 0 ? picker_priority.SelectedIndex : 0;
-            _subtask.DueDate = picker_due_date.Date;
 
             _projectService.UpdateTask(_subtask);
 
@@ -574,6 +627,22 @@ namespace ProjectPlanner.Pages
             if (string.IsNullOrWhiteSpace(extension)) return "FILE";
             var cleaned = extension.Trim('.');
             return string.IsNullOrWhiteSpace(cleaned) ? "FILE" : cleaned.ToUpperInvariant();
+        }
+
+        private static string FormatFileSize(long bytes)
+        {
+            if (bytes < 1024)
+                return $"{bytes} B";
+
+            var size = bytes / 1024d;
+            if (size < 1024)
+                return $"{size:0.#} KB";
+
+            size /= 1024d;
+            if (size < 1024)
+                return $"{size:0.#} MB";
+
+            return $"{size / 1024d:0.#} GB";
         }
     }
 }

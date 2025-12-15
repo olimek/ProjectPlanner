@@ -12,6 +12,7 @@
             <converters:TextTruncateConverter x:Key="TruncateConv" />
             <converters:BoolToIconConverter x:Key="BoolToIconConverter" />
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:TaskStatusBadgeConverter x:Key="TaskStatusBadgeConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -199,26 +200,51 @@
                         Text="// TASKS LOG"
                         TextColor="{StaticResource TextSecondary}" />
 
-                    <VerticalStackLayout Spacing="8">
-                        <Border
-                            Padding="0"
-                            BackgroundColor="{StaticResource SurfaceDark}"
-                            Stroke="{StaticResource BorderColor}"
-                            StrokeShape="RoundRectangle 6"
-                            StrokeThickness="1">
-                            <SearchBar
-                                x:Name="task_search_bar"
-                                Margin="8,0"
-                                BackgroundColor="Transparent"
+                    <VerticalStackLayout Spacing="10">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
                                 FontFamily="TechFont"
-                                Placeholder="SEARCH TASKS..."
-                                PlaceholderColor="{StaticResource TextSecondary}"
-                                TextColor="{StaticResource TextPrimary}"
-                                TextChanged="OnTaskSearchTextChanged" />
-                        </Border>
-
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                FontSize="11"
+                                Text="SEARCH"
+                                TextColor="{StaticResource TextSecondary}" />
                             <Border
+                                Padding="0"
+                                BackgroundColor="{StaticResource SurfaceDark}"
+                                Stroke="{StaticResource BorderColor}"
+                                StrokeShape="RoundRectangle 6"
+                                StrokeThickness="1">
+                                <SearchBar
+                                    x:Name="task_search_bar"
+                                    Margin="8,0"
+                                    BackgroundColor="Transparent"
+                                    FontFamily="TechFont"
+                                    Placeholder="Search tasks..."
+                                    PlaceholderColor="{StaticResource TextSecondary}"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    TextChanged="OnTaskSearchTextChanged" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                FontFamily="TechFont"
+                                FontSize="11"
+                                Text="FILTER BY TAGS"
+                                TextColor="{StaticResource TextSecondary}" />
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                FontFamily="TechFont"
+                                FontSize="11"
+                                Text="SORT ORDER"
+                                TextColor="{StaticResource TextSecondary}"
+                                HorizontalOptions="End"
+                                HorizontalTextAlignment="End" />
+
+                            <Border
+                                Grid.Row="1"
                                 Grid.Column="0"
                                 BackgroundColor="{StaticResource SurfaceDark}"
                                 Stroke="{StaticResource BorderColor}"
@@ -228,13 +254,14 @@
                                     x:Name="entry_tag_filter"
                                     Margin="12,8"
                                     FontFamily="TechFont"
-                                    Placeholder="FILTER TAGS..."
+                                    Placeholder="Comma separated tags"
                                     PlaceholderColor="{StaticResource TextSecondary}"
                                     TextColor="{StaticResource TextPrimary}"
                                     TextChanged="OnTagFilterChanged" />
                             </Border>
 
                             <Border
+                                Grid.Row="1"
                                 Grid.Column="1"
                                 BackgroundColor="{StaticResource SurfaceDark}"
                                 Stroke="{StaticResource BorderColor}"
@@ -243,12 +270,13 @@
                                 <Picker
                                     x:Name="picker_sort"
                                     Margin="8,0"
+                                    WidthRequest="160"
                                     FontFamily="TechFont"
                                     SelectedIndexChanged="OnSortOptionChanged"
                                     TextColor="{StaticResource TextPrimary}">
                                     <Picker.Items>
-                                        <x:String>PRIORITY</x:String>
-                                        <x:String>ALPHABETICAL</x:String>
+                                        <x:String>PRIORITY (DESC)</x:String>
+                                        <x:String>ALPHABETICAL (A→Z)</x:String>
                                     </Picker.Items>
                                 </Picker>
                             </Border>
@@ -303,7 +331,7 @@
                                         <Label
                                             Grid.Column="0"
                                             FontSize="20"
-                                            Text="{Binding IsDone, Converter={StaticResource BoolToIconConverter}}"
+                                            Text="{Binding ., Converter={StaticResource TaskStatusBadgeConverter}}"
                                             TextColor="{Binding IsDone, Converter={StaticResource BoolToColorConverter}}"
                                             VerticalOptions="Center" />
                                         <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
