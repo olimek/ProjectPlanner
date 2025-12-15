@@ -3,10 +3,10 @@
     x:Class="ProjectPlanner.Pages.AddOrEditTask"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:ProjectPlanner.Pages"
     xmlns:model="clr-namespace:ProjectPlanner.Model;assembly=ProjectPlanner.Model"
     Title="TASK"
     x:DataType="local:AddOrEditTask"
-    xmlns:local="clr-namespace:ProjectPlanner.Pages"
     BackgroundColor="{StaticResource BackgroundDark}">
 
     <Grid RowDefinitions="*, Auto">
@@ -178,7 +178,7 @@
                     TextColor="{StaticResource TextSecondary}" />
 
                 <VerticalStackLayout Spacing="20">
-                    <!-- ATTACHMENTS SECTION -->
+                    <!--  ATTACHMENTS SECTION  -->
                     <VerticalStackLayout Spacing="8">
                         <Label
                             FontAttributes="Bold"
@@ -202,8 +202,8 @@
                                     TextColor="{StaticResource TextSecondary}" />
                                 <VerticalStackLayout
                                     x:Name="attachments_list"
-                                    Spacing="8"
-                                    BindableLayout.ItemsSource="{Binding Attachments}">
+                                    BindableLayout.ItemsSource="{Binding Attachments}"
+                                    Spacing="8">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate x:DataType="model:TaskAttachment">
                                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
@@ -256,7 +256,7 @@
                             TextColor="{StaticResource NeonAccent}" />
                     </VerticalStackLayout>
 
-                    <!-- LINKS SECTION -->
+                    <!--  LINKS SECTION  -->
                     <VerticalStackLayout Spacing="8">
                         <Label
                             FontAttributes="Bold"
@@ -280,8 +280,8 @@
                                     TextColor="{StaticResource TextSecondary}" />
                                 <VerticalStackLayout
                                     x:Name="links_list"
-                                    Spacing="8"
-                                    BindableLayout.ItemsSource="{Binding Links}">
+                                    BindableLayout.ItemsSource="{Binding Links}"
+                                    Spacing="8">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate x:DataType="model:TaskLink">
                                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
@@ -334,7 +334,7 @@
                             TextColor="{StaticResource NeonAccent}" />
                     </VerticalStackLayout>
 
-                    <!-- NOTES SECTION -->
+                    <!--  NOTES SECTION  -->
                     <VerticalStackLayout Spacing="8">
                         <Label
                             FontAttributes="Bold"
@@ -358,8 +358,8 @@
                                     TextColor="{StaticResource TextSecondary}" />
                                 <VerticalStackLayout
                                     x:Name="notes_list"
-                                    Spacing="8"
-                                    BindableLayout.ItemsSource="{Binding Notes}">
+                                    BindableLayout.ItemsSource="{Binding Notes}"
+                                    Spacing="8">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate x:DataType="model:TaskNote">
                                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
@@ -367,9 +367,9 @@
                                                     <Label
                                                         FontFamily="TechFont"
                                                         FontSize="15"
+                                                        LineBreakMode="WordWrap"
                                                         Text="{Binding Content}"
-                                                        TextColor="{StaticResource TextPrimary}"
-                                                        LineBreakMode="WordWrap" />
+                                                        TextColor="{StaticResource TextPrimary}" />
                                                     <Label
                                                         FontFamily="TechFont"
                                                         FontSize="12"

@@ -137,7 +137,7 @@
                                     <Label
                                         Grid.Column="2"
                                         FontSize="20"
-                                        Text=">"
+                                        Text="&gt;"
                                         TextColor="{StaticResource NeonAccent}"
                                         VerticalOptions="Center" />
                                 </Grid>

@@ -104,7 +104,10 @@
                             </VerticalStackLayout>
                         </VerticalStackLayout>
 
-                        <VerticalStackLayout x:Name="edit_mode_content" Spacing="16" IsVisible="False">
+                        <VerticalStackLayout
+                            x:Name="edit_mode_content"
+                            IsVisible="False"
+                            Spacing="16">
                             <VerticalStackLayout Spacing="8">
                                 <Label
                                     FontAttributes="Bold"
@@ -151,6 +154,7 @@
                                     </Border>
                                     <Button
                                         Grid.Column="1"
+                                        Padding="12,0"
                                         BackgroundColor="Transparent"
                                         BorderColor="{StaticResource NeonAccent}"
                                         BorderWidth="1"
@@ -159,7 +163,6 @@
                                         FontFamily="HeaderFont"
                                         FontSize="12"
                                         HeightRequest="48"
-                                        Padding="12,0"
                                         Text="MANAGE"
                                         TextColor="{StaticResource NeonAccent}" />
                                 </Grid>
@@ -220,12 +223,15 @@
                                     FontFamily="TechFont"
                                     Placeholder="Search tasks..."
                                     PlaceholderColor="{StaticResource TextSecondary}"
-                                    TextColor="{StaticResource TextPrimary}"
-                                    TextChanged="OnTaskSearchTextChanged" />
+                                    TextChanged="OnTaskSearchTextChanged"
+                                    TextColor="{StaticResource TextPrimary}" />
                             </Border>
                         </VerticalStackLayout>
 
-                        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <Grid
+                            ColumnDefinitions="*,Auto"
+                            ColumnSpacing="12"
+                            RowDefinitions="Auto,Auto">
                             <Label
                                 Grid.Row="0"
                                 Grid.Column="0"
@@ -238,10 +244,10 @@
                                 Grid.Column="1"
                                 FontFamily="TechFont"
                                 FontSize="11"
-                                Text="SORT ORDER"
-                                TextColor="{StaticResource TextSecondary}"
                                 HorizontalOptions="End"
-                                HorizontalTextAlignment="End" />
+                                HorizontalTextAlignment="End"
+                                Text="SORT ORDER"
+                                TextColor="{StaticResource TextSecondary}" />
 
                             <Border
                                 Grid.Row="1"
@@ -256,8 +262,8 @@
                                     FontFamily="TechFont"
                                     Placeholder="Comma separated tags"
                                     PlaceholderColor="{StaticResource TextSecondary}"
-                                    TextColor="{StaticResource TextPrimary}"
-                                    TextChanged="OnTagFilterChanged" />
+                                    TextChanged="OnTagFilterChanged"
+                                    TextColor="{StaticResource TextPrimary}" />
                             </Border>
 
                             <Border
@@ -270,10 +276,10 @@
                                 <Picker
                                     x:Name="picker_sort"
                                     Margin="8,0"
-                                    WidthRequest="160"
                                     FontFamily="TechFont"
                                     SelectedIndexChanged="OnSortOptionChanged"
-                                    TextColor="{StaticResource TextPrimary}">
+                                    TextColor="{StaticResource TextPrimary}"
+                                    WidthRequest="160">
                                     <Picker.Items>
                                         <x:String>PRIORITY (DESC)</x:String>
                                         <x:String>ALPHABETICAL (A→Z)</x:String>
@@ -285,8 +291,8 @@
                         <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
                             <CheckBox
                                 x:Name="chk_hide_done"
-                                Color="{StaticResource NeonAccent}"
-                                CheckedChanged="OnHideDoneChanged" />
+                                CheckedChanged="OnHideDoneChanged"
+                                Color="{StaticResource NeonAccent}" />
                             <Label
                                 FontFamily="TechFont"
                                 FontSize="12"
@@ -345,7 +351,7 @@
                                         <Label
                                             Grid.Column="2"
                                             FontSize="20"
-                                            Text=">"
+                                            Text="&gt;"
                                             TextColor="{StaticResource TextSecondary}"
                                             VerticalOptions="Center" />
                                     </Grid>
