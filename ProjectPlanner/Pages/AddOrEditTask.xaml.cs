@@ -54,7 +54,6 @@ public partial class AddOrEditTask : ContentPage
 
         // Set default values
         picker_priority.SelectedIndex = 0;
-        picker_due_date.Date = DateTime.Today;
 
         if (_taskId.HasValue)
         {
@@ -67,10 +66,6 @@ public partial class AddOrEditTask : ContentPage
             entry_task_description.Text = _currentTask.Description ?? string.Empty;
             entry_tags.Text = _currentTask.Tags ?? string.Empty;
             picker_priority.SelectedIndex = _currentTask.Priority;
-            if (_currentTask.DueDate.HasValue)
-            {
-                picker_due_date.Date = _currentTask.DueDate.Value;
-            }
             Title = "EDIT TASK";
 
             // Load existing resources
@@ -107,7 +102,6 @@ public partial class AddOrEditTask : ContentPage
         var safeDescription = descInput ?? string.Empty;
         var safeTags = tagsInput ?? string.Empty;
         var priority = picker_priority.SelectedIndex >= 0 ? picker_priority.SelectedIndex : 0;
-        var dueDate = picker_due_date.Date;
 
         if (_currentTask != null)
         {
@@ -116,7 +110,6 @@ public partial class AddOrEditTask : ContentPage
             _currentTask.Description = safeDescription;
             _currentTask.Tags = safeTags;
             _currentTask.Priority = priority;
-            _currentTask.DueDate = dueDate;
             _projectService.UpdateTask(_currentTask);
 
             // Sync attachments - remove deleted ones
@@ -167,7 +160,6 @@ public partial class AddOrEditTask : ContentPage
             // Update with additional fields
             newTask.Tags = safeTags;
             newTask.Priority = priority;
-            newTask.DueDate = dueDate;
             _projectService.UpdateTask(newTask);
 
             // Add all resources to new task

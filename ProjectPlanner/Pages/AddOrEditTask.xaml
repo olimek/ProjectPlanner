@@ -92,60 +92,36 @@
                     </Border>
                 </VerticalStackLayout>
 
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
-                    <VerticalStackLayout Grid.Column="0" Spacing="8">
-                        <Label
-                            FontAttributes="Bold"
-                            FontFamily="HeaderFont"
-                            FontSize="14"
-                            Text="DUE DATE"
-                            TextColor="{StaticResource NeonAccent}" />
+                <VerticalStackLayout Spacing="8">
+                    <Label
+                        FontAttributes="Bold"
+                        FontFamily="HeaderFont"
+                        FontSize="14"
+                        Text="PRIORITY"
+                        TextColor="{StaticResource NeonAccent}" />
 
-                        <Border
-                            BackgroundColor="{StaticResource SurfaceDark}"
-                            Stroke="{StaticResource BorderColor}"
-                            StrokeShape="RoundRectangle 4"
-                            StrokeThickness="1">
-                            <DatePicker
-                                x:Name="picker_due_date"
-                                Margin="12"
-                                FontFamily="TechFont"
-                                FontSize="16"
-                                TextColor="{StaticResource TextPrimary}" />
-                        </Border>
-                    </VerticalStackLayout>
-
-                    <VerticalStackLayout Grid.Column="1" Spacing="8">
-                        <Label
-                            FontAttributes="Bold"
-                            FontFamily="HeaderFont"
-                            FontSize="14"
-                            Text="PRIORITY"
-                            TextColor="{StaticResource NeonAccent}" />
-
-                        <Border
-                            BackgroundColor="{StaticResource SurfaceDark}"
-                            Stroke="{StaticResource BorderColor}"
-                            StrokeShape="RoundRectangle 4"
-                            StrokeThickness="1">
-                            <Picker
-                                x:Name="picker_priority"
-                                Margin="12"
-                                FontFamily="TechFont"
-                                FontSize="16"
-                                TextColor="{StaticResource TextPrimary}">
-                                <Picker.Items>
-                                    <x:String>0 - NONE</x:String>
-                                    <x:String>1 - LOW</x:String>
-                                    <x:String>2 - MEDIUM</x:String>
-                                    <x:String>3 - HIGH</x:String>
-                                    <x:String>4 - URGENT</x:String>
-                                    <x:String>5 - CRITICAL</x:String>
-                                </Picker.Items>
-                            </Picker>
-                        </Border>
-                    </VerticalStackLayout>
-                </Grid>
+                    <Border
+                        BackgroundColor="{StaticResource SurfaceDark}"
+                        Stroke="{StaticResource BorderColor}"
+                        StrokeShape="RoundRectangle 4"
+                        StrokeThickness="1">
+                        <Picker
+                            x:Name="picker_priority"
+                            Margin="12"
+                            FontFamily="TechFont"
+                            FontSize="16"
+                            TextColor="{StaticResource TextPrimary}">
+                            <Picker.Items>
+                                <x:String>0 - NONE</x:String>
+                                <x:String>1 - LOW</x:String>
+                                <x:String>2 - MEDIUM</x:String>
+                                <x:String>3 - HIGH</x:String>
+                                <x:String>4 - URGENT</x:String>
+                                <x:String>5 - CRITICAL</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </Border>
+                </VerticalStackLayout>
 
                 <VerticalStackLayout Spacing="8">
                     <Label

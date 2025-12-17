@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Maui.Controls;
 using ProjectPlanner.Model;
 using ProjectPlanner.Service;
 
@@ -13,10 +14,14 @@ namespace ProjectPlanner.Pages
         private bool _isEditMode = false;
         public List<SubTask> Tasks { get; set; } = new();
         private List<SubTask> _allTasks { get; set; } = new();
-        private string _taskSearchQuery = string.Empty;
-        private string _tagSearchQuery = string.Empty;
+        private string _searchQuery = string.Empty;
+        private SearchScope _searchScope = SearchScope.Name;
+        private TaskSortField _sortField = TaskSortField.Priority;
+        private SortDirection _sortDirection = SortDirection.Descending;
         private bool _hideCompleted;
-        private TaskSortOption _currentSort = TaskSortOption.Priority;
+        private readonly Picker _searchScopePicker;
+        private readonly Picker _sortFieldPicker;
+        private readonly Picker _sortDirectionPicker;
 
         public ProjectPage(Project project, IProjectService projectService)
         {
@@ -26,7 +31,13 @@ namespace ProjectPlanner.Pages
             _projectTypeService = MauiProgram.Services?.GetService<IProjectTypeService>()
                 ?? throw new InvalidOperationException("ProjectTypeService not available");
 
-            picker_sort.SelectedIndex = 0;
+            _searchScopePicker = this.FindByName<Picker>("SearchScopePicker") ?? throw new InvalidOperationException("Search scope picker not found");
+            _sortFieldPicker = this.FindByName<Picker>("SortFieldPicker") ?? throw new InvalidOperationException("Sort field picker not found");
+            _sortDirectionPicker = this.FindByName<Picker>("SortDirectionPicker") ?? throw new InvalidOperationException("Sort direction picker not found");
+
+            _searchScopePicker.SelectedIndex = 0;
+            _sortFieldPicker.SelectedIndex = 0;
+            _sortDirectionPicker.SelectedIndex = 0;
             chk_hide_done.IsChecked = false;
         }
 
@@ -73,36 +84,38 @@ namespace ProjectPlanner.Pages
 
             IEnumerable<SubTask> filtered = _allTasks;
 
-            if (!string.IsNullOrWhiteSpace(_taskSearchQuery))
+            if (!string.IsNullOrWhiteSpace(_searchQuery))
             {
-                filtered = filtered.Where(task =>
-                    (!string.IsNullOrWhiteSpace(task.Name) &&
-                     task.Name.Contains(_taskSearchQuery, StringComparison.OrdinalIgnoreCase)) ||
-                    (!string.IsNullOrWhiteSpace(task.Description) &&
-                     task.Description.Contains(_taskSearchQuery, StringComparison.OrdinalIgnoreCase)));
-            }
+                if (_searchScope == SearchScope.Tags)
+                {
+                    var requestedTags = _searchQuery
+                        .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
-            if (!string.IsNullOrWhiteSpace(_tagSearchQuery))
-            {
-                var requestedTags = _tagSearchQuery
-                    .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                    if (requestedTags.Length > 0)
+                    {
+                        filtered = filtered.Where(task =>
+                        {
+                            if (string.IsNullOrWhiteSpace(task.Tags))
+                                return false;
 
-                if (requestedTags.Length > 0)
+                            var taskTags = task.Tags
+                                .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+                            if (taskTags.Length == 0)
+                                return false;
+
+                            return requestedTags.All(tag => taskTags.Any(taskTag =>
+                                taskTag.Contains(tag, StringComparison.OrdinalIgnoreCase)));
+                        });
+                    }
+                }
+                else
                 {
                     filtered = filtered.Where(task =>
-                    {
-                        if (string.IsNullOrWhiteSpace(task.Tags))
-                            return false;
-
-                        var taskTags = task.Tags
-                            .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-
-                        if (taskTags.Length == 0)
-                            return false;
-
-                        return requestedTags.All(tag => taskTags.Any(taskTag =>
-                            taskTag.Contains(tag, StringComparison.OrdinalIgnoreCase)));
-                    });
+                        (!string.IsNullOrWhiteSpace(task.Name) &&
+                         task.Name.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase)) ||
+                        (!string.IsNullOrWhiteSpace(task.Description) &&
+                         task.Description.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase)));
                 }
             }
 
@@ -111,14 +124,18 @@ namespace ProjectPlanner.Pages
                 filtered = filtered.Where(task => !task.IsDone);
             }
 
-            filtered = _currentSort switch
+            filtered = (_sortField, _sortDirection) switch
             {
-                TaskSortOption.Alphabetical => filtered
+                (TaskSortField.Alphabetical, SortDirection.Ascending) => filtered
                     .OrderBy(task => task.Name, StringComparer.OrdinalIgnoreCase),
-                TaskSortOption.Priority => filtered
-                    .OrderByDescending(task => task.Priority)
+                (TaskSortField.Alphabetical, SortDirection.Descending) => filtered
+                    .OrderByDescending(task => task.Name, StringComparer.OrdinalIgnoreCase),
+                (TaskSortField.Priority, SortDirection.Ascending) => filtered
+                    .OrderBy(task => task.Priority)
                     .ThenBy(task => task.Name, StringComparer.OrdinalIgnoreCase),
                 _ => filtered
+                    .OrderByDescending(task => task.Priority)
+                    .ThenBy(task => task.Name, StringComparer.OrdinalIgnoreCase)
             };
 
             Tasks = filtered.ToList();
@@ -245,22 +262,38 @@ namespace ProjectPlanner.Pages
 
         private void OnTaskSearchTextChanged(object sender, TextChangedEventArgs e)
         {
-            _taskSearchQuery = e.NewTextValue?.Trim() ?? string.Empty;
+            _searchQuery = e.NewTextValue?.Trim() ?? string.Empty;
             ApplyTaskFilters();
         }
 
-        private void OnTagFilterChanged(object sender, TextChangedEventArgs e)
+        private void OnSearchScopeChanged(object sender, EventArgs e)
         {
-            _tagSearchQuery = e.NewTextValue?.Trim() ?? string.Empty;
-            ApplyTaskFilters();
-        }
-
-        private void OnSortOptionChanged(object sender, EventArgs e)
-        {
-            _currentSort = picker_sort.SelectedIndex switch
+            _searchScope = _searchScopePicker.SelectedIndex switch
             {
-                1 => TaskSortOption.Alphabetical,
-                _ => TaskSortOption.Priority
+                1 => SearchScope.Tags,
+                _ => SearchScope.Name
+            };
+
+            ApplyTaskFilters();
+        }
+
+        private void OnSortFieldChanged(object sender, EventArgs e)
+        {
+            _sortField = _sortFieldPicker.SelectedIndex switch
+            {
+                1 => TaskSortField.Alphabetical,
+                _ => TaskSortField.Priority
+            };
+
+            ApplyTaskFilters();
+        }
+
+        private void OnSortDirectionChanged(object sender, EventArgs e)
+        {
+            _sortDirection = _sortDirectionPicker.SelectedIndex switch
+            {
+                1 => SortDirection.Ascending,
+                _ => SortDirection.Descending
             };
 
             ApplyTaskFilters();
@@ -277,10 +310,22 @@ namespace ProjectPlanner.Pages
             await Navigation.PushAsync(new ManageProjectTypesPage(_projectTypeService, _projectService));
         }
 
-        private enum TaskSortOption
+        private enum SearchScope
+        {
+            Name = 0,
+            Tags = 1
+        }
+
+        private enum TaskSortField
         {
             Priority = 0,
             Alphabetical = 1
+        }
+
+        private enum SortDirection
+        {
+            Descending = 0,
+            Ascending = 1
         }
     }
 }
