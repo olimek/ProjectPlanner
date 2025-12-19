@@ -345,7 +345,8 @@
             Padding="20"
             ColumnDefinitions="*,Auto"
             ColumnSpacing="16"
-            RowDefinitions="Auto,Auto,Auto">
+            RowDefinitions="Auto,Auto,Auto"
+            RowSpacing="16">
             <Button
                 x:Name="btn_edit"
                 Grid.Row="0"
@@ -392,35 +393,35 @@
                 TextColor="{StaticResource NeonAccent}" />
 
             <Button
-                 x:Name="btn_save"
-                 Grid.Row="2"
-                 Grid.Column="0"
-                 BackgroundColor="{StaticResource NeonAccent}"
-                 Clicked="OnSaveClicked"
-                 CornerRadius="8"
-                 FontAttributes="Bold"
-                 FontFamily="HeaderFont"
-                 HeightRequest="50"
-                 IsVisible="False"
-                 Text="SAVE"
-                 TextColor="{StaticResource Black}" />
+                x:Name="btn_save"
+                Grid.Row="2"
+                Grid.Column="0"
+                BackgroundColor="{StaticResource NeonAccent}"
+                Clicked="OnSaveClicked"
+                CornerRadius="8"
+                FontAttributes="Bold"
+                FontFamily="HeaderFont"
+                HeightRequest="50"
+                IsVisible="False"
+                Text="SAVE"
+                TextColor="{StaticResource Black}" />
 
-             <Button
-                 x:Name="btn_cancel"
-                 Grid.Row="2"
-                 Grid.Column="1"
-                 BackgroundColor="Transparent"
-                 BorderColor="{StaticResource NeonAccent}"
-                 BorderWidth="1"
-                 Clicked="OnEditClicked"
-                 CornerRadius="8"
-                 FontFamily="HeaderFont"
-                 FontSize="16"
-                 HeightRequest="50"
-                 IsVisible="False"
-                 Text="CANCEL"
-                 TextColor="{StaticResource NeonAccent}"
-                 WidthRequest="120" />
+            <Button
+                x:Name="btn_cancel"
+                Grid.Row="2"
+                Grid.Column="1"
+                BackgroundColor="Transparent"
+                BorderColor="{StaticResource NeonAccent}"
+                BorderWidth="1"
+                Clicked="OnEditClicked"
+                CornerRadius="8"
+                FontFamily="HeaderFont"
+                FontSize="16"
+                HeightRequest="50"
+                IsVisible="False"
+                Text="CANCEL"
+                TextColor="{StaticResource NeonAccent}"
+                WidthRequest="120" />
         </Grid>
     </Grid>
 </ContentPage>

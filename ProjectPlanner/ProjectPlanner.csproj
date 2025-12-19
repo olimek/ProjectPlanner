@@ -27,10 +27,10 @@
 		<ApplicationId>com.companyname.projectplanner</ApplicationId>
 
 		<!-- Versions - manual configuration -->
-		<ApplicationDisplayVersion>1.0.3</ApplicationDisplayVersion>
-		<ApplicationVersion>1000003</ApplicationVersion>
-		<AndroidVersionCode>1000003</AndroidVersionCode>
-		<AndroidVersionName>1.0.3</AndroidVersionName>
+		<ApplicationDisplayVersion>1.1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1001000</ApplicationVersion>
+		<AndroidVersionCode>1001000</AndroidVersionCode>
+		<AndroidVersionName>1.1.0</AndroidVersionName>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
 		<WindowsPackageType>None</WindowsPackageType>
