@@ -19,9 +19,11 @@ namespace ProjectPlanner.Pages
         private TaskSortField _sortField = TaskSortField.Priority;
         private SortDirection _sortDirection = SortDirection.Descending;
         private bool _hideCompleted;
+        private bool _filtersExpanded;
+        private const string SearchLabelCollapsed = "SEARCH";
+        private const string SearchLabelExpanded = "CLOSE";
         private readonly Picker _searchScopePicker;
         private readonly Picker _sortFieldPicker;
-        private readonly Picker _sortDirectionPicker;
 
         public ProjectPage(Project project, IProjectService projectService)
         {
@@ -33,12 +35,12 @@ namespace ProjectPlanner.Pages
 
             _searchScopePicker = this.FindByName<Picker>("SearchScopePicker") ?? throw new InvalidOperationException("Search scope picker not found");
             _sortFieldPicker = this.FindByName<Picker>("SortFieldPicker") ?? throw new InvalidOperationException("Sort field picker not found");
-            _sortDirectionPicker = this.FindByName<Picker>("SortDirectionPicker") ?? throw new InvalidOperationException("Sort direction picker not found");
 
             _searchScopePicker.SelectedIndex = 0;
             _sortFieldPicker.SelectedIndex = 0;
-            _sortDirectionPicker.SelectedIndex = 0;
             chk_hide_done.IsChecked = false;
+
+            UpdateSearchPanelVisualState();
         }
 
         protected override void OnAppearing()
@@ -279,21 +281,12 @@ namespace ProjectPlanner.Pages
 
         private void OnSortFieldChanged(object sender, EventArgs e)
         {
-            _sortField = _sortFieldPicker.SelectedIndex switch
+            (_sortField, _sortDirection) = _sortFieldPicker.SelectedIndex switch
             {
-                1 => TaskSortField.Alphabetical,
-                _ => TaskSortField.Priority
-            };
-
-            ApplyTaskFilters();
-        }
-
-        private void OnSortDirectionChanged(object sender, EventArgs e)
-        {
-            _sortDirection = _sortDirectionPicker.SelectedIndex switch
-            {
-                1 => SortDirection.Ascending,
-                _ => SortDirection.Descending
+                1 => (TaskSortField.Priority, SortDirection.Ascending),
+                2 => (TaskSortField.Alphabetical, SortDirection.Descending),
+                3 => (TaskSortField.Alphabetical, SortDirection.Ascending),
+                _ => (TaskSortField.Priority, SortDirection.Descending)
             };
 
             ApplyTaskFilters();
@@ -308,6 +301,27 @@ namespace ProjectPlanner.Pages
         private async void OnManageTypesClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new ManageProjectTypesPage(_projectTypeService, _projectService));
+        }
+
+        private void OnToggleSearchPanelClicked(object sender, EventArgs e)
+        {
+            _filtersExpanded = !_filtersExpanded;
+            UpdateSearchPanelVisualState();
+
+            if (_filtersExpanded)
+            {
+                task_search_bar.Focus();
+            }
+            else
+            {
+                task_search_bar.Unfocus();
+            }
+        }
+
+        private void UpdateSearchPanelVisualState()
+        {
+            task_filters_panel.IsVisible = _filtersExpanded;
+            search_toggle_button.Text = _filtersExpanded ? SearchLabelExpanded : SearchLabelCollapsed;
         }
 
         private enum SearchScope

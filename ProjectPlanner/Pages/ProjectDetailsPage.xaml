@@ -197,97 +197,108 @@
                 </Border>
 
                 <VerticalStackLayout Spacing="12">
-                    <Label
-                        FontFamily="TechFont"
-                        FontSize="12"
-                        Text="// TASKS LOG"
-                        TextColor="{StaticResource TextSecondary}" />
+                    <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                        <Label
+                            FontFamily="TechFont"
+                            FontSize="12"
+                            Text="// TASKS LOG"
+                            TextColor="{StaticResource TextSecondary}" />
+                        <Button
+                            x:Name="search_toggle_button"
+                            Grid.Column="1"
+                            BackgroundColor="Transparent"
+                            BorderColor="{StaticResource BorderColor}"
+                            BorderWidth="1"
+                            Clicked="OnToggleSearchPanelClicked"
+                            CornerRadius="18"
+                            FontFamily="HeaderFont"
+                            FontSize="12"
+                            HeightRequest="36"
+                            Padding="16,0"
+                            Text="SEARCH"
+                            TextColor="{StaticResource TextSecondary}" />
+                    </Grid>
 
                     <Border
-                        Padding="8"
+                        x:Name="task_filters_panel"
+                        Padding="12"
+                        IsVisible="False"
                         BackgroundColor="{StaticResource SurfaceDark}"
                         Stroke="{StaticResource BorderColor}"
                         StrokeShape="RoundRectangle 6"
                         StrokeThickness="1">
-                        <Grid ColumnDefinitions="3*,Auto,Auto,Auto" ColumnSpacing="12">
-                            <VerticalStackLayout Grid.Column="0" Spacing="4">
-                                <Label
-                                    FontFamily="TechFont"
-                                    FontSize="11"
-                                    Text="SEARCH"
-                                    TextColor="{StaticResource TextSecondary}" />
-                                <SearchBar
-                                    x:Name="task_search_bar"
-                                    Margin="0"
-                                    BackgroundColor="Transparent"
-                                    FontFamily="TechFont"
-                                    Placeholder="Type keywords..."
-                                    PlaceholderColor="{StaticResource TextSecondary}"
-                                    TextChanged="OnTaskSearchTextChanged"
-                                    TextColor="{StaticResource TextPrimary}" />
-                            </VerticalStackLayout>
+                        <FlexLayout
+                            Direction="Row"
+                            Wrap="Wrap"
+                            AlignItems="Start"
+                            AlignContent="Start"
+                            JustifyContent="SpaceBetween">
+                            <VerticalStackLayout FlexLayout.Basis="100%" Spacing="4" Margin="0,0,0,12">
+                                 <Label
+                                     FontFamily="TechFont"
+                                     FontSize="11"
+                                     Text="SEARCH"
+                                     TextColor="{StaticResource TextSecondary}" />
+                                 <SearchBar
+                                     x:Name="task_search_bar"
+                                     Margin="0"
+                                     BackgroundColor="Transparent"
+                                     FontFamily="TechFont"
+                                     Placeholder="Type keywords..."
+                                     PlaceholderColor="{StaticResource TextSecondary}"
+                                     TextChanged="OnTaskSearchTextChanged"
+                                     TextColor="{StaticResource TextPrimary}" />
+                             </VerticalStackLayout>
 
-                            <VerticalStackLayout Grid.Column="1" Spacing="4">
-                                <Label
-                                    FontFamily="TechFont"
-                                    FontSize="11"
-                                    HorizontalOptions="Center"
-                                    Text="MODE"
-                                    TextColor="{StaticResource TextSecondary}" />
-                                <Picker
-                                    x:Name="SearchScopePicker"
-                                    WidthRequest="110"
-                                    FontFamily="TechFont"
-                                    SelectedIndexChanged="OnSearchScopeChanged"
-                                    TextColor="{StaticResource TextPrimary}">
-                                    <Picker.Items>
-                                        <x:String>NAME</x:String>
-                                        <x:String>TAGS</x:String>
-                                    </Picker.Items>
-                                </Picker>
-                            </VerticalStackLayout>
+                            <VerticalStackLayout Spacing="4"
+                                 Margin="0,0,12,12"
+                                  FlexLayout.Basis="Auto"
+                                  WidthRequest="110">
+                                 <Label
+                                     FontFamily="TechFont"
+                                     FontSize="11"
+                                     HorizontalOptions="Center"
+                                     Text="SEARCH BY"
+                                     TextColor="{StaticResource TextSecondary}" />
+                                 <Picker
+                                     x:Name="SearchScopePicker"
+                                     WidthRequest="110"
+                                     FontFamily="TechFont"
+                                     SelectedIndexChanged="OnSearchScopeChanged"
+                                     TextColor="{StaticResource TextPrimary}">
+                                     <Picker.Items>
+                                         <x:String>NAME</x:String>
+                                         <x:String>TAGS</x:String>
+                                     </Picker.Items>
+                                 </Picker>
+                             </VerticalStackLayout>
 
-                            <VerticalStackLayout Grid.Column="2" Spacing="4">
-                                <Label
-                                    FontFamily="TechFont"
-                                    FontSize="11"
-                                    HorizontalOptions="Center"
-                                    Text="SORT BY"
-                                    TextColor="{StaticResource TextSecondary}" />
-                                <Picker
-                                    x:Name="SortFieldPicker"
-                                    WidthRequest="120"
-                                    FontFamily="TechFont"
-                                    SelectedIndexChanged="OnSortFieldChanged"
-                                    TextColor="{StaticResource TextPrimary}">
-                                    <Picker.Items>
-                                        <x:String>PRIORITY</x:String>
-                                        <x:String>ALPHABETICAL</x:String>
-                                    </Picker.Items>
-                                </Picker>
-                            </VerticalStackLayout>
-
-                            <VerticalStackLayout Grid.Column="3" Spacing="4">
-                                <Label
-                                    FontFamily="TechFont"
-                                    FontSize="11"
-                                    HorizontalOptions="Center"
-                                    Text="ORDER"
-                                    TextColor="{StaticResource TextSecondary}" />
-                                <Picker
-                                    x:Name="SortDirectionPicker"
-                                    WidthRequest="90"
-                                    FontFamily="TechFont"
-                                    SelectedIndexChanged="OnSortDirectionChanged"
-                                    TextColor="{StaticResource TextPrimary}">
-                                    <Picker.Items>
-                                        <x:String>DESC</x:String>
-                                        <x:String>ASC</x:String>
-                                    </Picker.Items>
-                                </Picker>
-                            </VerticalStackLayout>
-                        </Grid>
-                    </Border>
+                            <VerticalStackLayout Spacing="4"
+                                Margin="0,0,12,0"
+                                 FlexLayout.Basis="Auto"
+                                 WidthRequest="150">
+                                  <Label
+                                      FontFamily="TechFont"
+                                      FontSize="11"
+                                      HorizontalOptions="Center"
+                                     Text="SORT"
+                                      TextColor="{StaticResource TextSecondary}" />
+                                  <Picker
+                                      x:Name="SortFieldPicker"
+                                     WidthRequest="150"
+                                      FontFamily="TechFont"
+                                      SelectedIndexChanged="OnSortFieldChanged"
+                                      TextColor="{StaticResource TextPrimary}">
+                                      <Picker.Items>
+                                         <x:String>PRIORITY DESC</x:String>
+                                         <x:String>PRIORITY ASC</x:String>
+                                         <x:String>ALPHABETICAL DESC</x:String>
+                                         <x:String>ALPHABETICAL ASC</x:String>
+                                     </Picker.Items>
+                                 </Picker>
+                             </VerticalStackLayout>
+                        </FlexLayout>
+                     </Border>
 
                     <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
                         <CheckBox
@@ -360,8 +371,6 @@
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 </VerticalStackLayout>
-
-                <BoxView HeightRequest="80" Color="Transparent" />
             </VerticalStackLayout>
         </ScrollView>
 
