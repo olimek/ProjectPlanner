@@ -12,12 +12,78 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="*,Auto">
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <VerticalStackLayout Grid.Row="0" Margin="16" Spacing="10">
+            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                <Label
+                    FontFamily="TechFont"
+                    FontSize="12"
+                    Text="// PROJECTS"
+                    TextColor="{StaticResource TextSecondary}" />
+                <Button
+                    x:Name="ProjectSearchToggleButton"
+                    Grid.Column="1"
+                    BackgroundColor="Transparent"
+                    BorderColor="{StaticResource BorderColor}"
+                    BorderWidth="1"
+                    Clicked="OnProjectToggleSearchPanelClicked"
+                    CornerRadius="18"
+                    FontFamily="HeaderFont"
+                    FontSize="12"
+                    HeightRequest="36"
+                    Padding="16,0"
+                    Text="SEARCH"
+                    TextColor="{StaticResource TextSecondary}" />
+            </Grid>
+
+            <Border
+                x:Name="ProjectSearchPanel"
+                Padding="12"
+                IsVisible="False"
+                BackgroundColor="{StaticResource SurfaceDark}"
+                Stroke="{StaticResource BorderColor}"
+                StrokeShape="RoundRectangle 6"
+                StrokeThickness="1">
+                <VerticalStackLayout Spacing="12">
+                    <SearchBar
+                        x:Name="ProjectSearchBar"
+                        BackgroundColor="Transparent"
+                        FontFamily="TechFont"
+                        Placeholder="Type project keywords..."
+                        PlaceholderColor="{StaticResource TextSecondary}"
+                        TextChanged="OnProjectSearchTextChanged"
+                        TextColor="{StaticResource TextPrimary}" />
+
+                    <VerticalStackLayout Spacing="4">
+                        <Label
+                            FontFamily="TechFont"
+                            FontSize="11"
+                            Text="SORT"
+                            TextColor="{StaticResource TextSecondary}" />
+                        <Picker
+                            x:Name="ProjectSortPicker"
+                            FontFamily="TechFont"
+                            SelectedIndexChanged="OnProjectSortChanged"
+                            TextColor="{StaticResource TextPrimary}">
+                            <Picker.Items>
+                                <x:String>NAME A-&gt;Z</x:String>
+                                <x:String>NAME Z-&gt;A</x:String>
+                                <x:String>CATEGORY A-&gt;Z</x:String>
+                                <x:String>CATEGORY Z-&gt;A</x:String>
+                                <x:String>PROGRESS HIGH-&gt;LOW</x:String>
+                                <x:String>PROGRESS LOW-&gt;HIGH</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
 
         <CollectionView
             x:Name="ProjectsList"
-            Grid.Row="0"
-            Margin="16"
+            Grid.Row="1"
+            Margin="16,0,16,16"
             ItemsSource="{Binding Projects}"
             SelectionChanged="ProjectsList_SelectionChanged"
             SelectionMode="Single">
@@ -151,7 +217,7 @@
 
         <Button
             x:Name="AddProjectBtn"
-            Grid.Row="1"
+            Grid.Row="2"
             Margin="20"
             Padding="0"
             BackgroundColor="{StaticResource NeonAccent}"

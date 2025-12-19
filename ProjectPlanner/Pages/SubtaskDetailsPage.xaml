@@ -345,7 +345,7 @@
             Padding="20"
             ColumnDefinitions="*,Auto"
             ColumnSpacing="16"
-            RowDefinitions="Auto,Auto">
+            RowDefinitions="Auto,Auto,Auto">
             <Button
                 x:Name="btn_edit"
                 Grid.Row="0"
@@ -376,35 +376,51 @@
                 WidthRequest="120" />
 
             <Button
-                x:Name="btn_save"
+                x:Name="btn_convert_to_project"
                 Grid.Row="1"
                 Grid.Column="0"
-                BackgroundColor="{StaticResource NeonAccent}"
-                Clicked="OnSaveClicked"
-                CornerRadius="8"
-                FontAttributes="Bold"
-                FontFamily="HeaderFont"
-                HeightRequest="50"
-                IsVisible="False"
-                Text="SAVE"
-                TextColor="{StaticResource Black}" />
-
-            <Button
-                x:Name="btn_cancel"
-                Grid.Row="1"
-                Grid.Column="1"
+                Grid.ColumnSpan="2"
                 BackgroundColor="Transparent"
                 BorderColor="{StaticResource NeonAccent}"
                 BorderWidth="1"
-                Clicked="OnEditClicked"
+                Clicked="OnConvertToProjectClicked"
                 CornerRadius="8"
                 FontFamily="HeaderFont"
                 FontSize="16"
                 HeightRequest="50"
-                IsVisible="False"
-                Text="CANCEL"
-                TextColor="{StaticResource NeonAccent}"
-                WidthRequest="120" />
+                Text="CONVERT TO PROJECT"
+                TextColor="{StaticResource NeonAccent}" />
+
+            <Button
+                 x:Name="btn_save"
+                 Grid.Row="2"
+                 Grid.Column="0"
+                 BackgroundColor="{StaticResource NeonAccent}"
+                 Clicked="OnSaveClicked"
+                 CornerRadius="8"
+                 FontAttributes="Bold"
+                 FontFamily="HeaderFont"
+                 HeightRequest="50"
+                 IsVisible="False"
+                 Text="SAVE"
+                 TextColor="{StaticResource Black}" />
+
+             <Button
+                 x:Name="btn_cancel"
+                 Grid.Row="2"
+                 Grid.Column="1"
+                 BackgroundColor="Transparent"
+                 BorderColor="{StaticResource NeonAccent}"
+                 BorderWidth="1"
+                 Clicked="OnEditClicked"
+                 CornerRadius="8"
+                 FontFamily="HeaderFont"
+                 FontSize="16"
+                 HeightRequest="50"
+                 IsVisible="False"
+                 Text="CANCEL"
+                 TextColor="{StaticResource NeonAccent}"
+                 WidthRequest="120" />
         </Grid>
     </Grid>
 </ContentPage>

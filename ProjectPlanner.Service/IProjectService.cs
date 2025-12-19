@@ -28,6 +28,8 @@ namespace ProjectPlanner.Service
 
         void DeleteTask(SubTask task);
 
+        Project ConvertSubTaskToProject(SubTask task);
+
         void UpdateProject(int projectId, string name, string? description = null, string? projectType = null);
 
         void UpdateProject(Project project);

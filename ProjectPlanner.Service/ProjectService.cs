@@ -106,6 +106,42 @@ namespace ProjectPlanner.Service
             WeakReferenceMessenger.Default.Send(new ProjectsUpdatedMessage());
         }
 
+        public Project ConvertSubTaskToProject(SubTask task)
+        {
+            if (task == null)
+                throw new ArgumentNullException(nameof(task));
+
+            var dbTask = _uow.Task.GetFirstOrDefault(t => t.Id == task.Id);
+            if (dbTask == null)
+                throw new InvalidOperationException($"Task with ID {task.Id} not found.");
+
+            if (!dbTask.ProjectId.HasValue)
+                throw new InvalidOperationException("Task is not assigned to any project.");
+
+            var parentProject = _uow.Project.GetFirstOrDefault(p => p.Id == dbTask.ProjectId.Value);
+            if (parentProject == null)
+                throw new InvalidOperationException($"Project with ID {dbTask.ProjectId.Value} not found.");
+
+            var newProject = new Project
+            {
+                Name = dbTask.Name,
+                Description = dbTask.Description,
+                ProjectTypeId = parentProject.ProjectTypeId ?? parentProject.Type?.Id
+            };
+
+            if (newProject.ProjectTypeId == null)
+            {
+                newProject.ProjectTypeId = 5;
+            }
+
+            _uow.Project.Add(newProject);
+            _uow.Save();
+
+            DeleteTask(dbTask);
+
+            return newProject;
+        }
+
         public void DeleteProject(Project project)
         {
             var dbProject = _uow.Project.GetFirstOrDefault(p => p.Id == project.Id);

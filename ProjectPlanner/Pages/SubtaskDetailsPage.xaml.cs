@@ -1,3 +1,4 @@
+using Microsoft.Maui.Controls;
 using ProjectPlanner.Model;
 using ProjectPlanner.Service;
 
@@ -10,6 +11,7 @@ namespace ProjectPlanner.Pages
         private SubTask _subtask;
         private bool _isHandlingToggle = false;
         private bool _isEditMode;
+        private Button? _convertButton;
 
         public SubtaskDetailsPage()
         {
@@ -17,6 +19,7 @@ namespace ProjectPlanner.Pages
             _subtask = new SubTask();
             _projectService = null;
             BindingContext = _subtask;
+            _convertButton = this.FindByName<Button>("btn_convert_to_project");
         }
 
         public SubtaskDetailsPage(SubTask subtask, IProjectService projectService)
@@ -25,6 +28,7 @@ namespace ProjectPlanner.Pages
             _subtask = subtask;
             _projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
             BindingContext = _subtask;
+            _convertButton = this.FindByName<Button>("btn_convert_to_project");
         }
 
         protected override void OnAppearing()
@@ -406,6 +410,10 @@ namespace ProjectPlanner.Pages
             btn_delete.IsVisible = !enable;
             btn_save.IsVisible = enable;
             btn_cancel.IsVisible = enable;
+            if (_convertButton != null)
+            {
+                _convertButton.IsVisible = !enable && CanConvertTask();
+            }
 
             if (enable)
             {
@@ -413,6 +421,49 @@ namespace ProjectPlanner.Pages
                 editor_description.Text = _subtask?.Description ?? string.Empty;
                 entry_tags.Text = _subtask?.Tags ?? string.Empty;
                 picker_priority.SelectedIndex = _subtask?.Priority ?? 0;
+            }
+        }
+
+        private bool CanConvertTask()
+        {
+            return _projectService != null && _subtask?.ProjectId.HasValue == true;
+        }
+
+        private async void OnConvertToProjectClicked(object sender, EventArgs e)
+        {
+            if (_projectService == null)
+            {
+                await DisplayAlert("Error", "Project service is not available.", "OK");
+                return;
+            }
+
+            if (!CanConvertTask())
+            {
+                await DisplayAlert("Error", "This task is not linked to a project.", "OK");
+                return;
+            }
+
+            var confirm = await DisplayAlert(
+                "CONVERT TASK",
+                $"Create a standalone project from '{_subtask.Name}'?",
+                "CONVERT",
+                "CANCEL");
+
+            if (!confirm)
+                return;
+
+            try
+            {
+                var newProject = _projectService.ConvertSubTaskToProject(_subtask);
+                await DisplayAlert("SUCCESS", $"Project '{newProject.Name}' created.", "OK");
+
+                var navigation = Navigation;
+                await navigation.PopAsync();
+                await navigation.PushAsync(new ProjectPage(newProject, _projectService));
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
             }
         }
 

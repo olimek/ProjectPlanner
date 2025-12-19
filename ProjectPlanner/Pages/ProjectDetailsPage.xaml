@@ -290,10 +290,10 @@
                                       SelectedIndexChanged="OnSortFieldChanged"
                                       TextColor="{StaticResource TextPrimary}">
                                       <Picker.Items>
-                                         <x:String>PRIORITY DESC</x:String>
-                                         <x:String>PRIORITY ASC</x:String>
-                                         <x:String>ALPHABETICAL DESC</x:String>
-                                         <x:String>ALPHABETICAL ASC</x:String>
+                                         <x:String>PRIORITY HIGH-&gt;LOW</x:String>
+                                         <x:String>PRIORITY LOW-&gt;HIGH</x:String>
+                                         <x:String>NAME Z-&gt;A</x:String>
+                                         <x:String>NAME A-&gt;Z</x:String>
                                      </Picker.Items>
                                  </Picker>
                              </VerticalStackLayout>
