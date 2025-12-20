@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ProjectPlanner.Pages.BacklogPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ProjectPlanner.helpers"
+    Title="BACKLOG"
+    BackgroundColor="{StaticResource BackgroundDark}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToIconConverter x:Key="BoolToIconConverter" />
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:TaskStatusBadgeConverter x:Key="TaskStatusBadgeConverter" />
+            <converters:TextTruncateConverter x:Key="TextTruncateConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+            <Grid ColumnDefinitions="*,Auto">
+                <Label
+                    FontFamily="TechFont"
+                    FontSize="12"
+                    Text="// BACKLOG OVERVIEW"
+                    TextColor="{StaticResource TextSecondary}" />
+                <Button
+                    x:Name="FiltersToggleButton"
+                    Grid.Column="1"
+                    BackgroundColor="Transparent"
+                    BorderColor="{StaticResource BorderColor}"
+                    BorderWidth="1"
+                    Clicked="OnToggleFiltersClicked"
+                    CornerRadius="18"
+                    FontFamily="HeaderFont"
+                    FontSize="12"
+                    HeightRequest="36"
+                    Padding="16,0"
+                    Text="FILTERS"
+                    TextColor="{StaticResource TextSecondary}" />
+            </Grid>
+
+            <Border
+                x:Name="FiltersPanel"
+                Padding="12"
+                IsVisible="False"
+                BackgroundColor="{StaticResource SurfaceDark}"
+                Stroke="{StaticResource BorderColor}"
+                StrokeShape="RoundRectangle 6"
+                StrokeThickness="1">
+                <VerticalStackLayout Spacing="12">
+                    <SearchBar
+                        x:Name="BacklogSearchBar"
+                        BackgroundColor="Transparent"
+                        FontFamily="TechFont"
+                        Placeholder="Search name / description / tags"
+                        PlaceholderColor="{StaticResource TextSecondary}"
+                        TextChanged="OnSearchTextChanged"
+                        TextColor="{StaticResource TextPrimary}" />
+
+                    <VerticalStackLayout Spacing="4">
+                        <Label
+                            FontFamily="TechFont"
+                            FontSize="11"
+                            Text="SORT"
+                            TextColor="{StaticResource TextSecondary}" />
+                        <Picker
+                            x:Name="SortPicker"
+                            FontFamily="TechFont"
+                            SelectedIndexChanged="OnSortChanged"
+                            TextColor="{StaticResource TextPrimary}">
+                            <Picker.Items>
+                                <x:String>PRIORITY HIGH-&gt;LOW</x:String>
+                                <x:String>PRIORITY LOW-&gt;HIGH</x:String>
+                                <x:String>NAME A-&gt;Z</x:String>
+                                <x:String>NAME Z-&gt;A</x:String>
+                                <x:String>PROJECT A-&gt;Z</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                <CheckBox
+                    x:Name="HideCompletedCheckbox"
+                    CheckedChanged="OnHideCompletedChanged"
+                    Color="{StaticResource NeonAccent}" />
+                <Label
+                    FontFamily="TechFont"
+                    FontSize="12"
+                    Text="HIDE COMPLETED"
+                    TextColor="{StaticResource TextSecondary}"
+                    VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <CollectionView
+                x:Name="TasksList"
+                SelectionChanged="OnTaskSelected"
+                SelectionMode="Single">
+                <CollectionView.EmptyView>
+                    <Border
+                        Padding="20"
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="Fill"
+                        Stroke="{StaticResource BorderColor}"
+                        StrokeDashArray="4,2"
+                        StrokeThickness="1">
+                        <Label
+                            FontFamily="TechFont"
+                            FontSize="12"
+                            HorizontalOptions="Center"
+                            Text="BACKLOG IS EMPTY"
+                            TextColor="{StaticResource TextSecondary}" />
+                    </Border>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="0,0,0,12"
+                            Padding="12"
+                            BackgroundColor="{StaticResource SurfaceDark}"
+                            Stroke="{StaticResource BorderColor}"
+                            StrokeShape="RoundRectangle 8"
+                            StrokeThickness="1">
+                            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*">
+                                <Label
+                                    Grid.RowSpan="3"
+                                    FontSize="20"
+                                    Text="{Binding ., Converter={StaticResource TaskStatusBadgeConverter}}"
+                                    TextColor="{Binding IsDone, Converter={StaticResource BoolToColorConverter}}"
+                                    VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label
+                                            Grid.Column="0"
+                                            FontAttributes="Bold"
+                                            FontFamily="HeaderFont"
+                                            FontSize="18"
+                                            Text="{Binding Name}"
+                                            TextColor="{StaticResource TextPrimary}" />
+                                        <Label
+                                            Grid.Column="1"
+                                            FontFamily="TechFont"
+                                            FontSize="12"
+                                            Text="{Binding Priority, StringFormat='P {0}'}"
+                                            TextColor="{StaticResource TextSecondary}" />
+                                    </Grid>
+                                    <Label
+                                        FontFamily="TechFont"
+                                        FontSize="12"
+                                        Text="{Binding Project.Name, StringFormat='PROJECT: {0}'}"
+                                        TextColor="{StaticResource NeonAccent}" />
+                                    <Label
+                                        FontFamily="TechFont"
+                                        FontSize="12"
+                                        MaxLines="2"
+                                        Text="{Binding Description, Converter={StaticResource TextTruncateConverter}, ConverterParameter='80'}"
+                                        TextColor="{StaticResource TextSecondary}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

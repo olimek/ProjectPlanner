@@ -15,8 +15,9 @@
     <Grid RowDefinitions="Auto,*,Auto">
 
         <VerticalStackLayout Grid.Row="0" Margin="16" Spacing="10">
-            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+            <Grid ColumnDefinitions="*,Auto,Auto" VerticalOptions="Center">
                 <Label
+                    Grid.Column="0"
                     FontFamily="TechFont"
                     FontSize="12"
                     Text="// PROJECTS"
@@ -24,6 +25,7 @@
                 <Button
                     x:Name="ProjectSearchToggleButton"
                     Grid.Column="1"
+                    Margin="0,0,8,0"
                     BackgroundColor="Transparent"
                     BorderColor="{StaticResource BorderColor}"
                     BorderWidth="1"
@@ -35,6 +37,19 @@
                     Padding="16,0"
                     Text="SEARCH"
                     TextColor="{StaticResource TextSecondary}" />
+                <Button
+                    Grid.Column="2"
+                    BackgroundColor="Transparent"
+                    BorderColor="{StaticResource NeonAccent}"
+                    BorderWidth="1"
+                    Clicked="OnBacklogClicked"
+                    CornerRadius="18"
+                    FontFamily="HeaderFont"
+                    FontSize="12"
+                    HeightRequest="36"
+                    Padding="16,0"
+                    Text="BACKLOG"
+                    TextColor="{StaticResource NeonAccent}" />
             </Grid>
 
             <Border

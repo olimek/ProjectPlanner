@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 using ProjectPlanner.Model;
 using ProjectPlanner.Service;
 
@@ -24,6 +25,7 @@ namespace ProjectPlanner.Pages
         private const string SearchLabelExpanded = "CLOSE";
         private readonly Picker _searchScopePicker;
         private readonly Picker _sortFieldPicker;
+        private const string HideCompletedPreferenceKeyPrefix = "ProjectPage.HideCompleted.";
 
         public ProjectPage(Project project, IProjectService projectService)
         {
@@ -38,7 +40,7 @@ namespace ProjectPlanner.Pages
 
             _searchScopePicker.SelectedIndex = 0;
             _sortFieldPicker.SelectedIndex = 0;
-            chk_hide_done.IsChecked = false;
+            RestoreHideCompletedPreference();
 
             UpdateSearchPanelVisualState();
         }
@@ -295,7 +297,16 @@ namespace ProjectPlanner.Pages
         private void OnHideDoneChanged(object sender, CheckedChangedEventArgs e)
         {
             _hideCompleted = e.Value;
+            Preferences.Default.Set(GetHideCompletedPreferenceKey(), _hideCompleted);
             ApplyTaskFilters();
+        }
+
+        private string GetHideCompletedPreferenceKey() => $"{HideCompletedPreferenceKeyPrefix}{_project.Id}";
+
+        private void RestoreHideCompletedPreference()
+        {
+            _hideCompleted = Preferences.Default.Get(GetHideCompletedPreferenceKey(), false);
+            chk_hide_done.IsChecked = _hideCompleted;
         }
 
         private async void OnManageTypesClicked(object sender, EventArgs e)

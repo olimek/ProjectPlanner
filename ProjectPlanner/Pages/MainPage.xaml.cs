@@ -226,6 +226,11 @@ public partial class MainPage : ContentPage
         }
     }
 
+    private async void OnBacklogClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new BacklogPage(_projectService));
+    }
+
     private enum ProjectSortField
     {
         Name = 0,
