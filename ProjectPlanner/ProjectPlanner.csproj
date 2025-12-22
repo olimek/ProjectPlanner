@@ -19,6 +19,7 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<!-- Display name -->
 		<ApplicationTitle>ProjectPlanner</ApplicationTitle>
@@ -27,10 +28,10 @@
 		<ApplicationId>com.companyname.projectplanner</ApplicationId>
 
 		<!-- Versions - manual configuration -->
-		<ApplicationDisplayVersion>1.1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1001000</ApplicationVersion>
-		<AndroidVersionCode>1001000</AndroidVersionCode>
-		<AndroidVersionName>1.1.0</AndroidVersionName>
+		<ApplicationDisplayVersion>1.2.1</ApplicationDisplayVersion>
+		<ApplicationVersion>1002001</ApplicationVersion>
+		<AndroidVersionCode>1002001</AndroidVersionCode>
+		<AndroidVersionName>1.2.1</AndroidVersionName>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
 		<WindowsPackageType>None</WindowsPackageType>

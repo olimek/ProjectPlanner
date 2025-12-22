@@ -7,14 +7,9 @@ using ProjectPlanner.Model.Messaging;
 
 namespace ProjectPlanner.Service
 {
-    public class ProjectService : IProjectService
+    public class ProjectService(IUnitOfWork unitOfWork) : IProjectService
     {
-        private readonly IUnitOfWork _uow;
-
-        public ProjectService(IUnitOfWork unitOfWork)
-        {
-            _uow = unitOfWork;
-        }
+        private readonly IUnitOfWork _uow = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
         public void AddProject(string name)
         {
@@ -87,17 +82,16 @@ namespace ProjectPlanner.Service
             var dbTask = _uow.Task.GetFirstOrDefault(t => t.Id == task.Id);
             if (dbTask == null) return;
 
-            // Remove related attachments, links, notes
             var attachments = _uow.TaskAttachment.GetAll(a => a.SubTaskId == task.Id)?.ToList();
-            if (attachments != null && attachments.Any())
+            if (attachments != null && attachments.Count > 0)
                 _uow.TaskAttachment.RemoveList(attachments);
 
             var links = _uow.TaskLink.GetAll(l => l.SubTaskId == task.Id)?.ToList();
-            if (links != null && links.Any())
+            if (links != null && links.Count > 0)
                 _uow.TaskLink.RemoveList(links);
 
             var notes = _uow.TaskNote.GetAll(n => n.SubTaskId == task.Id)?.ToList();
-            if (notes != null && notes.Any())
+            if (notes != null && notes.Count > 0)
                 _uow.TaskNote.RemoveList(notes);
 
             _uow.Task.Remove(dbTask);
@@ -108,8 +102,7 @@ namespace ProjectPlanner.Service
 
         public Project ConvertSubTaskToProject(SubTask task)
         {
-            if (task == null)
-                throw new ArgumentNullException(nameof(task));
+            ArgumentNullException.ThrowIfNull(task);
 
             var dbTask = _uow.Task.GetFirstOrDefault(t => t.Id == task.Id);
             if (dbTask == null)
@@ -129,10 +122,7 @@ namespace ProjectPlanner.Service
                 ProjectTypeId = parentProject.ProjectTypeId ?? parentProject.Type?.Id
             };
 
-            if (newProject.ProjectTypeId == null)
-            {
-                newProject.ProjectTypeId = 5;
-            }
+            newProject.ProjectTypeId ??= 5;
 
             _uow.Project.Add(newProject);
             _uow.Save();
@@ -148,20 +138,20 @@ namespace ProjectPlanner.Service
             if (dbProject == null) return;
 
             var tasks = _uow.Task.GetAll()?.Where(t => t.ProjectId == dbProject.Id).ToList();
-            if (tasks is not null && tasks.Any())
+            if (tasks is not null && tasks.Count > 0)
             {
                 foreach (var task in tasks)
                 {
                     var attachments = _uow.TaskAttachment.GetAll(a => a.SubTaskId == task.Id)?.ToList();
-                    if (attachments != null && attachments.Any())
+                    if (attachments != null && attachments.Count > 0)
                         _uow.TaskAttachment.RemoveList(attachments);
 
                     var links = _uow.TaskLink.GetAll(l => l.SubTaskId == task.Id)?.ToList();
-                    if (links != null && links.Any())
+                    if (links != null && links.Count > 0)
                         _uow.TaskLink.RemoveList(links);
 
                     var notes = _uow.TaskNote.GetAll(n => n.SubTaskId == task.Id)?.ToList();
-                    if (notes != null && notes.Any())
+                    if (notes != null && notes.Count > 0)
                         _uow.TaskNote.RemoveList(notes);
                 }
 
@@ -177,7 +167,7 @@ namespace ProjectPlanner.Service
         public List<SubTask> GetTasksForProject(int projectId)
         {
             var tasks = _uow.Task.GetAll()?.Where(t => t.ProjectId == projectId).ToList();
-            return tasks ?? new List<SubTask>();
+            return tasks ?? [];
         }
 
         public SubTask? GetTaskById(int taskId)
@@ -221,7 +211,7 @@ namespace ProjectPlanner.Service
 
         public List<Project> GetAllProjects()
         {
-            var projects = _uow.Project.GetAll() ?? Enumerable.Empty<Project>();
+            var projects = _uow.Project.GetAll() ?? [];
             var list = projects.ToList();
 
             foreach (var proj in list)
@@ -234,8 +224,7 @@ namespace ProjectPlanner.Service
 
         public void UpdateProject(Project project)
         {
-            if (project == null)
-                throw new ArgumentNullException(nameof(project));
+            ArgumentNullException.ThrowIfNull(project);
 
             var dbProject = _uow.Project.GetFirstOrDefault(p => p.Id == project.Id);
             if (dbProject == null)
@@ -273,8 +262,7 @@ namespace ProjectPlanner.Service
 
         public void UpdateTask(SubTask task)
         {
-            if (task == null)
-                throw new ArgumentNullException(nameof(task));
+            ArgumentNullException.ThrowIfNull(task);
 
             var dbTask = _uow.Task.GetFirstOrDefault(t => t.Id == task.Id);
             if (dbTask == null)
@@ -317,8 +305,7 @@ namespace ProjectPlanner.Service
         // Attachments
         public void AddAttachment(TaskAttachment attachment)
         {
-            if (attachment == null)
-                throw new ArgumentNullException(nameof(attachment));
+            ArgumentNullException.ThrowIfNull(attachment);
 
             _uow.TaskAttachment.Add(attachment);
             _uow.Save();
@@ -339,14 +326,13 @@ namespace ProjectPlanner.Service
         public List<TaskAttachment> GetAttachmentsForTask(int taskId)
         {
             var attachments = _uow.TaskAttachment.GetAll(a => a.SubTaskId == taskId)?.ToList();
-            return attachments ?? new List<TaskAttachment>();
+            return attachments ?? [];
         }
 
         // Links
         public void AddLink(TaskLink link)
         {
-            if (link == null)
-                throw new ArgumentNullException(nameof(link));
+            ArgumentNullException.ThrowIfNull(link);
 
             _uow.TaskLink.Add(link);
             _uow.Save();
@@ -367,14 +353,13 @@ namespace ProjectPlanner.Service
         public List<TaskLink> GetLinksForTask(int taskId)
         {
             var links = _uow.TaskLink.GetAll(l => l.SubTaskId == taskId)?.ToList();
-            return links ?? new List<TaskLink>();
+            return links ?? [];
         }
 
         // Notes
         public void AddNote(TaskNote note)
         {
-            if (note == null)
-                throw new ArgumentNullException(nameof(note));
+            ArgumentNullException.ThrowIfNull(note);
 
             _uow.TaskNote.Add(note);
             _uow.Save();
@@ -395,7 +380,7 @@ namespace ProjectPlanner.Service
         public List<TaskNote> GetNotesForTask(int taskId)
         {
             var notes = _uow.TaskNote.GetAll(n => n.SubTaskId == taskId)?.ToList();
-            return notes ?? new List<TaskNote>();
+            return notes ?? [];
         }
     }
 }

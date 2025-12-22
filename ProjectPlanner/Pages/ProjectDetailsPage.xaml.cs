@@ -12,9 +12,8 @@ namespace ProjectPlanner.Pages
         private readonly IProjectService _projectService;
         private readonly IProjectTypeService _projectTypeService;
         private Project _project;
-        private bool _isEditMode = false;
-        public List<SubTask> Tasks { get; set; } = new();
-        private List<SubTask> _allTasks { get; set; } = new();
+        private bool _isEditMode;
+        private List<SubTask> _allTasks = new();
         private string _searchQuery = string.Empty;
         private SearchScope _searchScope = SearchScope.Name;
         private TaskSortField _sortField = TaskSortField.Priority;
@@ -74,76 +73,26 @@ namespace ProjectPlanner.Pages
                 view_mode_content.IsVisible = true;
             }
 
-            _allTasks = _projectService.GetTasksForProject(_project.Id) ?? new List<SubTask>();
+            _allTasks = _projectService.GetTasksForProject(_project.Id) ?? [];
             ApplyTaskFilters();
         }
 
         private void ApplyTaskFilters()
         {
-            if (_allTasks == null)
+            if (_allTasks is not { Count: > 0 })
             {
-                TasksList.ItemsSource = new List<SubTask>();
+                TasksList.ItemsSource = Array.Empty<SubTask>();
                 return;
             }
 
-            IEnumerable<SubTask> filtered = _allTasks;
+            var requestedTags = _searchScope == SearchScope.Tags
+                ? SplitTags(_searchQuery)
+                : Array.Empty<string>();
 
-            if (!string.IsNullOrWhiteSpace(_searchQuery))
-            {
-                if (_searchScope == SearchScope.Tags)
-                {
-                    var requestedTags = _searchQuery
-                        .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            var filtered = _allTasks
+                .Where(task => MatchesSearch(task, requestedTags) && (_hideCompleted is false || !task.IsDone));
 
-                    if (requestedTags.Length > 0)
-                    {
-                        filtered = filtered.Where(task =>
-                        {
-                            if (string.IsNullOrWhiteSpace(task.Tags))
-                                return false;
-
-                            var taskTags = task.Tags
-                                .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-
-                            if (taskTags.Length == 0)
-                                return false;
-
-                            return requestedTags.All(tag => taskTags.Any(taskTag =>
-                                taskTag.Contains(tag, StringComparison.OrdinalIgnoreCase)));
-                        });
-                    }
-                }
-                else
-                {
-                    filtered = filtered.Where(task =>
-                        (!string.IsNullOrWhiteSpace(task.Name) &&
-                         task.Name.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase)) ||
-                        (!string.IsNullOrWhiteSpace(task.Description) &&
-                         task.Description.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase)));
-                }
-            }
-
-            if (_hideCompleted)
-            {
-                filtered = filtered.Where(task => !task.IsDone);
-            }
-
-            filtered = (_sortField, _sortDirection) switch
-            {
-                (TaskSortField.Alphabetical, SortDirection.Ascending) => filtered
-                    .OrderBy(task => task.Name, StringComparer.OrdinalIgnoreCase),
-                (TaskSortField.Alphabetical, SortDirection.Descending) => filtered
-                    .OrderByDescending(task => task.Name, StringComparer.OrdinalIgnoreCase),
-                (TaskSortField.Priority, SortDirection.Ascending) => filtered
-                    .OrderBy(task => task.Priority)
-                    .ThenBy(task => task.Name, StringComparer.OrdinalIgnoreCase),
-                _ => filtered
-                    .OrderByDescending(task => task.Priority)
-                    .ThenBy(task => task.Name, StringComparer.OrdinalIgnoreCase)
-            };
-
-            Tasks = filtered.ToList();
-            TasksList.ItemsSource = Tasks;
+            TasksList.ItemsSource = SortTasks(filtered).ToList();
         }
 
         private void PopulateTypePicker()
@@ -172,6 +121,10 @@ namespace ProjectPlanner.Pages
 
             view_mode_content.IsVisible = !_isEditMode;
             edit_mode_content.IsVisible = _isEditMode;
+            DelProjectBtn.IsVisible = !_isEditMode;
+            AddTaskBtn.IsVisible = !_isEditMode;
+            edit_buttons_grid.IsVisible = _isEditMode;
+            EditBtn.Text = _isEditMode ? "X" : "EDIT";
 
             if (_isEditMode)
             {
@@ -179,18 +132,6 @@ namespace ProjectPlanner.Pages
                 editor_description.Text = _project.Description;
 
                 PopulateTypePicker();
-
-                EditBtn.Text = "X";
-                DelProjectBtn.IsVisible = false;
-                AddTaskBtn.IsVisible = false;
-                edit_buttons_grid.IsVisible = true;
-            }
-            else
-            {
-                EditBtn.Text = "EDIT";
-                DelProjectBtn.IsVisible = true;
-                AddTaskBtn.IsVisible = true;
-                edit_buttons_grid.IsVisible = false;
             }
         }
 
@@ -201,14 +142,12 @@ namespace ProjectPlanner.Pages
 
         private void EditBtn_Clicked(object sender, EventArgs e)
         {
-            if (_isEditMode)
+            var wasEditMode = _isEditMode;
+            ToggleEditMode();
+
+            if (wasEditMode)
             {
-                ToggleEditMode();
                 ReloadAll();
-            }
-            else
-            {
-                ToggleEditMode();
             }
         }
 
@@ -251,12 +190,12 @@ namespace ProjectPlanner.Pages
 
         private async void OnCollectionViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selected = e.CurrentSelection.FirstOrDefault() as SubTask;
-            if (selected == null) return;
+            if (e.CurrentSelection.Count > 0 && e.CurrentSelection[0] is SubTask selected)
+            {
+                var task = _allTasks.FirstOrDefault(p => p.Id == selected.Id) ?? selected;
 
-            var task = _projectService.GetTasksForProject(_project.Id).FirstOrDefault(p => p.Id == selected.Id) ?? selected;
-
-            await Navigation.PushAsync(new SubtaskDetailsPage(task, _projectService));
+                await Navigation.PushAsync(new SubtaskDetailsPage(task, _projectService));
+            }
 
             if (sender is CollectionView cv)
             {
@@ -334,6 +273,67 @@ namespace ProjectPlanner.Pages
             task_filters_panel.IsVisible = _filtersExpanded;
             search_toggle_button.Text = _filtersExpanded ? SearchLabelExpanded : SearchLabelCollapsed;
         }
+
+        private IEnumerable<SubTask> SortTasks(IEnumerable<SubTask> tasks)
+        {
+            return (_sortField, _sortDirection) switch
+            {
+                (TaskSortField.Alphabetical, SortDirection.Ascending) => tasks
+                    .OrderBy(task => task.Name, StringComparer.OrdinalIgnoreCase),
+                (TaskSortField.Alphabetical, SortDirection.Descending) => tasks
+                    .OrderByDescending(task => task.Name, StringComparer.OrdinalIgnoreCase),
+                (TaskSortField.Priority, SortDirection.Ascending) => tasks
+                    .OrderBy(task => task.Priority)
+                    .ThenBy(task => task.Name, StringComparer.OrdinalIgnoreCase),
+                _ => tasks
+                    .OrderByDescending(task => task.Priority)
+                    .ThenBy(task => task.Name, StringComparer.OrdinalIgnoreCase)
+            };
+        }
+
+        private bool MatchesSearch(SubTask task, string[] requestedTags)
+        {
+            if (string.IsNullOrWhiteSpace(_searchQuery))
+            {
+                return true;
+            }
+
+            return _searchScope switch
+            {
+                SearchScope.Tags => ContainsAllTags(task, requestedTags),
+                _ => ContainsText(task, _searchQuery)
+            };
+        }
+
+        private static bool ContainsText(SubTask task, string query)
+        {
+            return (!string.IsNullOrWhiteSpace(task.Name) &&
+                     task.Name.Contains(query, StringComparison.OrdinalIgnoreCase)) ||
+                   (!string.IsNullOrWhiteSpace(task.Description) &&
+                     task.Description.Contains(query, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static bool ContainsAllTags(SubTask task, string[] requestedTags)
+        {
+            if (requestedTags.Length == 0)
+            {
+                return true;
+            }
+
+            var taskTags = SplitTags(task.Tags);
+            if (taskTags.Length == 0)
+            {
+                return false;
+            }
+
+            return requestedTags.All(tag => taskTags.Any(taskTag =>
+                taskTag.Contains(tag, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        private static string[] SplitTags(string? value) =>
+            string.IsNullOrWhiteSpace(value)
+                ? Array.Empty<string>()
+                : value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
         private enum SearchScope
         {

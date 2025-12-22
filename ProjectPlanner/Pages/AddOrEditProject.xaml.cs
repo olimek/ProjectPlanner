@@ -8,7 +8,7 @@ public partial class AddOrEditProject : ContentPage
     private readonly IProjectService? _projectService;
     private readonly IProjectTypeService? _projectTypeService;
     private readonly Project _project;
-    private List<ProjectType> _projectTypes = new();
+    private List<ProjectType> _projectTypes = [];
     private const string ADD_CUSTOM_TYPE_OPTION = "[+] Add own project type...";
 
     public AddOrEditProject()
@@ -42,15 +42,15 @@ public partial class AddOrEditProject : ContentPage
     {
         if (_projectTypeService == null)
         {
-            _projectTypes = new List<ProjectType>();
+            _projectTypes = [];
             return;
         }
 
         _projectTypes = _projectTypeService.GetAllProjectTypes();
         var typeNames = _projectTypes.Select(t => t.Name).ToList();
-        
+
         typeNames.Add(ADD_CUSTOM_TYPE_OPTION);
-        
+
         picker.ItemsSource = typeNames;
 
         entry_project_name.Text = _project.Name ?? string.Empty;
@@ -76,7 +76,7 @@ public partial class AddOrEditProject : ContentPage
             return;
 
         var selectedItem = picker.Items[picker.SelectedIndex];
-        
+
         if (selectedItem == ADD_CUSTOM_TYPE_OPTION)
         {
             await HandleAddCustomType();
@@ -112,18 +112,18 @@ public partial class AddOrEditProject : ContentPage
         try
         {
             var newType = _projectTypeService.AddCustomProjectType(typeName, description);
-            
+
             _projectTypes = _projectTypeService.GetAllProjectTypes();
             var typeNames = _projectTypes.Select(t => t.Name).ToList();
             typeNames.Add(ADD_CUSTOM_TYPE_OPTION);
             picker.ItemsSource = typeNames;
-            
+
             var newTypeIndex = _projectTypes.FindIndex(t => t.Id == newType.Id);
             if (newTypeIndex >= 0)
             {
                 picker.SelectedIndex = newTypeIndex;
             }
-            
+
             await DisplayAlert("Success", $"Project type '{typeName}' created successfully!", "OK");
         }
         catch (Exception ex)

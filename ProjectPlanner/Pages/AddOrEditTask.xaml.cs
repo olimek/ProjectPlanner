@@ -301,7 +301,7 @@ public partial class AddOrEditTask : ContentPage
 
     private void OnRemoveAttachmentClicked(object sender, EventArgs e)
     {
-        if ((sender as Button)?.CommandParameter is TaskAttachment attachment)
+        if (sender is Button { CommandParameter: TaskAttachment attachment })
         {
             Attachments.Remove(attachment);
         }
@@ -309,7 +309,7 @@ public partial class AddOrEditTask : ContentPage
 
     private async void OnOpenAttachmentClicked(object sender, EventArgs e)
     {
-        if ((sender as View)?.BindingContext is TaskAttachment attachment)
+        if (sender is View { BindingContext: TaskAttachment attachment })
         {
             await OpenAttachment(attachment);
         }
@@ -350,15 +350,17 @@ public partial class AddOrEditTask : ContentPage
 
     private void OnRemoveLinkClicked(object sender, EventArgs e)
     {
-        if ((sender as Button)?.CommandParameter is TaskLink link)
+        if (sender is Button { CommandParameter: TaskLink link })
         {
             Links.Remove(link);
         }
     }
 
-    private async void OnOpenLinkClicked(object sender, EventArgs e)
+    private async void OnOpenLinkClicked(object sender, EventArgs e) => OnLinkTapped(sender, e);
+
+    private async void OnLinkTapped(object sender, EventArgs e)
     {
-        if ((sender as View)?.BindingContext is TaskLink link)
+        if (sender is View { BindingContext: TaskLink link })
         {
             try
             {
@@ -387,7 +389,7 @@ public partial class AddOrEditTask : ContentPage
 
     private void OnRemoveNoteClicked(object sender, EventArgs e)
     {
-        if ((sender as Button)?.CommandParameter is TaskNote note)
+        if (sender is Button { CommandParameter: TaskNote note })
         {
             Notes.Remove(note);
         }

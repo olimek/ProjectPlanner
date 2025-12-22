@@ -124,12 +124,7 @@
                             StrokeShape="RoundRectangle 8"
                             StrokeThickness="1">
                             <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*">
-                                <Label
-                                    Grid.RowSpan="3"
-                                    FontSize="20"
-                                    Text="{Binding ., Converter={StaticResource TaskStatusBadgeConverter}}"
-                                    TextColor="{Binding IsDone, Converter={StaticResource BoolToColorConverter}}"
-                                    VerticalOptions="Center" />
+                                
                                 <VerticalStackLayout Grid.Column="1" Spacing="4">
                                     <Grid ColumnDefinitions="*,Auto">
                                         <Label
@@ -137,25 +132,25 @@
                                             FontAttributes="Bold"
                                             FontFamily="HeaderFont"
                                             FontSize="18"
-                                            Text="{Binding Name}"
+                                            Text="{Binding Name, StringFormat='Name: {0}'}"
                                             TextColor="{StaticResource TextPrimary}" />
                                         <Label
                                             Grid.Column="1"
                                             FontFamily="TechFont"
                                             FontSize="12"
-                                            Text="{Binding Priority, StringFormat='P {0}'}"
+                                            Text="{Binding Priority, StringFormat='Piority {0}'}"
                                             TextColor="{StaticResource TextSecondary}" />
                                     </Grid>
                                     <Label
                                         FontFamily="TechFont"
-                                        FontSize="12"
+                                        FontSize="14"
                                         Text="{Binding Project.Name, StringFormat='PROJECT: {0}'}"
                                         TextColor="{StaticResource NeonAccent}" />
                                     <Label
                                         FontFamily="TechFont"
                                         FontSize="12"
                                         MaxLines="2"
-                                        Text="{Binding Description, Converter={StaticResource TextTruncateConverter}, ConverterParameter='80'}"
+                                        Text="{Binding Description, Converter={StaticResource TextTruncateConverter}, ConverterParameter='20'}"
                                         TextColor="{StaticResource TextSecondary}" />
                                 </VerticalStackLayout>
                             </Grid>

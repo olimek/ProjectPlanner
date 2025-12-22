@@ -10,8 +10,8 @@ namespace ProjectPlanner.Pages
     public partial class BacklogPage : ContentPage
     {
         private readonly IProjectService _projectService;
-        private List<Project> _projects = new();
-        private List<SubTask> _allTasks = new();
+        private List<Project> _projects = [];
+        private List<SubTask> _allTasks = [];
         private string _searchQuery = string.Empty;
         private SortOption _sortOption = SortOption.PriorityDescending;
         private bool _hideCompleted;
@@ -38,7 +38,7 @@ namespace ProjectPlanner.Pages
 
         private void LoadTasks()
         {
-            _projects = _projectService.GetAllProjects() ?? new List<Project>();
+            _projects = _projectService.GetAllProjects() ?? [];
 
             var aggregated = new List<SubTask>();
             foreach (var project in _projects)
@@ -126,11 +126,12 @@ namespace ProjectPlanner.Pages
 
         private async void OnTaskSelected(object sender, SelectionChangedEventArgs e)
         {
-            var selected = e.CurrentSelection.FirstOrDefault() as SubTask;
-            if (selected == null)
-                return;
-
-            await Navigation.PushAsync(new SubtaskDetailsPage(selected, _projectService));
+            if (e.CurrentSelection.Count > 0 && e.CurrentSelection[0] is SubTask selected)
+            {
+                // Ensure we navigate with the instance from the aggregated list (contains Project reference)
+                var task = _allTasks.FirstOrDefault(t => t.Id == selected.Id) ?? selected;
+                await Navigation.PushAsync(new SubtaskDetailsPage(task, _projectService));
+            }
 
             if (sender is CollectionView cv)
             {

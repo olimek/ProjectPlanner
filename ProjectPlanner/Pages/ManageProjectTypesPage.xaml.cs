@@ -10,6 +10,9 @@ public partial class ManageProjectTypesPage : ContentPage
 
     public ManageProjectTypesPage(IProjectTypeService projectTypeService, IProjectService projectService)
     {
+        ArgumentNullException.ThrowIfNull(projectTypeService);
+        ArgumentNullException.ThrowIfNull(projectService);
+
         InitializeComponent();
         _projectTypeService = projectTypeService;
         _projectService = projectService;
@@ -60,7 +63,7 @@ public partial class ManageProjectTypesPage : ContentPage
 
     private async void OnCustomTypeSelected(object sender, SelectionChangedEventArgs e)
     {
-        if (e.CurrentSelection.FirstOrDefault() is not ProjectType selectedType)
+        if (e.CurrentSelection.Count == 0 || e.CurrentSelection[0] is not ProjectType selectedType)
             return;
 
         var action = await DisplayActionSheet(
@@ -79,7 +82,10 @@ public partial class ManageProjectTypesPage : ContentPage
             await DeleteCustomType(selectedType);
         }
 
-        ((CollectionView)sender).SelectedItem = null;
+        if (sender is CollectionView cv)
+        {
+            cv.SelectedItem = null;
+        }
     }
 
     private async Task EditCustomType(ProjectType projectType)

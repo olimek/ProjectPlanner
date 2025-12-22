@@ -13,20 +13,20 @@ public partial class MainPage : ContentPage
 {
     private readonly IProjectService _projectService;
 
-    public List<Project> Projects { get; set; } = new();
+    public List<Project> Projects { get; set; } = [];
 
-    private List<Project> _allProjects = new();
+    private List<Project> _allProjects = [];
     private string _projectSearchQuery = string.Empty;
     private ProjectSortField _projectSortField = ProjectSortField.Name;
     private SortDirection _projectSortDirection = SortDirection.Ascending;
     private bool _projectFiltersExpanded;
     private bool _suppressFilterUpdates;
     private bool _isMessengerRegistered;
-    private Picker? _projectSortPicker;
-    private Button? _projectSearchToggleButton;
-    private Border? _projectSearchPanel;
-    private SearchBar? _projectSearchBar;
-    private Button? _addProjectButton;
+    private readonly Picker? _projectSortPicker;
+    private readonly Button? _projectSearchToggleButton;
+    private readonly Border? _projectSearchPanel;
+    private readonly SearchBar? _projectSearchBar;
+    private readonly Button? _addProjectButton;
 
     private const string ProjectSearchLabelCollapsed = "SEARCH";
     private const string ProjectSearchLabelExpanded = "CLOSE";
@@ -99,7 +99,7 @@ public partial class MainPage : ContentPage
         if (_suppressFilterUpdates)
             return;
 
-        IEnumerable<Project> filtered = _allProjects ?? Enumerable.Empty<Project>();
+        IEnumerable<Project> filtered = _allProjects ?? [];
 
         if (!string.IsNullOrWhiteSpace(_projectSearchQuery))
         {
@@ -148,7 +148,7 @@ public partial class MainPage : ContentPage
 
     private void UpdateGlobalActionsVisibility()
     {
-        var hasProjects = _allProjects?.Any() == true;
+        var hasProjects = _allProjects?.Count > 0;
 
         if (!hasProjects && _projectFiltersExpanded)
         {
@@ -186,7 +186,7 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private void OnProjectSearchTextChanged(object sender, TextChangedEventArgs e)
+    private void OnProjectSearchTextChanged(object? sender, TextChangedEventArgs e)
     {
         _projectSearchQuery = e.NewTextValue?.Trim() ?? string.Empty;
         ApplyProjectFilters();
@@ -219,7 +219,7 @@ public partial class MainPage : ContentPage
 
     private async void ProjectsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (e.CurrentSelection.FirstOrDefault() is Project selected)
+        if (e.CurrentSelection.Count > 0 && e.CurrentSelection[0] is Project selected)
         {
             await Navigation.PushAsync(new ProjectPage(selected, _projectService));
             ((CollectionView)sender).SelectedItem = null;

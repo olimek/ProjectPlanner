@@ -61,9 +61,9 @@ namespace ProjectPlanner.Model
 
         public Project? Project { get; set; }
 
-        public List<TaskAttachment> Attachments { get; set; } = new();
-        public List<TaskLink> Links { get; set; } = new();
-        public List<TaskNote> Notes { get; set; } = new();
+        public List<TaskAttachment> Attachments { get; set; } = [];
+        public List<TaskLink> Links { get; set; } = [];
+        public List<TaskNote> Notes { get; set; } = [];
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
