@@ -12,7 +12,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,*">
 
         <VerticalStackLayout Grid.Row="0" Margin="16" Spacing="10">
             <Grid ColumnDefinitions="*,Auto,Auto" VerticalOptions="Center">
@@ -232,7 +232,7 @@
 
         <Button
             x:Name="AddProjectBtn"
-            Grid.Row="2"
+            Grid.Row="1"
             Margin="20"
             Padding="0"
             BackgroundColor="{StaticResource NeonAccent}"
@@ -246,6 +246,7 @@
             Text="+"
             TextColor="{StaticResource Black}"
             VerticalOptions="End"
-            WidthRequest="64" />
+            WidthRequest="64"
+            ZIndex="1" />
     </Grid>
 </ContentPage>
