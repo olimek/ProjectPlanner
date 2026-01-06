@@ -72,42 +72,51 @@ namespace ProjectPlanner.Pages
 
         private void UpdateStatusDisplay()
         {
-            if (_subtask.IsDone)
+            _isHandlingToggle = true;
+            try
             {
-                switch_status.IsToggled = true;
-                lbl_status_text.Text = "COMPLETED";
-                lbl_status_text.TextColor = (Color)Application.Current!.Resources["NeonAccent"];
+                picker_status.SelectedIndex = (int)_subtask.Status;
+                UpdateStatusLabel(_subtask.Status);
             }
-            else
+            finally
             {
-                switch_status.IsToggled = false;
-                lbl_status_text.Text = "MARK AS COMPLETE";
-                lbl_status_text.TextColor = (Color)Application.Current!.Resources["TextSecondary"];
+                _isHandlingToggle = false;
             }
         }
 
-        private void OnStatusSwitchToggled(object? sender, ToggledEventArgs e)
+        private void UpdateStatusLabel(SubTaskStatus status)
+        {
+            switch (status)
+            {
+                case SubTaskStatus.Done:
+                    lbl_status_text.Text = "COMPLETED";
+                    lbl_status_text.TextColor = (Color)Application.Current!.Resources["NeonAccent"];
+                    break;
+                case SubTaskStatus.Ongoing:
+                    lbl_status_text.Text = "IN PROGRESS";
+                    lbl_status_text.TextColor = (Color)Application.Current!.Resources["OngoingStatus"];
+                    break;
+                default:
+                    lbl_status_text.Text = "NOT STARTED";
+                    lbl_status_text.TextColor = (Color)Application.Current!.Resources["TextSecondary"];
+                    break;
+            }
+        }
+
+        private void OnStatusPickerChanged(object? sender, EventArgs e)
         {
             if (_isHandlingToggle) return;
             if (_projectService == null) return;
+            if (picker_status.SelectedIndex < 0) return;
 
             _isHandlingToggle = true;
 
             try
             {
-                _subtask.IsDone = e.Value;
+                var newStatus = (SubTaskStatus)picker_status.SelectedIndex;
+                _subtask.Status = newStatus;
                 _projectService.UpdateTask(_subtask);
-
-                if (_subtask.IsDone)
-                {
-                    lbl_status_text.Text = "COMPLETED";
-                    lbl_status_text.TextColor = (Color)Application.Current!.Resources["NeonAccent"];
-                }
-                else
-                {
-                    lbl_status_text.Text = "MARK AS COMPLETE";
-                    lbl_status_text.TextColor = (Color)Application.Current!.Resources["TextSecondary"];
-                }
+                UpdateStatusLabel(newStatus);
             }
             finally
             {

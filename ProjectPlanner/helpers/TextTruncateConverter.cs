@@ -92,18 +92,66 @@ namespace ProjectPlanner.helpers
                 return "[ ]";
             }
 
-            if (task.IsDone)
+            // Show status indicator based on Status property
+            return task.Status switch
             {
-                return "[X]";
-            }
+                SubTaskStatus.Done => "[X]",
+                SubTaskStatus.Ongoing => "[►]",
+                _ => $"[{PriorityNames[Math.Clamp(task.Priority, 0, PriorityNames.Length - 1)]}]"
+            };
+        }
 
-            var index = task.Priority;
-            if (index < 0 || index >= PriorityNames.Length)
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class StatusToColorConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            var status = value switch
             {
-                index = 0;
-            }
+                SubTaskStatus s => s,
+                SubTask task => task.Status,
+                _ => SubTaskStatus.None
+            };
 
-            return $"[{PriorityNames[index]}]";
+            return status switch
+            {
+                SubTaskStatus.Done => Application.Current?.Resources.TryGetValue("NeonAccent", out var done) == true
+                    ? (Color)done : Colors.Lime,
+                SubTaskStatus.Ongoing => Application.Current?.Resources.TryGetValue("OngoingStatus", out var ongoing) == true
+                    ? (Color)ongoing : Colors.Cyan,
+                _ => Application.Current?.Resources.TryGetValue("TextSecondary", out var none) == true
+                    ? (Color)none : Colors.Gray
+            };
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class StatusToIconConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            var status = value switch
+            {
+                SubTaskStatus s => s,
+                SubTask task => task.Status,
+                _ => SubTaskStatus.None
+            };
+
+            return status switch
+            {
+                SubTaskStatus.Done => "●",
+                SubTaskStatus.Ongoing => "►",
+                _ => "○"
+            };
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

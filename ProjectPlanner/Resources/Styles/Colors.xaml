@@ -9,6 +9,7 @@
     <Color x:Key="BorderColor">#333333</Color>
     <Color x:Key="TextPrimary">#E0E0E0</Color>
     <Color x:Key="TextSecondary">#A0A0A0</Color>
+    <Color x:Key="OngoingStatus">#00BCD4</Color>
     <Color x:Key="TextOnNeon">#000000</Color>
     <Color x:Key="Primary">#025DA3</Color>
     <Color x:Key="PrimaryDark">#013963</Color>

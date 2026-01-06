@@ -271,7 +271,9 @@ namespace ProjectPlanner.Service
             dbTask.Name = task.Name;
             dbTask.Description = task.Description;
             dbTask.ProjectId = task.ProjectId;
-            dbTask.IsDone = task.IsDone;
+            dbTask.Status = task.Status;
+            dbTask.Tags = task.Tags;
+            dbTask.Priority = task.Priority;
 
             _uow.Task.Update(dbTask);
             _uow.Save();
@@ -279,7 +281,7 @@ namespace ProjectPlanner.Service
             WeakReferenceMessenger.Default.Send(new ProjectsUpdatedMessage());
         }
 
-        public void UpdateTask(int taskId, string name, string? description = null, int? projectId = null, bool? isDone = null)
+        public void UpdateTask(int taskId, string name, string? description = null, int? projectId = null, SubTaskStatus? status = null)
         {
             var dbTask = _uow.Task.GetById(taskId);
             if (dbTask == null)
@@ -293,8 +295,8 @@ namespace ProjectPlanner.Service
             if (projectId != null)
                 dbTask.ProjectId = projectId.Value;
 
-            if (isDone.HasValue)
-                dbTask.IsDone = isDone.Value;
+            if (status.HasValue)
+                dbTask.Status = status.Value;
 
             _uow.Task.Update(dbTask);
             _uow.Save();

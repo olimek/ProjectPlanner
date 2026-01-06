@@ -13,6 +13,8 @@
             <converters:BoolToIconConverter x:Key="BoolToIconConverter" />
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
             <converters:TaskStatusBadgeConverter x:Key="TaskStatusBadgeConverter" />
+            <converters:StatusToColorConverter x:Key="StatusToColorConverter" />
+            <converters:StatusToIconConverter x:Key="StatusToIconConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -349,7 +351,7 @@
                                             Grid.Column="0"
                                             FontSize="20"
                                             Text="{Binding ., Converter={StaticResource TaskStatusBadgeConverter}}"
-                                            TextColor="{Binding IsDone, Converter={StaticResource BoolToColorConverter}}"
+                                            TextColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
                                             VerticalOptions="Center" />
                                         <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
                                             <Label

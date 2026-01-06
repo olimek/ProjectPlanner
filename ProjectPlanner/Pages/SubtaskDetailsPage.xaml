@@ -59,16 +59,24 @@
                                         x:Name="lbl_status_text"
                                         FontFamily="TechFont"
                                         FontSize="12"
-                                        Text="MARK AS COMPLETE"
+                                        Text="NONE"
                                         TextColor="{StaticResource TextSecondary}" />
                                 </VerticalStackLayout>
-                                <Switch
-                                    x:Name="switch_status"
+                                <Picker
+                                    x:Name="picker_status"
                                     Grid.Column="1"
-                                    OnColor="{StaticResource NeonAccent}"
-                                    ThumbColor="{StaticResource TextPrimary}"
-                                    Toggled="OnStatusSwitchToggled"
-                                    VerticalOptions="Center" />
+                                    FontFamily="TechFont"
+                                    FontSize="14"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    SelectedIndexChanged="OnStatusPickerChanged"
+                                    VerticalOptions="Center"
+                                    WidthRequest="120">
+                                    <Picker.Items>
+                                        <x:String>NONE</x:String>
+                                        <x:String>ONGOING</x:String>
+                                        <x:String>DONE</x:String>
+                                    </Picker.Items>
+                                </Picker>
                             </Grid>
                         </Border>
 

@@ -15,10 +15,12 @@ namespace ProjectPlanner.Pages
         private string _searchQuery = string.Empty;
         private SortOption _sortOption = SortOption.PriorityDescending;
         private bool _hideCompleted;
+        private bool _onlyInProgress;
         private bool _filtersExpanded;
         private const string FiltersCollapsedText = "FILTERS";
         private const string FiltersExpandedText = "CLOSE";
         private const string HideCompletedPreferenceKey = "BacklogPage.HideCompleted";
+        private const string OnlyInProgressPreferenceKey = "BacklogPage.OnlyInProgress";
 
         public BacklogPage(IProjectService projectService)
         {
@@ -26,7 +28,7 @@ namespace ProjectPlanner.Pages
             _projectService = projectService;
 
             SortPicker.SelectedIndex = 0;
-            RestoreHideCompletedPreference();
+            RestorePreferences();
             UpdateFilterPanelVisualState();
         }
 
@@ -72,9 +74,13 @@ namespace ProjectPlanner.Pages
                      task.Tags.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase)));
             }
 
-            if (_hideCompleted)
+            if (_onlyInProgress)
             {
-                filtered = filtered.Where(task => !task.IsDone);
+                filtered = filtered.Where(task => task.Status == SubTaskStatus.Ongoing);
+            }
+            else if (_hideCompleted)
+            {
+                filtered = filtered.Where(task => task.Status != SubTaskStatus.Done);
             }
 
             filtered = _sortOption switch
@@ -121,6 +127,31 @@ namespace ProjectPlanner.Pages
         {
             _hideCompleted = e.Value;
             Preferences.Default.Set(HideCompletedPreferenceKey, _hideCompleted);
+            
+            // If "Only In Progress" is checked and we check "Hide Completed", uncheck "Only In Progress"
+            if (_hideCompleted && _onlyInProgress)
+            {
+                _onlyInProgress = false;
+                OnlyInProgressCheckbox.IsChecked = false;
+                Preferences.Default.Set(OnlyInProgressPreferenceKey, false);
+            }
+            
+            ApplyFilters();
+        }
+
+        private void OnOnlyInProgressChanged(object sender, CheckedChangedEventArgs e)
+        {
+            _onlyInProgress = e.Value;
+            Preferences.Default.Set(OnlyInProgressPreferenceKey, _onlyInProgress);
+            
+            // If "Only In Progress" is checked, uncheck "Hide Completed" as it's more restrictive
+            if (_onlyInProgress && _hideCompleted)
+            {
+                _hideCompleted = false;
+                HideCompletedCheckbox.IsChecked = false;
+                Preferences.Default.Set(HideCompletedPreferenceKey, false);
+            }
+            
             ApplyFilters();
         }
 
@@ -160,10 +191,13 @@ namespace ProjectPlanner.Pages
             FiltersToggleButton.Text = _filtersExpanded ? FiltersExpandedText : FiltersCollapsedText;
         }
 
-        private void RestoreHideCompletedPreference()
+        private void RestorePreferences()
         {
             _hideCompleted = Preferences.Default.Get(HideCompletedPreferenceKey, false);
             HideCompletedCheckbox.IsChecked = _hideCompleted;
+            
+            _onlyInProgress = Preferences.Default.Get(OnlyInProgressPreferenceKey, false);
+            OnlyInProgressCheckbox.IsChecked = _onlyInProgress;
         }
 
         private enum SortOption

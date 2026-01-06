@@ -20,7 +20,7 @@ namespace ProjectPlanner.Data.Repository
             {
                 objFromDb.Name = entity.Name;
                 objFromDb.Description = entity.Description;
-                objFromDb.IsDone = entity.IsDone;
+                objFromDb.Status = entity.Status;
                 objFromDb.Tags = entity.Tags;
                 objFromDb.Priority = entity.Priority;
                 objFromDb.DueDate = entity.DueDate;

@@ -29,8 +29,16 @@ namespace ProjectPlanner.Model
 
         public bool IsDone
         {
-            get => _isDone;
-            set => SetProperty(ref _isDone, value);
+            get => _status == SubTaskStatus.Done;
+            set => Status = value ? SubTaskStatus.Done : SubTaskStatus.None;
+        }
+
+        private SubTaskStatus _status;
+
+        public SubTaskStatus Status
+        {
+            get => _status;
+            set => SetProperty(ref _status, value);
         }
 
         private string _tags = string.Empty;

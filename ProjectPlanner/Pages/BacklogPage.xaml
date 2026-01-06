@@ -13,6 +13,8 @@
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
             <converters:TaskStatusBadgeConverter x:Key="TaskStatusBadgeConverter" />
             <converters:TextTruncateConverter x:Key="TextTruncateConverter" />
+            <converters:StatusToColorConverter x:Key="StatusToColorConverter" />
+            <converters:StatusToIconConverter x:Key="StatusToIconConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -81,18 +83,38 @@
                 </VerticalStackLayout>
             </Border>
 
-            <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
-                <CheckBox
-                    x:Name="HideCompletedCheckbox"
-                    CheckedChanged="OnHideCompletedChanged"
-                    Color="{StaticResource NeonAccent}" />
-                <Label
-                    FontFamily="TechFont"
-                    FontSize="12"
-                    Text="HIDE COMPLETED"
-                    TextColor="{StaticResource TextSecondary}"
-                    VerticalOptions="Center" />
-            </HorizontalStackLayout>
+            <FlexLayout 
+                Direction="Row" 
+                Wrap="Wrap" 
+                AlignItems="Center"
+                JustifyContent="Start">
+                
+                <HorizontalStackLayout Spacing="8" Margin="0,0,20,0">
+                    <CheckBox
+                        x:Name="HideCompletedCheckbox"
+                        CheckedChanged="OnHideCompletedChanged"
+                        Color="{StaticResource NeonAccent}" />
+                    <Label
+                        FontFamily="TechFont"
+                        FontSize="12"
+                        Text="HIDE COMPLETED"
+                        TextColor="{StaticResource TextSecondary}"
+                        VerticalOptions="Center" />
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Spacing="8">
+                    <CheckBox
+                        x:Name="OnlyInProgressCheckbox"
+                        CheckedChanged="OnOnlyInProgressChanged"
+                        Color="{StaticResource OngoingStatus}" />
+                    <Label
+                        FontFamily="TechFont"
+                        FontSize="12"
+                        Text="ONLY IN PROGRESS"
+                        TextColor="{StaticResource OngoingStatus}"
+                        VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </FlexLayout>
 
             <CollectionView
                 x:Name="TasksList"
@@ -125,6 +147,16 @@
                             StrokeThickness="1">
                             <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*">
                                 
+                                <!--  Status indicator  -->
+                                <Label
+                                    Grid.RowSpan="3"
+                                    Grid.Column="0"
+                                    Margin="0,0,12,0"
+                                    FontSize="24"
+                                    Text="{Binding Status, Converter={StaticResource StatusToIconConverter}}"
+                                    TextColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
+                                    VerticalOptions="Center" />
+
                                 <VerticalStackLayout Grid.Column="1" Spacing="4">
                                     <Grid ColumnDefinitions="*,Auto">
                                         <Label
@@ -132,14 +164,14 @@
                                             FontAttributes="Bold"
                                             FontFamily="HeaderFont"
                                             FontSize="18"
-                                            Text="{Binding Name, StringFormat='Name: {0}'}"
+                                            Text="{Binding Name}"
                                             TextColor="{StaticResource TextPrimary}" />
                                         <Label
                                             Grid.Column="1"
                                             FontFamily="TechFont"
                                             FontSize="12"
-                                            Text="{Binding Priority, StringFormat='Piority {0}'}"
-                                            TextColor="{StaticResource TextSecondary}" />
+                                            Text="{Binding ., Converter={StaticResource TaskStatusBadgeConverter}}"
+                                            TextColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}" />
                                     </Grid>
                                     <Label
                                         FontFamily="TechFont"
@@ -150,7 +182,7 @@
                                         FontFamily="TechFont"
                                         FontSize="12"
                                         MaxLines="2"
-                                        Text="{Binding Description, Converter={StaticResource TextTruncateConverter}, ConverterParameter='20'}"
+                                        Text="{Binding Description, Converter={StaticResource TextTruncateConverter}, ConverterParameter='40'}"
                                         TextColor="{StaticResource TextSecondary}" />
                                 </VerticalStackLayout>
                             </Grid>
