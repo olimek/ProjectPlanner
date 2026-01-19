@@ -335,6 +335,52 @@ namespace ProjectPlanner.Pages
                 ? Array.Empty<string>()
                 : value.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
+        private void OnSetStatusNone(object? sender, EventArgs e)
+        {
+            if (sender is MenuFlyoutItem { CommandParameter: SubTask task })
+            {
+                UpdateTaskStatus(task, SubTaskStatus.None);
+            }
+        }
+
+        private void OnSetStatusOngoing(object? sender, EventArgs e)
+        {
+            if (sender is MenuFlyoutItem { CommandParameter: SubTask task })
+            {
+                UpdateTaskStatus(task, SubTaskStatus.Ongoing);
+            }
+        }
+
+        private void OnSetStatusDone(object? sender, EventArgs e)
+        {
+            if (sender is MenuFlyoutItem { CommandParameter: SubTask task })
+            {
+                UpdateTaskStatus(task, SubTaskStatus.Done);
+            }
+        }
+
+        private void OnSetPriority(object? sender, EventArgs e)
+        {
+            if (sender is MenuFlyoutItem { CommandParameter: (SubTask task, int priority) })
+            {
+                UpdateTaskPriority(task, priority);
+            }
+        }
+
+        private void UpdateTaskStatus(SubTask task, SubTaskStatus status)
+        {
+            task.Status = status;
+            _projectService.UpdateTask(task);
+            ApplyTaskFilters();
+        }
+
+        private void UpdateTaskPriority(SubTask task, int priority)
+        {
+            task.Priority = priority;
+            _projectService.UpdateTask(task);
+            ApplyTaskFilters();
+        }
+
         private enum SearchScope
         {
             Name = 0,

@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="ProjectPlanner.Pages.ProjectPage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:converters="clr-namespace:ProjectPlanner.helpers"
-    Title="PROJECT DETAILS"
-    BackgroundColor="{StaticResource BackgroundDark}">
+x:Class="ProjectPlanner.Pages.ProjectPage"
+xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+xmlns:converters="clr-namespace:ProjectPlanner.helpers"
+xmlns:model="clr-namespace:ProjectPlanner.Model;assembly=ProjectPlanner.Model"
+Title="PROJECT DETAILS"
+BackgroundColor="{StaticResource BackgroundDark}">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:TextTruncateConverter x:Key="TruncateConv" />
-            <converters:BoolToIconConverter x:Key="BoolToIconConverter" />
-            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
-            <converters:TaskStatusBadgeConverter x:Key="TaskStatusBadgeConverter" />
-            <converters:StatusToColorConverter x:Key="StatusToColorConverter" />
-            <converters:StatusToIconConverter x:Key="StatusToIconConverter" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
+<ContentPage.Resources>
+    <ResourceDictionary>
+        <converters:TextTruncateConverter x:Key="TruncateConv" />
+        <converters:BoolToIconConverter x:Key="BoolToIconConverter" />
+        <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+        <converters:TaskStatusBadgeConverter x:Key="TaskStatusBadgeConverter" />
+        <converters:StatusToColorConverter x:Key="StatusToColorConverter" />
+        <converters:StatusToIconConverter x:Key="StatusToIconConverter" />
+        <converters:TaskPriorityConverter x:Key="TaskPriorityConverter" />
+    </ResourceDictionary>
+</ContentPage.Resources>
 
     <Grid RowDefinitions="*,Auto">
         <ScrollView Grid.Row="0">
@@ -338,7 +340,7 @@
                         </CollectionView.EmptyView>
 
                         <CollectionView.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate x:DataType="model:SubTask">
                                 <Border
                                     Margin="0,0,0,8"
                                     Padding="12"
@@ -346,6 +348,50 @@
                                     Stroke="{StaticResource BorderColor}"
                                     StrokeShape="RoundRectangle 4"
                                     StrokeThickness="1">
+                                    <FlyoutBase.ContextFlyout>
+                                        <MenuFlyout>
+                                            <MenuFlyoutSubItem Text="STATUS">
+                                                <MenuFlyoutItem 
+                                                    Text="○ NONE" 
+                                                    Clicked="OnSetStatusNone"
+                                                    CommandParameter="{Binding .}" />
+                                                <MenuFlyoutItem 
+                                                    Text="► ONGOING" 
+                                                    Clicked="OnSetStatusOngoing"
+                                                    CommandParameter="{Binding .}" />
+                                                <MenuFlyoutItem 
+                                                    Text="● DONE" 
+                                                    Clicked="OnSetStatusDone"
+                                                    CommandParameter="{Binding .}" />
+                                            </MenuFlyoutSubItem>
+                                            <MenuFlyoutSubItem Text="PRIORITY">
+                                                <MenuFlyoutItem 
+                                                    Text="[0] NONE" 
+                                                    Clicked="OnSetPriority"
+                                                    CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=0}" />
+                                                <MenuFlyoutItem 
+                                                    Text="[1] LOW" 
+                                                    Clicked="OnSetPriority"
+                                                    CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=1}" />
+                                                <MenuFlyoutItem 
+                                                    Text="[2] MEDIUM" 
+                                                    Clicked="OnSetPriority"
+                                                    CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=2}" />
+                                                <MenuFlyoutItem 
+                                                    Text="[3] HIGH" 
+                                                    Clicked="OnSetPriority"
+                                                    CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=3}" />
+                                                <MenuFlyoutItem 
+                                                    Text="[4] URGENT" 
+                                                    Clicked="OnSetPriority"
+                                                    CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=4}" />
+                                                <MenuFlyoutItem 
+                                                    Text="[5] CRITICAL" 
+                                                    Clicked="OnSetPriority"
+                                                    CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=5}" />
+                                            </MenuFlyoutSubItem>
+                                        </MenuFlyout>
+                                    </FlyoutBase.ContextFlyout>
                                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                                         <Label
                                             Grid.Column="0"

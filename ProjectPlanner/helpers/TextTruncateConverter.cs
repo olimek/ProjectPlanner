@@ -159,4 +159,25 @@ namespace ProjectPlanner.helpers
             throw new NotImplementedException();
         }
     }
+
+    public class TaskPriorityConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is not SubTask task)
+                return null;
+
+            if (parameter is string paramStr && int.TryParse(paramStr, out var priority))
+            {
+                return (task, priority);
+            }
+
+            return null;
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
