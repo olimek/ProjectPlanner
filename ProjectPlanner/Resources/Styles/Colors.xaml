@@ -16,11 +16,11 @@
     <Color x:Key="PrimaryDarkText">#121212</Color>
     <Color x:Key="Secondary">#333333</Color>
     <Color x:Key="SecondaryDarkText">#E0E0E0</Color>
-
     <Color x:Key="Tertiary">#025DA3</Color>
+    <Color x:Key="Cyan">#00BCD4</Color>
+    <Color x:Key="Magenta">#E91E63</Color>
     <Color x:Key="White">#FFFFFF</Color>
     <Color x:Key="Black">#000000</Color>
-    <Color x:Key="Magenta">#025DA3</Color>
     <Color x:Key="MidnightBlue">#1E1E1E</Color>
     <Color x:Key="OffBlack">#121212</Color>
     <Color x:Key="Gray100">#E1E1E1</Color>

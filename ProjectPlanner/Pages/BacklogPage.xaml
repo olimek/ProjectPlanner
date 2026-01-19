@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-x:Class="ProjectPlanner.Pages.BacklogPage"
-xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-xmlns:converters="clr-namespace:ProjectPlanner.helpers"
-xmlns:model="clr-namespace:ProjectPlanner.Model;assembly=ProjectPlanner.Model"
-Title="BACKLOG"
-BackgroundColor="{StaticResource BackgroundDark}">
+    x:Class="ProjectPlanner.Pages.BacklogPage"
+    x:Name="BacklogPageRoot"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ProjectPlanner.helpers"
+    xmlns:model="clr-namespace:ProjectPlanner.Model;assembly=ProjectPlanner.Model"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="BACKLOG"
+    BackgroundColor="{StaticResource BackgroundDark}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -16,7 +18,6 @@ BackgroundColor="{StaticResource BackgroundDark}">
             <converters:TextTruncateConverter x:Key="TextTruncateConverter" />
             <converters:StatusToColorConverter x:Key="StatusToColorConverter" />
             <converters:StatusToIconConverter x:Key="StatusToIconConverter" />
-            <converters:TaskPriorityConverter x:Key="TaskPriorityConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -85,12 +86,12 @@ BackgroundColor="{StaticResource BackgroundDark}">
                 </VerticalStackLayout>
             </Border>
 
-            <FlexLayout 
-                Direction="Row" 
-                Wrap="Wrap" 
+            <FlexLayout
+                Direction="Row"
+                Wrap="Wrap"
                 AlignItems="Center"
                 JustifyContent="Start">
-                
+
                 <HorizontalStackLayout Spacing="8" Margin="0,0,20,0">
                     <CheckBox
                         x:Name="HideCompletedCheckbox"
@@ -120,8 +121,7 @@ BackgroundColor="{StaticResource BackgroundDark}">
 
             <CollectionView
                 x:Name="TasksList"
-                SelectionChanged="OnTaskSelected"
-                SelectionMode="Single">
+                SelectionMode="None">
                 <CollectionView.EmptyView>
                     <Border
                         Padding="20"
@@ -141,69 +141,33 @@ BackgroundColor="{StaticResource BackgroundDark}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:SubTask">
                         <Border
+                            x:Name="TaskBorder"
                             Margin="0,0,0,12"
                             Padding="12"
                             BackgroundColor="{StaticResource SurfaceDark}"
                             Stroke="{StaticResource BorderColor}"
                             StrokeShape="RoundRectangle 8"
                             StrokeThickness="1">
-                            <FlyoutBase.ContextFlyout>
-                                <MenuFlyout>
-                                    <MenuFlyoutSubItem Text="STATUS">
-                                        <MenuFlyoutItem 
-                                            Text="○ NONE" 
-                                            Clicked="OnSetStatusNone"
-                                            CommandParameter="{Binding .}" />
-                                        <MenuFlyoutItem 
-                                            Text="► ONGOING" 
-                                            Clicked="OnSetStatusOngoing"
-                                            CommandParameter="{Binding .}" />
-                                        <MenuFlyoutItem 
-                                            Text="● DONE" 
-                                            Clicked="OnSetStatusDone"
-                                            CommandParameter="{Binding .}" />
-                                    </MenuFlyoutSubItem>
-                                    <MenuFlyoutSubItem Text="PRIORITY">
-                                        <MenuFlyoutItem 
-                                            Text="[0] NONE" 
-                                            Clicked="OnSetPriority"
-                                            CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=0}" />
-                                        <MenuFlyoutItem 
-                                            Text="[1] LOW" 
-                                            Clicked="OnSetPriority"
-                                            CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=1}" />
-                                        <MenuFlyoutItem 
-                                            Text="[2] MEDIUM" 
-                                            Clicked="OnSetPriority"
-                                            CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=2}" />
-                                        <MenuFlyoutItem 
-                                            Text="[3] HIGH" 
-                                            Clicked="OnSetPriority"
-                                            CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=3}" />
-                                        <MenuFlyoutItem 
-                                            Text="[4] URGENT" 
-                                            Clicked="OnSetPriority"
-                                            CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=4}" />
-                                        <MenuFlyoutItem 
-                                            Text="[5] CRITICAL" 
-                                            Clicked="OnSetPriority"
-                                            CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=5}" />
-                                    </MenuFlyoutSubItem>
-                                </MenuFlyout>
-                            </FlyoutBase.ContextFlyout>
-                            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*">
-                                
+                            <Border.GestureRecognizers>
+                                <SwipeGestureRecognizer Direction="Left" Swiped="OnTaskSwiped" />
+                                <SwipeGestureRecognizer Direction="Right" Swiped="OnTaskSwiped" />
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={x:Reference BacklogPageRoot}, Path=TapCommand}"
+                                    CommandParameter="{Binding}" />
+                            </Border.GestureRecognizers>
+
+                            <Grid ColumnDefinitions="Auto,*">
+
                                 <!--  Status indicator  -->
                                 <Label
-                                    Grid.RowSpan="3"
                                     Grid.Column="0"
                                     Margin="0,0,12,0"
-                                    FontSize="24"
+                                    FontSize="18"
                                     Text="{Binding Status, Converter={StaticResource StatusToIconConverter}}"
                                     TextColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
                                     VerticalOptions="Center" />
 
-                                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
                                     <Grid ColumnDefinitions="*,Auto">
                                         <Label
                                             Grid.Column="0"

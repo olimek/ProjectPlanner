@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using ProjectPlanner.Model;
@@ -22,10 +24,44 @@ namespace ProjectPlanner.Pages
         private const string HideCompletedPreferenceKey = "BacklogPage.HideCompleted";
         private const string OnlyInProgressPreferenceKey = "BacklogPage.OnlyInProgress";
 
+        public ICommand TapCommand { get; }
+        public ICommand LongPressCommand { get; }
+
+        // Status commands for SwipeView
+        public ICommand SetStatusNoneCommand { get; }
+        public ICommand SetStatusOngoingCommand { get; }
+        public ICommand SetStatusDoneCommand { get; }
+
+        // Priority commands for SwipeView
+        public ICommand SetPriority0Command { get; }
+        public ICommand SetPriority1Command { get; }
+        public ICommand SetPriority2Command { get; }
+        public ICommand SetPriority3Command { get; }
+        public ICommand SetPriority4Command { get; }
+        public ICommand SetPriority5Command { get; }
+
         public BacklogPage(IProjectService projectService)
         {
             InitializeComponent();
             _projectService = projectService;
+
+            TapCommand = new AsyncRelayCommand<SubTask>(OnTaskTappedAsync);
+            LongPressCommand = new AsyncRelayCommand<SubTask>(OnTaskLongPressedAsync);
+
+            // Initialize status commands
+            SetStatusNoneCommand = new RelayCommand<SubTask>(task => UpdateTaskStatus(task!, SubTaskStatus.None));
+            SetStatusOngoingCommand = new RelayCommand<SubTask>(task => UpdateTaskStatus(task!, SubTaskStatus.Ongoing));
+            SetStatusDoneCommand = new RelayCommand<SubTask>(task => UpdateTaskStatus(task!, SubTaskStatus.Done));
+
+            // Initialize priority commands
+            SetPriority0Command = new RelayCommand<SubTask>(task => UpdateTaskPriority(task!, 0));
+            SetPriority1Command = new RelayCommand<SubTask>(task => UpdateTaskPriority(task!, 1));
+            SetPriority2Command = new RelayCommand<SubTask>(task => UpdateTaskPriority(task!, 2));
+            SetPriority3Command = new RelayCommand<SubTask>(task => UpdateTaskPriority(task!, 3));
+            SetPriority4Command = new RelayCommand<SubTask>(task => UpdateTaskPriority(task!, 4));
+            SetPriority5Command = new RelayCommand<SubTask>(task => UpdateTaskPriority(task!, 5));
+
+            BindingContext = this;
 
             SortPicker.SelectedIndex = 0;
             RestorePreferences();
@@ -38,6 +74,7 @@ namespace ProjectPlanner.Pages
             LoadTasks();
         }
 
+
         private void LoadTasks()
         {
             _projects = _projectService.GetAllProjects() ?? [];
@@ -47,6 +84,7 @@ namespace ProjectPlanner.Pages
             {
                 if (project.Tasks == null)
                     continue;
+
 
                 foreach (var task in project.Tasks)
                 {
@@ -155,21 +193,6 @@ namespace ProjectPlanner.Pages
             ApplyFilters();
         }
 
-        private async void OnTaskSelected(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.CurrentSelection.Count > 0 && e.CurrentSelection[0] is SubTask selected)
-            {
-                // Ensure we navigate with the instance from the aggregated list (contains Project reference)
-                var task = _allTasks.FirstOrDefault(t => t.Id == selected.Id) ?? selected;
-                await Navigation.PushAsync(new SubtaskDetailsPage(task, _projectService));
-            }
-
-            if (sender is CollectionView cv)
-            {
-                cv.SelectedItem = null;
-            }
-        }
-
         private void OnToggleFiltersClicked(object sender, EventArgs e)
         {
             _filtersExpanded = !_filtersExpanded;
@@ -200,35 +223,83 @@ namespace ProjectPlanner.Pages
             OnlyInProgressCheckbox.IsChecked = _onlyInProgress;
         }
 
-        private void OnSetStatusNone(object? sender, EventArgs e)
+        private async Task OnTaskTappedAsync(SubTask? task)
         {
-            if (sender is MenuFlyoutItem { CommandParameter: SubTask task })
-            {
-                UpdateTaskStatus(task, SubTaskStatus.None);
-            }
+            if (task == null) return;
+
+            var fullTask = _allTasks.FirstOrDefault(t => t.Id == task.Id) ?? task;
+            await Navigation.PushAsync(new SubtaskDetailsPage(fullTask, _projectService));
         }
 
-        private void OnSetStatusOngoing(object? sender, EventArgs e)
+        private async Task OnTaskLongPressedAsync(SubTask? task)
         {
-            if (sender is MenuFlyoutItem { CommandParameter: SubTask task })
-            {
-                UpdateTaskStatus(task, SubTaskStatus.Ongoing);
-            }
+            if (task == null) return;
+
+            await ShowTaskActionSheet(task);
         }
 
-        private void OnSetStatusDone(object? sender, EventArgs e)
+        private async void OnTaskSwiped(object sender, SwipedEventArgs e)
         {
-            if (sender is MenuFlyoutItem { CommandParameter: SubTask task })
+            if (sender is not BindableObject { BindingContext: SubTask task })
             {
-                UpdateTaskStatus(task, SubTaskStatus.Done);
+                return;
             }
+
+            await ShowTaskActionSheet(task);
         }
 
-        private void OnSetPriority(object? sender, EventArgs e)
+        private async Task ShowTaskActionSheet(SubTask task)
         {
-            if (sender is MenuFlyoutItem { CommandParameter: (SubTask task, int priority) })
+            var action = await DisplayActionSheet(
+                $"⚡ {task.Name}",
+                "CANCEL",
+                null,
+                "── STATUS ──",
+                "   ○ NONE",
+                "   ► ONGOING", 
+                "   ● DONE",
+                "── PRIORITY ──",
+                "   [0] NONE",
+                "   [1] LOW",
+                "   [2] MEDIUM",
+                "   [3] HIGH",
+                "   [4] URGENT",
+                "   [5] CRITICAL");
+
+            if (string.IsNullOrEmpty(action) || action == "CANCEL" || action.StartsWith("──")) 
+                return;
+
+            var trimmedAction = action.Trim();
+
+            switch (trimmedAction)
             {
-                UpdateTaskPriority(task, priority);
+                case "○ NONE":
+                    UpdateTaskStatus(task, SubTaskStatus.None);
+                    break;
+                case "► ONGOING":
+                    UpdateTaskStatus(task, SubTaskStatus.Ongoing);
+                    break;
+                case "● DONE":
+                    UpdateTaskStatus(task, SubTaskStatus.Done);
+                    break;
+                case "[0] NONE":
+                    UpdateTaskPriority(task, 0);
+                    break;
+                case "[1] LOW":
+                    UpdateTaskPriority(task, 1);
+                    break;
+                case "[2] MEDIUM":
+                    UpdateTaskPriority(task, 2);
+                    break;
+                case "[3] HIGH":
+                    UpdateTaskPriority(task, 3);
+                    break;
+                case "[4] URGENT":
+                    UpdateTaskPriority(task, 4);
+                    break;
+                case "[5] CRITICAL":
+                    UpdateTaskPriority(task, 5);
+                    break;
             }
         }
 

@@ -28,10 +28,10 @@
 		<ApplicationId>com.companyname.projectplanner</ApplicationId>
 
 		<!-- Versions - manual configuration -->
-		<ApplicationDisplayVersion>1.4.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1004000</ApplicationVersion>
-		<AndroidVersionCode>1004000</AndroidVersionCode>
-		<AndroidVersionName>1.4.0</AndroidVersionName>
+		<ApplicationDisplayVersion>1.4.2</ApplicationDisplayVersion>
+		<ApplicationVersion>1004002</ApplicationVersion>
+		<AndroidVersionCode>1004002</AndroidVersionCode>
+		<AndroidVersionName>1.4.2</AndroidVersionName>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
 		<WindowsPackageType>None</WindowsPackageType>
@@ -82,6 +82,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.120" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172">
 		  <TreatAsUsed>true</TreatAsUsed>

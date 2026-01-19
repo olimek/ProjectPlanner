@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-x:Class="ProjectPlanner.Pages.ProjectPage"
-xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-xmlns:converters="clr-namespace:ProjectPlanner.helpers"
-xmlns:model="clr-namespace:ProjectPlanner.Model;assembly=ProjectPlanner.Model"
-Title="PROJECT DETAILS"
-BackgroundColor="{StaticResource BackgroundDark}">
+    x:Class="ProjectPlanner.Pages.ProjectPage"
+    x:Name="ProjectPageRoot"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:ProjectPlanner.helpers"
+    xmlns:model="clr-namespace:ProjectPlanner.Model;assembly=ProjectPlanner.Model"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="PROJECT DETAILS"
+    BackgroundColor="{StaticResource BackgroundDark}">
 
-<ContentPage.Resources>
-    <ResourceDictionary>
-        <converters:TextTruncateConverter x:Key="TruncateConv" />
-        <converters:BoolToIconConverter x:Key="BoolToIconConverter" />
-        <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
-        <converters:TaskStatusBadgeConverter x:Key="TaskStatusBadgeConverter" />
-        <converters:StatusToColorConverter x:Key="StatusToColorConverter" />
-        <converters:StatusToIconConverter x:Key="StatusToIconConverter" />
-        <converters:TaskPriorityConverter x:Key="TaskPriorityConverter" />
-    </ResourceDictionary>
-</ContentPage.Resources>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:TextTruncateConverter x:Key="TruncateConv" />
+            <converters:BoolToIconConverter x:Key="BoolToIconConverter" />
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:TaskStatusBadgeConverter x:Key="TaskStatusBadgeConverter" />
+            <converters:StatusToColorConverter x:Key="StatusToColorConverter" />
+            <converters:StatusToIconConverter x:Key="StatusToIconConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="*,Auto">
         <ScrollView Grid.Row="0">
@@ -238,12 +239,12 @@ BackgroundColor="{StaticResource BackgroundDark}">
                             AlignContent="Start"
                             JustifyContent="SpaceBetween">
                             <VerticalStackLayout FlexLayout.Basis="100%" Spacing="4" Margin="0,0,0,12">
-                                 <Label
+                                <Label
                                      FontFamily="TechFont"
                                      FontSize="11"
                                      Text="SEARCH"
                                      TextColor="{StaticResource TextSecondary}" />
-                                 <SearchBar
+                                <SearchBar
                                      x:Name="task_search_bar"
                                      Margin="0"
                                      BackgroundColor="Transparent"
@@ -252,57 +253,57 @@ BackgroundColor="{StaticResource BackgroundDark}">
                                      PlaceholderColor="{StaticResource TextSecondary}"
                                      TextChanged="OnTaskSearchTextChanged"
                                      TextColor="{StaticResource TextPrimary}" />
-                             </VerticalStackLayout>
+                            </VerticalStackLayout>
 
                             <VerticalStackLayout Spacing="4"
                                  Margin="0,0,12,12"
                                   FlexLayout.Basis="Auto"
                                   WidthRequest="110">
-                                 <Label
+                                <Label
                                      FontFamily="TechFont"
                                      FontSize="11"
                                      HorizontalOptions="Center"
                                      Text="SEARCH BY"
                                      TextColor="{StaticResource TextSecondary}" />
-                                 <Picker
+                                <Picker
                                      x:Name="SearchScopePicker"
                                      WidthRequest="110"
                                      FontFamily="TechFont"
                                      SelectedIndexChanged="OnSearchScopeChanged"
                                      TextColor="{StaticResource TextPrimary}">
-                                     <Picker.Items>
-                                         <x:String>NAME</x:String>
-                                         <x:String>TAGS</x:String>
-                                     </Picker.Items>
-                                 </Picker>
-                             </VerticalStackLayout>
+                                    <Picker.Items>
+                                        <x:String>NAME</x:String>
+                                        <x:String>TAGS</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                            </VerticalStackLayout>
 
                             <VerticalStackLayout Spacing="4"
                                 Margin="0,0,12,0"
                                  FlexLayout.Basis="Auto"
                                  WidthRequest="150">
-                                  <Label
+                                <Label
                                       FontFamily="TechFont"
                                       FontSize="11"
                                       HorizontalOptions="Center"
                                      Text="SORT"
                                       TextColor="{StaticResource TextSecondary}" />
-                                  <Picker
+                                <Picker
                                       x:Name="SortFieldPicker"
                                      WidthRequest="150"
                                       FontFamily="TechFont"
                                       SelectedIndexChanged="OnSortFieldChanged"
                                       TextColor="{StaticResource TextPrimary}">
-                                      <Picker.Items>
-                                         <x:String>PRIORITY HIGH-&gt;LOW</x:String>
-                                         <x:String>PRIORITY LOW-&gt;HIGH</x:String>
-                                         <x:String>NAME Z-&gt;A</x:String>
-                                         <x:String>NAME A-&gt;Z</x:String>
-                                     </Picker.Items>
-                                 </Picker>
-                             </VerticalStackLayout>
+                                    <Picker.Items>
+                                        <x:String>PRIORITY HIGH-&gt;LOW</x:String>
+                                        <x:String>PRIORITY LOW-&gt;HIGH</x:String>
+                                        <x:String>NAME Z-&gt;A</x:String>
+                                        <x:String>NAME A-&gt;Z</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                            </VerticalStackLayout>
                         </FlexLayout>
-                     </Border>
+                    </Border>
 
                     <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
                         <CheckBox
@@ -319,8 +320,7 @@ BackgroundColor="{StaticResource BackgroundDark}">
 
                     <CollectionView
                         x:Name="TasksList"
-                        SelectionChanged="OnCollectionViewSelectionChanged"
-                        SelectionMode="Single">
+                        SelectionMode="None">
 
                         <CollectionView.EmptyView>
                             <Border
@@ -348,61 +348,25 @@ BackgroundColor="{StaticResource BackgroundDark}">
                                     Stroke="{StaticResource BorderColor}"
                                     StrokeShape="RoundRectangle 4"
                                     StrokeThickness="1">
-                                    <FlyoutBase.ContextFlyout>
-                                        <MenuFlyout>
-                                            <MenuFlyoutSubItem Text="STATUS">
-                                                <MenuFlyoutItem 
-                                                    Text="○ NONE" 
-                                                    Clicked="OnSetStatusNone"
-                                                    CommandParameter="{Binding .}" />
-                                                <MenuFlyoutItem 
-                                                    Text="► ONGOING" 
-                                                    Clicked="OnSetStatusOngoing"
-                                                    CommandParameter="{Binding .}" />
-                                                <MenuFlyoutItem 
-                                                    Text="● DONE" 
-                                                    Clicked="OnSetStatusDone"
-                                                    CommandParameter="{Binding .}" />
-                                            </MenuFlyoutSubItem>
-                                            <MenuFlyoutSubItem Text="PRIORITY">
-                                                <MenuFlyoutItem 
-                                                    Text="[0] NONE" 
-                                                    Clicked="OnSetPriority"
-                                                    CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=0}" />
-                                                <MenuFlyoutItem 
-                                                    Text="[1] LOW" 
-                                                    Clicked="OnSetPriority"
-                                                    CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=1}" />
-                                                <MenuFlyoutItem 
-                                                    Text="[2] MEDIUM" 
-                                                    Clicked="OnSetPriority"
-                                                    CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=2}" />
-                                                <MenuFlyoutItem 
-                                                    Text="[3] HIGH" 
-                                                    Clicked="OnSetPriority"
-                                                    CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=3}" />
-                                                <MenuFlyoutItem 
-                                                    Text="[4] URGENT" 
-                                                    Clicked="OnSetPriority"
-                                                    CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=4}" />
-                                                <MenuFlyoutItem 
-                                                    Text="[5] CRITICAL" 
-                                                    Clicked="OnSetPriority"
-                                                    CommandParameter="{Binding ., Converter={StaticResource TaskPriorityConverter}, ConverterParameter=5}" />
-                                            </MenuFlyoutSubItem>
-                                        </MenuFlyout>
-                                    </FlyoutBase.ContextFlyout>
+                                    <Border.GestureRecognizers>
+                                        <SwipeGestureRecognizer Direction="Left" Swiped="OnTaskSwiped" />
+                                        <SwipeGestureRecognizer Direction="Right" Swiped="OnTaskSwiped" />
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={x:Reference ProjectPageRoot}, Path=TapCommand}"
+                                            CommandParameter="{Binding}" />
+                                    </Border.GestureRecognizers>
+
                                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                                         <Label
                                             Grid.Column="0"
-                                            FontSize="20"
+                                            FontSize="12"
                                             Text="{Binding ., Converter={StaticResource TaskStatusBadgeConverter}}"
                                             TextColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
                                             VerticalOptions="Center" />
                                         <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
                                             <Label
                                                 FontFamily="TechFont"
-                                                FontSize="15"
+                                                FontSize="18"
                                                 LineBreakMode="TailTruncation"
                                                 Text="{Binding Name}"
                                                 TextColor="{StaticResource TextPrimary}" />
@@ -410,7 +374,7 @@ BackgroundColor="{StaticResource BackgroundDark}">
                                         <Label
                                             Grid.Column="2"
                                             FontSize="20"
-                                            Text="&gt;"
+                                            Text="&lt; - &gt;"
                                             TextColor="{StaticResource TextSecondary}"
                                             VerticalOptions="Center" />
                                     </Grid>
